@@ -1,0 +1,69 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.psilynx",
+    "module": "psikit",
+    "version": "0.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "psikit-0.0.1.jar",
+          "url": "psikit-0.0.1.jar",
+          "size": 98101,
+          "sha512": "2c4f9cc7b3ab49c6f3e0e95ed2b4e5ce0cbc2cb071f2184c7fc2b7daafecaaf71c4d3a31ab9394ae2558df00d95782a22c0ea1acafa5aea1034318943110c44a",
+          "sha256": "21412458976b6eb7b2bfd37305cc0e837ead4c533926b540002c13a91fd6430a",
+          "sha1": "80953af1e64230f0a426cf960e354895b18269b8",
+          "md5": "af1a74b9da457a7aa612a8d65f1c9217"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "requires": "2.12.7"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "psikit-0.0.1.jar",
+          "url": "psikit-0.0.1.jar",
+          "size": 98101,
+          "sha512": "2c4f9cc7b3ab49c6f3e0e95ed2b4e5ce0cbc2cb071f2184c7fc2b7daafecaaf71c4d3a31ab9394ae2558df00d95782a22c0ea1acafa5aea1034318943110c44a",
+          "sha256": "21412458976b6eb7b2bfd37305cc0e837ead4c533926b540002c13a91fd6430a",
+          "sha1": "80953af1e64230f0a426cf960e354895b18269b8",
+          "md5": "af1a74b9da457a7aa612a8d65f1c9217"
+        }
+      ]
+    }
+  ]
+}

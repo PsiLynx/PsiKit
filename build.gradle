@@ -1,11 +1,49 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url 'https://www.matthewo.tech/maven/' }
+        maven { url 'https://repo.dairy.foundation/releases' }
+    }
+}
+
 plugins {
-    id 'java-library'
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'org.psilynx'
+version = '0.0.1'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            // Optional: set artifactId if different from project name
+            // artifactId = 'my-lib'
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPages"
+            url = uri("file://${projectDir}/docs/gradle")
+        }
+    }
 }
 java {
     sourceCompatibility JavaVersion.VERSION_11
     targetCompatibility JavaVersion.VERSION_11
 }
-
+repositories {
+    google()
+    mavenCentral()
+    //maven { url 'https://www.matthewo.tech/maven/' }
+    //maven { url 'https://repo.dairy.foundation/snapshots' }
+    //maven { url 'https://repo.dairy.foundation/releases' }
+}
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 }
