@@ -1,0 +1,11 @@
+# gradle files
+.gradle/**
+gradle/**
+gradlew
+gradlew.bat
+
+# idea files
+docs/.idea/**
+
+#build files
+build/**

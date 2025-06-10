@@ -1,0 +1,11 @@
+# Comparison to FTC Dash
+
+| Feature           | Psi Kit                                                                                                                         | FTC Dash                                                                       |
+|-------------------|---------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| preference saving | advantage scope automatically saves which values you were trying to display where, **even through computer power cycles**       | you must add values you want to graph back in every time you start the op mode |
+| telemetry         | display any primitive data types and Strings, as well as poses, mechanisms, and custom data types                               | display primitive data types and strings only                                  |
+| 2D field          | logged poses and arrays of poses can be **automatically** drawn as robots, arrows, paths, or other visual representations       | must draw all shapes yourself                                                  |
+| 3D field          | see robot and mechanism positions in 3d, on a 3d field model of the game. import cad models of your robot and see it move in 3d | no 3d support                                                                  |
+| mechanisms        | see stick representations of mechanisms. support for rotating joints and extending ligaments.                                   | no mechanism view support                                                      |
+| live value change | no live value change support (FTC dash style tuning coming soon)                                                                | changing values causes immediate updates on the robot                          |
+| statistics        | run statistical analysis of values                                                                                              | no statistical analysis tools                                                  |
