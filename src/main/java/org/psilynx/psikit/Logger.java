@@ -33,6 +33,7 @@ public class Logger {
   private static LogTable outputTable;
   private static Map<String, String> metadata = new HashMap<>();
   private static List<LoggedNetworkInput> dashboardInputs = new ArrayList<>();
+  private static ConsoleSource console = null;
   private static LogReplaySource replaySource;
   private static final BlockingQueue<LogTable> receiverQueue =
       new ArrayBlockingQueue<LogTable>(receiverQueueCapcity);
@@ -41,6 +42,7 @@ public class Logger {
   private static DoubleSupplier timeSource =
           () -> System.nanoTime() / 1000000000.0 - startTime;
   private static boolean simulation = false;
+  private static boolean enableConsole = true;
 
   private Logger() {}
 
@@ -92,6 +94,10 @@ public class Logger {
     }
   }
 
+  /** Disables automatic console capture. */
+  public static void disableConsoleCapture() {
+    enableConsole = false;
+  }
 
   /** Returns whether a replay source is currently being used. */
   public static boolean hasReplaySource() {
@@ -103,6 +109,11 @@ public class Logger {
     if (!running) {
       running = true;
       startTime = timeSource.getAsDouble();
+
+      // Start console capture
+      if (enableConsole) {
+          console = new SimConsoleSource();
+      }
 
       // Start replay source
       if (replaySource != null) {
@@ -138,6 +149,13 @@ public class Logger {
   public static void end() {
     if (running) {
       running = false;
+      if (console != null) {
+        try {
+          console.close();
+        } catch (Exception e) {
+          System.out.println("[AdvantageKit] Failed to stop console capture.");
+        }
+      }
       if (replaySource != null) {
         replaySource.end();
       }
@@ -188,7 +206,7 @@ public class Logger {
    * default log values and sends data to data receivers. Running this after user code allows IO
    * operations to occur between cycles rather than interferring with the main thread.
    */
-  public static void periodicAfterUser(long userCodeLength, long periodicBeforeLength) {
+  public static void periodicAfterUser(double userCodeLength, double periodicBeforeLength) {
     if (running) {
       // Update automatic outputs from user code
       double autoLogStart = timeSource.getAsDouble();
