@@ -389,7 +389,7 @@ public class AutoLogOutputManager {
                   Logger.recordOutput(key, (WPISerializable) value);
                 } catch (ClassCastException e) {
                   System.out.println(
-                      "[AdvantageKit] Auto serialization is not supported for type "
+                      "[PsiKit] Auto serialization is not supported for type "
                           + type.getSimpleName()
                       );
                 }
@@ -466,7 +466,7 @@ public class AutoLogOutputManager {
 
               } catch (ClassCastException e) {
               System.out.println(
-                  "[AdvantageKit] Auto serialization is not supported for array type "
+                  "[PsiKit] Auto serialization is not supported for array type "
                       + componentType.getSimpleName()
                   );
               }
@@ -544,7 +544,7 @@ public class AutoLogOutputManager {
                   Logger.recordOutput(key, (StructSerializable[][]) value);
                 } catch (ClassCastException e) {
                   System.out.println(
-                      "[AdvantageKit] Auto serialization is not supported for 2D array type "
+                      "[PsiKit] Auto serialization is not supported for 2D array type "
                           + componentType.getSimpleName()
                       );
                 }

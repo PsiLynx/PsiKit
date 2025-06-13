@@ -37,7 +37,7 @@ public class RLOGServer implements LogDataReceiver {
   public void start() {
     thread = new ServerThread(port);
     thread.start();
-    System.out.println("[AdvantageKit] RLOG server started on port " + Integer.toString(port));
+    System.out.println("[PsiKit] RLOG server started on port " + Integer.toString(port));
   }
 
   public void end() {
@@ -80,7 +80,7 @@ public class RLOGServer implements LogDataReceiver {
     List<Double> lastHeartbeats = new ArrayList<>();
 
     public ServerThread(int port) {
-      super("AdvantageKit_RLOGServer");
+      super("PsiKit_RLOGServer");
       this.setDaemon(true);
       try {
         server = new ServerSocket(port);
@@ -96,7 +96,7 @@ public class RLOGServer implements LogDataReceiver {
 
       // Start broadcast thread
       broadcastThread = new Thread(this::runBroadcast);
-      broadcastThread.setName("AdvantageKit_RLOGServerBroadcast");
+      broadcastThread.setName("PsiKit_RLOGServerBroadcast");
       broadcastThread.setDaemon(true);
       broadcastThread.start();
 
@@ -114,7 +114,7 @@ public class RLOGServer implements LogDataReceiver {
             lastHeartbeats.add(System.nanoTime() / 1000000000.0);
           }
           System.out.println(
-              "[AdvantageKit] Connected to RLOG client - "
+              "[PsiKit] Connected to RLOG client - "
                   + socket.getInetAddress().getHostAddress());
         } catch (IOException e) {
           e.printStackTrace();

@@ -129,13 +129,13 @@ public class WPILOGWriter implements LogDataReceiver {
       try {
           logPath = new File(folder, filename).getCanonicalPath();
       } catch (IOException e) {
-          System.out.println("[AdvantageKit] io error getting log path");
+          System.out.println("[PsiKit] io error getting log path");
       }
-      System.out.println("[AdvantageKit] Logging to \"" + logPath + "\"");
+      System.out.println("[PsiKit] Logging to \"" + logPath + "\"");
     try {
       log = new DataLogWriter(logPath, WPILOGConstants.extraHeader);
     } catch (IOException e) {
-      System.out.println("[AdvantageKit] Failed to open output log file.");
+      System.out.println("[PsiKit] Failed to open output log file.");
       return;
     }
     isOpen = true;
@@ -181,13 +181,13 @@ public class WPILOGWriter implements LogDataReceiver {
         PrintWriter writer = new PrintWriter(advantageScopeTempFile, "UTF-8");
         try {
           writer.println(fullLogPath);
-          System.out.println("[AdvantageKit] Log sent to AdvantageScope.");
+          System.out.println("[PsiKit] Log sent to AdvantageScope.");
         } finally {
           writer.close();
         }
 
       } catch (Exception e) {
-        System.out.println("[AdvantageKit] Failed to send log to AdvantageScope.");
+        System.out.println("[PsiKit] Failed to send log to AdvantageScope.");
       }
     }
   }
@@ -240,9 +240,9 @@ public class WPILOGWriter implements LogDataReceiver {
           try {
               logPath = new File(folder, newFilename).getCanonicalPath();
           } catch (IOException e) {
-              System.out.println("[AdvantageKit] error getting file name");
+              System.out.println("[PsiKit] error getting file name");
           }
-          System.out.println("[AdvantageKit] Renaming log to \"" + logPath + "\"");
+          System.out.println("[PsiKit] Renaming log to \"" + logPath + "\"");
 
         File fileA = new File(folder, filename);
         File fileB = new File(folder, newFilename);

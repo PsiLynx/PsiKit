@@ -153,7 +153,7 @@ public class Logger {
         try {
           console.close();
         } catch (Exception e) {
-          System.out.println("[AdvantageKit] Failed to stop console capture.");
+          System.out.println("[PsiKit] Failed to stop console capture.");
         }
       }
       if (replaySource != null) {
@@ -239,7 +239,7 @@ public class Logger {
       } catch (IllegalStateException exception) {
         receiverQueueFault = true;
         System.out.println(
-            "[AdvantageKit] Capacity of receiver queue exceeded, data will NOT be logged."
+            "[PsiKit] Capacity of receiver queue exceeded, data will NOT be logged."
         );
       }
     }

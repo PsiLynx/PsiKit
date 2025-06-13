@@ -17,7 +17,7 @@ public class ReceiverThread extends Thread {
   private List<LogDataReceiver> dataReceivers = new ArrayList<>();
 
   ReceiverThread(BlockingQueue<LogTable> queue) {
-    super("AdvantageKit_LogReceiver");
+    super("PsiKit_LogReceiver");
     this.setDaemon(true);
     this.queue = queue;
   }

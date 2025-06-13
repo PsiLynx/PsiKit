@@ -151,7 +151,7 @@ public class LogTable {
     }
     if (!currentValue.type.equals(type)) {
       System.out.println(
-          "[AdvantageKit] Failed to write to field \""
+          "[PsiKit] Failed to write to field \""
               + prefix
               + key
               + "\" - attempted to write "
@@ -164,7 +164,7 @@ public class LogTable {
     if (currentValue.customTypeStr != customTypeStr
         && !currentValue.customTypeStr.equals(customTypeStr)) {
       System.out.println(
-          "[AdvantageKit] Failed to write to field \""
+          "[PsiKit] Failed to write to field \""
               + prefix
               + key
               + "\" - attempted to write "
@@ -427,7 +427,7 @@ public class LogTable {
     if (value == null) return;
     if (this.depth > 100) {
       System.out.println(
-          "[AdvantageKit] Detected recursive table structure when logging value to field \""
+          "[PsiKit] Detected recursive table structure when logging value to field \""
               + prefix
               + key
               + "\". using LoggableInputs. Consider revising the table structure or refactoring to avoid recursion."
@@ -539,7 +539,7 @@ public class LogTable {
       put(key, struct, value);
     } else {
       System.out.println(
-          "[AdvantageKit] Auto serialization is not supported for type "
+          "[PsiKit] Auto serialization is not supported for type "
               + value.getClass().getSimpleName()
           );
     }
@@ -558,7 +558,7 @@ public class LogTable {
       put(key, struct, value);
     } else {
       System.out.println(
-              "[AdvantageKit] Auto serialization is not supported for array type "
+              "[PsiKit] Auto serialization is not supported for array type "
                       + value.getClass().getComponentType().getSimpleName()
       );
     }

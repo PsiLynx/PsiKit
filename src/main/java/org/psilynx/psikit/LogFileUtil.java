@@ -52,7 +52,7 @@ public class LogFileUtil {
     String envPath = findReplayLogEnvVar();
     if (envPath != null) {
       System.out.println(
-          "[AdvantageKit] Replaying log from "
+          "[PsiKit] Replaying log from "
               + environmentVariable
               + " environment variable: \""
               + envPath
@@ -64,7 +64,7 @@ public class LogFileUtil {
     String advantageScopeLogPath = findReplayLogAdvantageScope();
     if (advantageScopeLogPath != null) {
       System.out.println(
-          "[AdvantageKit] Replaying log from AdvantageScope: \"" + advantageScopeLogPath + "\"");
+          "[PsiKit] Replaying log from AdvantageScope: \"" + advantageScopeLogPath + "\"");
       return advantageScopeLogPath;
     }
 
