@@ -1,3 +1,4 @@
 * [Home](/)
-* [Installing](installing.md)
 * [Comparison to FTC Dash](compare.md)
+* [Installing](installing.md)
+* [Usage](usage.md)

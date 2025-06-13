@@ -9,3 +9,4 @@
 | mechanisms        | see stick representations of mechanisms. support for rotating joints and extending ligaments.                                   | no mechanism view support                                                      |
 | live value change | no live value change support (FTC dash style tuning coming soon)                                                                | changing values causes immediate updates on the robot                          |
 | statistics        | run statistical analysis of values                                                                                              | no statistical analysis tools                                                  |
+| console           | System.out is automatically logged and available for view on advantage scope                                                    | no System.out logging                                                          |
