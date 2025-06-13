@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url 'https://www.matthewo.tech/maven/' }
-        maven { url 'https://repo.dairy.foundation/releases' }
-    }
-}
-
 plugins {
     id 'java'
     id 'maven-publish'
@@ -46,4 +36,5 @@ repositories {
 }
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
+    testImplementation 'junit:junit:4.12'
 }

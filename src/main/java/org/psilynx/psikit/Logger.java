@@ -112,7 +112,7 @@ public class Logger {
 
       // Start console capture
       if (enableConsole) {
-          console = new SimConsoleSource();
+          console = new ConsoleSourceImpl();
       }
 
       // Start replay source
@@ -221,6 +221,15 @@ public class Logger {
           "LoggedRobot/FullCycleMS",
           (periodicBeforeLength + userCodeLength) * 1000.0);
       recordOutput("Logger/QueuedCycles", receiverQueue.size());
+
+      double consoleCaptureStart = getTimestamp();
+      if (enableConsole) {
+        String consoleData = console.getNewData();
+        if (!consoleData.isEmpty()) {
+          recordOutput("Console", consoleData.trim());
+        }
+      }
+      double consoleCaptureEnd = getTimestamp();
 
       try {
         // Send a copy of the data to the receivers. The original object will be

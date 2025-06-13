@@ -7,8 +7,6 @@
 
 package org.psilynx.psikit;
 
-import org.psilynx.psikit.ConsoleSource;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,7 +16,7 @@ import java.io.PrintStream;
  * Reads console data while running in the simulator. Saves stdout and sterr from Java only (not
  * native code), and only includes lines logged after this class was instantiated.
  */
-public class SimConsoleSource implements ConsoleSource {
+public class ConsoleSourceImpl implements ConsoleSource {
   private final PrintStream originalStdout;
   private final PrintStream originalStderr;
   private final ByteArrayOutputStream customStdout = new ByteArrayOutputStream();
@@ -26,7 +24,7 @@ public class SimConsoleSource implements ConsoleSource {
   private int customStdoutPos = 0;
   private int customStderrPos = 0;
 
-  public SimConsoleSource() {
+  public ConsoleSourceImpl() {
     originalStdout = System.out;
     originalStderr = System.err;
     System.setOut(new PrintStream(new SplitStream(originalStdout, customStdout)));
