@@ -2,3 +2,4 @@
 * [Comparison to FTC Dash](compare.md)
 * [Installing](installing.md)
 * [Usage](usage.md)
+* [changelog](changelog.md)
