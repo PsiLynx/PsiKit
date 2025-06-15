@@ -114,3 +114,4 @@ Psi Kit live data server
         }
     }
 ```
+### Next, &nbsp;[Install Advantage Scope](installAscope.md)
