@@ -1,22 +1,22 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'dev.frozenmilk.doc' version '0.0.4'
+    //id 'dev.frozenmilk.doc' version '0.0.4'
 }
 
 group = 'org.psilynx'
-version = '0.0.2'
+version = '0.0.3'
 
 publishing {
     repositories {
         maven {
             name = "dairyPrivate"
-            url = uri("https://repo.dairy.foundation/private")
-	    credentials(PasswordCredentials)
+            url = uri("https://repo.dairy.foundation/releases")
+            credentials(PasswordCredentials)
 
-	    authentication {
-		basic(BasicAuthentication)
-      	    }
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
     publications {
@@ -24,10 +24,10 @@ publishing {
             groupId = "org.psilynx"
             artifactId = "psikit"
 	    
-	    artifact(dairyDoc.dokkaHtmlJar)
-	    artifact(dairyDoc.dokkaJavadocJar)
+	    //artifact(dairyDoc.dokkaHtmlJar)
+	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = "0.0.2"
+            version = "0.0.3"
             from components.java
         }
     }
