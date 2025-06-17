@@ -10,3 +10,6 @@
   * points
   
 * 0.0.2: add `System.out` logging
+
+* 0.0.3: first public release for beta testing
+
