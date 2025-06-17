@@ -1,5 +1,7 @@
 # Installation process
-1. This is the TeamCode build.gradle, you need to add the two lines mentioned as `IMPORTANT`
+![TeamCode build.gradle](_media/teamcode_build_gradle.png)
+1. This is the TeamCode build.gradle, (**in blue above**)
+you need to add the two lines mentioned as `IMPORTANT`
 ```gradle
     // TeamCode/build.gradle
     
@@ -15,7 +17,9 @@
     }
     repositories {
         // IMPORTANT
-        maven { url 'https://psilynx.github.io/PsiKit/gradle'}
+        maven { url 'https://repo.dairy.foundation/releases' }
+        // (thanks to dairy for hosting!)
+
     }
 
     dependencies {

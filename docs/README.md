@@ -27,6 +27,7 @@
 > Note that most of the abilities that advantage kit offers in the non-live aspect are coming soon.
 
 ### Coming Soon
+* Live tuning of variables
 * Log files for review of what happened after the fact
 * Log replay, allowing you to **[log new data](https://docs.advantagekit.org/getting-started/what-is-advantagekit/example-output-logging)** that you didn't record while the robot was running
 * Kotlin tooling to take advantage of the language's expressiveness
