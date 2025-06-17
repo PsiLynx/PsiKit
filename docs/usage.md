@@ -1,18 +1,18 @@
 # Usage Guide
 ### Minimum Configuration
-The class you will interact the most with is `Logger`.
+The class you will interact the most with is `Logger`. 
 It acts as a manager for all the I/O going on.
 
-1. during Opmode initialization, add an `RLOGServer` to the Logger using
+1. During Opmode initialization, add an `RLOGServer` to the Logger using
 `Logger.addDataReceiver(new RLOGServer())` this will serve the data
 from the robot, allowing it to be available on your computer.
 
-2. add any metadata with `Logger.recordMetadata(String key, String value)`
+2. Add any metadata with `Logger.recordMetadata(String key, String value)`
 
-3. start the logger with `Logger.start()`. after this,
+3. Start the logger with `Logger.start()`. After this,
 no new metadata or data receivers can be added.
 
-4. during the opMode loop, you must call `Logger.periodicBeforeUser()`
+4. During the opMode loop, you must call `Logger.periodicBeforeUser()`
 at the beginning of every loop, and 
 `Logger.periodicAfterUser(long userCodeLength, long periodicBeforeLength))`
 at the end of every loop. 
@@ -24,41 +24,41 @@ to run in between in beforeUser and afterUser
 is completely okay, they are only used to log additional information 
 about how long things took. 
 
-5. during stop, call `Logger.end()` so it can clean things up.
+5. During stop, call `Logger.end()` so it can clean things up.
 
 ### Other Methods
-in addition to the methods listed above, here are the most common ways
+In addition to the methods listed above, here are the most common ways
 you will interact Psi Kit
 ___
 > `Logger.recordOutput(String key, T value)`
 
-where T is any primitive, String, Enum, `LoggedMechanism2D`, or a class that implements 
+Where T is any primitive, String, Enum, `LoggedMechanism2D`, or a class that implements 
 `WPISerializable` or `StructSerializable`, or a 1-2D array of 
 those types. This is how you make data available to advantage scope.
 data structures like `Pose2d` implement `StructSerializable`, so you
 can automatically use them. This method must be called once per loop
 for the data to stay on advantageScope.
 The logger has a concept of tables and subtables, and `key` is split
-on `/` characters, and the pieces are used as subtables. for instance,
+on `"/"` characters, and the pieces are used as subtables. for instance,
 if you log `a` to `Foo/Bar` and `b` to `Foo/Baz`, you will see
 ```
 Foo
 ├─ Bar   a
 └─ Baz   b
 ```
-it is recommended to log things in the same file in the same parent 
+It is recommended to log things in the same file in the same parent 
 table, using the class name, for instance.
 ___
 > `Logger.getTimestamp()`
 
-returns the current time in seconds since `Logger.start()` was called. 
-currently just uses `System.nanoTime()`, but in the future, using that
+Returns the current time in seconds since `Logger.start()` was called. 
+Currently just uses `System.nanoTime()`, but in the future, using that
 function as your time source will be very important in order to properly
 replay data. 
 ___
 > Classes such as `Pose2d` and `LoggedMechanism2d`
 
-most classes referenced in the advantage scope docs are available in 
+Most classes referenced in the advantage scope docs are available in 
 Psi Kit, ones that are part of WPI are in `psikit.wpi.*`.
 ___
 
@@ -67,7 +67,7 @@ is a very good resource, things that work the same in Psi Kit as in the
 AdvantageKit examples will not be covered by these docs.**
 
 ### Example Op Mode
-this example opMode has everything necessary to run the 
+This example opMode has everything necessary to run the 
 Psi Kit live data server
 ```java
     package org.firstinspires.ftc.teamcode;
@@ -99,13 +99,12 @@ Psi Kit live data server
             // all logic goes here
             Logger.recordOutput("OpMode/example", 2.0);
             
+            
             double afterUserStart = Logger.getTimestamp()
             Logger.periodicAfterUser(
                 afterUserStart - beforeUserEnd,
                 beforeUserEnd - beforeUserStart
             );
-            //the values periodicAfterUser accepts can be used to auto log information about how long things take
-
         }
         
         @Override

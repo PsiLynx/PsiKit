@@ -6,6 +6,7 @@
 - and much, much, more
 
 [GitHub](https://github.com/psilynx/PsiKit/)
+[Installation](installing.md)
 [Get Started](#Psi-Kit)
 
 ![](_media/background.png)

@@ -1,5 +1,5 @@
-# Instalation process
-1. this is the TeamCode build.gradle, you need to add the two lines mentioned as `IMPORTANT`
+# Installation process
+1. This is the TeamCode build.gradle, you need to add the two lines mentioned as `IMPORTANT`
 ```gradle
     // TeamCode/build.gradle
     
