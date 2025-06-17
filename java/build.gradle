@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'org.psilynx'
+version = '0.0.3'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
+
+}
+tasks.register('generateJniHeaders', Exec) {
+    group = "build"
+    description = "Generate JNI header for WPIUtilJNI"
+
+    def headerDir = "$buildDir/generated/jni-headers"
+    def sourceDir = "src/main/java"
+
+    outputs.dir(headerDir)
+    dependsOn 'compileJava'
+
+    doFirst {
+        println "Generating JNI headers for WPIUtilJNI with classpath: ${sourceSets.main.compileClasspath.asPath}"
+    }
+
+    commandLine = [
+            'javac',
+            '-cp', sourceSets.main.compileClasspath.asPath,
+            '-sourcepath', sourceDir,
+            '-h', headerDir,
+            "${sourceDir}/org/psilynx/psikit/wpi/WPIUtilJNI.java"
+    ]
+}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}

@@ -1,0 +1,20 @@
+plugins {
+    id 'cpp-library'
+}
+
+library {
+    targetMachines = [machines.linux.x86_64] // Add more if needed
+    linkage = [Linkage.SHARED]
+    source.from fileTree('src/main/cpp')
+    privateHeaders.from file('src/main/cpp/include')
+    privateHeaders.from file('src/main/cpp')
+
+    privateHeaders.from files(
+            System.getenv("JAVA_HOME") + "/include",
+            System.getenv("JAVA_HOME") + "/include/linux"
+    )
+    // Apply C++20 to all C++ compile tasks
+    tasks.withType(CppCompile).configureEach {
+        compilerArgs.add("-std=c++20")
+    }
+}

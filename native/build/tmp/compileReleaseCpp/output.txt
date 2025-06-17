@@ -1,0 +1,8 @@
+See file:///home/Avery/Documents/psikit/native/build/tmp/compileReleaseCpp/output.txt for all output for compileReleaseCpp.
+compiling WPIUtilJNI.cpp successful.
+
+compiling DataLogJNI.cpp successful.
+
+compiling DataLog.cpp successful.
+
+Finished compileReleaseCpp, see full log file:///home/Avery/Documents/psikit/native/build/tmp/compileReleaseCpp/output.txt.
