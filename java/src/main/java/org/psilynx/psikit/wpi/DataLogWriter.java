@@ -17,7 +17,7 @@ public class DataLogWriter extends DataLog {
    * @throws IOException if file cannot be opened
    */
   public DataLogWriter(String filename, String extraHeader) throws IOException {
-    super(/*DataLogJNI.fgCreate(filename, extraHeader)*/0L);
+    super(DataLogJNI.fgCreate(filename, extraHeader));
     m_os = null;
     m_buf = null;
   }

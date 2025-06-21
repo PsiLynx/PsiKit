@@ -17,8 +17,7 @@
 #include "pb.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
-#include "wpi/array.h"
-#include "wpi/function_ref.h"
+#include "../function_ref.h"
 
 namespace wpi {
 

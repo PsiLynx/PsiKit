@@ -20,6 +20,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 
 }
+tasks.withType(JavaExec).configureEach {
+    // Points to the native shared library directory
+    systemProperty 'java.library.path', "${rootDir}/native/build/lib/main/debug"
+}
+test {
+    systemProperty 'java.library.path', "${rootDir}/native/build/lib/main/debug"
+}
+
 tasks.register('generateJniHeaders', Exec) {
     group = "build"
     description = "Generate JNI header for WPIUtilJNI"

@@ -22,8 +22,7 @@
 #pragma GCC diagnostic warning "-Wclass-memaccess"
 #endif
 
-#include "wpi/Compiler.h"
-#include "wpi/type_traits.h"
+#include "Compiler.h"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>

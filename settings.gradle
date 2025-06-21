@@ -1,0 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
+        maven { url "https://repo.dairy.foundation/releases" }
+    }
+}
+rootProject.name = 'psikit'
+include 'java', 'native'

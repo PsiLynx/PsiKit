@@ -14,7 +14,7 @@
 #include <google/protobuf/descriptor_database.h>
 #include <google/protobuf/dynamic_message.h>
 
-#include "wpi/StringMap.h"
+#include "../wpi/StringMap.h"
 
 namespace wpi {
 

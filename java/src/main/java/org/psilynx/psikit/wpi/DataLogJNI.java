@@ -13,6 +13,10 @@ import java.nio.ByteBuffer;
  * @see "wpiutil/DataLog.h"
  */
 public class DataLogJNI {
+  static {
+    System.loadLibrary("native");  // or whatever your .so is called without the "lib" prefix and extension
+  }
+
   /**
    * Create a new Data Log background writer. The log will be initially created with a temporary
    * filename.
