@@ -1,0 +1,564 @@
+cmake_minimum_required(VERSION 4.0)
+project(psikit)
+
+find_package(JNI REQUIRED)
+include_directories(${JNI_INCLUDE_DIRS})
+
+set(CMAKE_CXX_STANDARD 20)
+
+include_directories(.)
+include_directories(native)
+include_directories(native/src)
+include_directories(native/src/main)
+include_directories(native/src/main/native)
+include_directories(native/src/main/native/cpp)
+include_directories(native/src/main/native/cpp/jni)
+include_directories(native/src/main/native/include)
+include_directories(native/src/main/native/include/wpi)
+include_directories(native/src/main/native/include/wpi/fmt)
+include_directories(native/src/main/native/include/wpi/protobuf)
+include_directories(native/src/main/native/include/wpi/sendable)
+include_directories(native/src/main/native/include/wpi/struct)
+include_directories(native/src/main/native/thirdparty)
+include_directories(native/src/main/native/thirdparty/argparse)
+include_directories(native/src/main/native/thirdparty/argparse/include)
+include_directories(native/src/main/native/thirdparty/argparse/include/wpi)
+include_directories(native/src/main/native/thirdparty/debugging/include)
+include_directories(native/src/main/native/thirdparty/debugging/include/debugging)
+include_directories(native/src/main/native/thirdparty/debugging/include/debugging/detail)
+include_directories(native/src/main/native/thirdparty/expected)
+include_directories(native/src/main/native/thirdparty/expected/include)
+include_directories(native/src/main/native/thirdparty/expected/include/wpi)
+include_directories(native/src/main/native/thirdparty/fmtlib/include)
+include_directories(native/src/main/native/thirdparty/fmtlib/include/fmt)
+include_directories(native/src/main/native/thirdparty/json)
+include_directories(native/src/main/native/thirdparty/json/include)
+include_directories(native/src/main/native/thirdparty/json/include/wpi)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail/conversions)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail/input)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail/iterators)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail/meta)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail/meta/call_std)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/detail/output)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/thirdparty)
+include_directories(native/src/main/native/thirdparty/json/include/wpi/thirdparty/hedley)
+include_directories(native/src/main/native/thirdparty/llvm/cpp/llvm/Windows)
+include_directories(native/src/main/native/thirdparty/llvm/include)
+include_directories(native/src/main/native/thirdparty/llvm/include/wpi)
+include_directories(native/src/main/native/thirdparty/memory/include)
+include_directories(native/src/main/native/thirdparty/memory/include/wpi)
+include_directories(native/src/main/native/thirdparty/memory/include/wpi/memory)
+include_directories(native/src/main/native/thirdparty/memory/include/wpi/memory/detail)
+include_directories(native/src/main/native/thirdparty/memory/src/detail)
+include_directories(native/src/main/native/thirdparty/mpack/include)
+include_directories(native/src/main/native/thirdparty/mpack/include/wpi)
+include_directories(native/src/main/native/thirdparty/nanopb/include)
+include_directories(native/src/main/native/thirdparty/protobuf/include)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google/protobuf)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google/protobuf/compiler)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google/protobuf/io)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google/protobuf/util)
+include_directories(native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal)
+include_directories(native/src/main/native/thirdparty/sigslot)
+include_directories(native/src/main/native/thirdparty/sigslot/include)
+include_directories(native/src/main/native/thirdparty/sigslot/include/wpi)
+include_directories(native/src/main/native/unix)
+# include_directories(native/src/main/native/windows)
+
+add_executable(psikit
+    native/src/main/native/cpp/jni/DataLogJNI.cpp
+    native/src/main/native/cpp/jni/WPIUtilJNI.cpp
+    native/src/main/native/cpp/jni/WPIUtilJNI.h
+    native/src/main/native/cpp/protobuf/Protobuf.cpp
+    native/src/main/native/cpp/protobuf/ProtobufMessageDatabase.cpp
+    native/src/main/native/cpp/sendable/SendableRegistry.cpp
+    native/src/main/native/cpp/struct/DynamicStruct.cpp
+    native/src/main/native/cpp/struct/SchemaParser.cpp
+    native/src/main/native/cpp/Base64.cpp
+    native/src/main/native/cpp/DataLog.cpp
+    native/src/main/native/cpp/DataLogBackgroundWriter.cpp
+    native/src/main/native/cpp/DataLogReader.cpp
+    native/src/main/native/cpp/DataLogWriter.cpp
+    native/src/main/native/cpp/FileLogger.cpp
+    native/src/main/native/cpp/fs.cpp
+    native/src/main/native/cpp/future.cpp
+    native/src/main/native/cpp/leb128.cpp
+    native/src/main/native/cpp/Logger.cpp
+    native/src/main/native/cpp/MappedFileRegion.cpp
+    native/src/main/native/cpp/MessagePack.cpp
+    native/src/main/native/cpp/raw_istream.cpp
+    native/src/main/native/cpp/RawFrame.cpp
+    native/src/main/native/cpp/RuntimeCheck.cpp
+    native/src/main/native/cpp/SafeThread.cpp
+    native/src/main/native/cpp/sha1.cpp
+    native/src/main/native/cpp/StackTraceWrap.cpp
+    native/src/main/native/cpp/string.cpp
+    native/src/main/native/cpp/Synchronization.cpp
+    native/src/main/native/cpp/timestamp.cpp
+    native/src/main/native/include/wpi/fmt/raw_ostream.h
+    native/src/main/native/include/wpi/protobuf/Protobuf.h
+    native/src/main/native/include/wpi/protobuf/ProtobufCallbacks.h
+    native/src/main/native/include/wpi/protobuf/ProtobufMessageDatabase.h
+    native/src/main/native/include/wpi/sendable/Sendable.h
+    native/src/main/native/include/wpi/sendable/SendableBuilder.h
+    native/src/main/native/include/wpi/sendable/SendableHelper.h
+    native/src/main/native/include/wpi/sendable/SendableRegistry.h
+    native/src/main/native/include/wpi/struct/DynamicStruct.h
+    native/src/main/native/include/wpi/struct/SchemaParser.h
+    native/src/main/native/include/wpi/struct/Struct.h
+    native/src/main/native/include/wpi/Algorithm.h
+    native/src/main/native/include/wpi/array.h
+    native/src/main/native/include/wpi/Base64.h
+    native/src/main/native/include/wpi/CallbackManager.h
+    native/src/main/native/include/wpi/circular_buffer.h
+    native/src/main/native/include/wpi/condition_variable.h
+    native/src/main/native/include/wpi/ct_string.h
+    native/src/main/native/include/wpi/DataLog.h
+    native/src/main/native/include/wpi/DataLog_c.h
+    native/src/main/native/include/wpi/DataLogBackgroundWriter.h
+    native/src/main/native/include/wpi/DataLogReader.h
+    native/src/main/native/include/wpi/DataLogWriter.h
+    native/src/main/native/include/wpi/DecayedDerivedFrom.h
+    native/src/main/native/include/wpi/Demangle.h
+    native/src/main/native/include/wpi/deprecated.h
+    native/src/main/native/include/wpi/EventVector.h
+    native/src/main/native/include/wpi/FastQueue.h
+    native/src/main/native/include/wpi/FileLogger.h
+    native/src/main/native/include/wpi/fs.h
+    native/src/main/native/include/wpi/future.h
+    native/src/main/native/include/wpi/interpolating_map.h
+    native/src/main/native/include/wpi/jni_util.h
+    native/src/main/native/include/wpi/leb128.h
+    native/src/main/native/include/wpi/Logger.h
+    native/src/main/native/include/wpi/MappedFileRegion.h
+    native/src/main/native/include/wpi/MessagePack.h
+    native/src/main/native/include/wpi/mutex.h
+    native/src/main/native/include/wpi/nodiscard.h
+    native/src/main/native/include/wpi/NullDeleter.h
+    native/src/main/native/include/wpi/print.h
+    native/src/main/native/include/wpi/priority_mutex.h
+    native/src/main/native/include/wpi/priority_queue.h
+    native/src/main/native/include/wpi/ProtoHelper.h
+    native/src/main/native/include/wpi/raw_istream.h
+    native/src/main/native/include/wpi/RawFrame.h
+    native/src/main/native/include/wpi/rotated_span.h
+    native/src/main/native/include/wpi/RuntimeCheck.h
+    native/src/main/native/include/wpi/SafeThread.h
+    native/src/main/native/include/wpi/sha1.h
+    native/src/main/native/include/wpi/SpanExtras.h
+    native/src/main/native/include/wpi/spinlock.h
+    native/src/main/native/include/wpi/StackTrace.h
+    native/src/main/native/include/wpi/static_circular_buffer.h
+    native/src/main/native/include/wpi/string.h
+    native/src/main/native/include/wpi/StringMap.h
+    native/src/main/native/include/wpi/SymbolExports.h
+    native/src/main/native/include/wpi/Synchronization.h
+    native/src/main/native/include/wpi/timestamp.h
+    native/src/main/native/include/wpi/UidVector.h
+    native/src/main/native/thirdparty/argparse/include/wpi/argparse.h
+    native/src/main/native/thirdparty/debugging/include/debugging/detail/psnip_debug_trap.h
+    native/src/main/native/thirdparty/debugging/include/debugging.hpp
+    native/src/main/native/thirdparty/debugging/src/emscripten.cpp
+    native/src/main/native/thirdparty/debugging/src/linux.cpp
+    native/src/main/native/thirdparty/debugging/src/macos.cpp
+    native/src/main/native/thirdparty/debugging/src/windows.cpp
+    native/src/main/native/thirdparty/expected/include/wpi/expected
+    native/src/main/native/thirdparty/fmtlib/include/fmt/args.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/base.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/chrono.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/color.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/compile.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/core.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/format-inl.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/format.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/os.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/ostream.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/printf.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/ranges.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/std.h
+    native/src/main/native/thirdparty/fmtlib/include/fmt/xchar.h
+    native/src/main/native/thirdparty/fmtlib/src/format.cpp
+    native/src/main/native/thirdparty/fmtlib/src/os.cpp
+    native/src/main/native/thirdparty/json/include/wpi/detail/conversions/from_json.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/conversions/to_chars.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/conversions/to_json.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/input/binary_reader.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/input/input_adapters.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/input/json_sax.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/input/lexer.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/input/parser.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/input/position_t.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/iterators/internal_iterator.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/iterators/iter_impl.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/iterators/iteration_proxy.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/iterators/iterator_traits.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/iterators/json_reverse_iterator.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/iterators/primitive_iterator.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/call_std/begin.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/call_std/end.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/cpp_future.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/detected.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/identity_tag.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/is_sax.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/std_fs.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/type_traits.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/meta/void_t.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/output/binary_writer.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/output/output_adapters.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/output/serializer.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/abi_macros.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/exceptions.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/hash.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/json_custom_base_class.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/json_pointer.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/json_ref.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/macro_scope.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/macro_unscope.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/string_concat.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/string_escape.h
+    native/src/main/native/thirdparty/json/include/wpi/detail/value_t.h
+    native/src/main/native/thirdparty/json/include/wpi/thirdparty/hedley/hedley.h
+    native/src/main/native/thirdparty/json/include/wpi/thirdparty/hedley/hedley_undef.h
+    native/src/main/native/thirdparty/json/include/wpi/adl_serializer.h
+    native/src/main/native/thirdparty/json/include/wpi/byte_container_with_subtype.h
+    native/src/main/native/thirdparty/json/include/wpi/json.h
+    native/src/main/native/thirdparty/json/include/wpi/json_fwd.h
+    native/src/main/native/thirdparty/json/include/wpi/ordered_map.h
+    native/src/main/native/thirdparty/llvm/cpp/llvm/Windows/WindowsSupport.h
+    native/src/main/native/thirdparty/llvm/cpp/llvm/ConvertUTF.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/ConvertUTFWrapper.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/ErrorHandling.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/MemAlloc.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/MemoryBuffer.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/raw_os_ostream.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/raw_ostream.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/SmallPtrSet.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/SmallVector.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/StringExtras.cpp
+    native/src/main/native/thirdparty/llvm/cpp/llvm/xxhash.cpp
+    native/src/main/native/thirdparty/llvm/include/wpi/ADL.h
+    native/src/main/native/thirdparty/llvm/include/wpi/AlignOf.h
+    native/src/main/native/thirdparty/llvm/include/wpi/AllocatorBase.h
+    native/src/main/native/thirdparty/llvm/include/wpi/bit.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Casting.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Chrono.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Compiler.h
+    native/src/main/native/thirdparty/llvm/include/wpi/ConvertUTF.h
+    native/src/main/native/thirdparty/llvm/include/wpi/DenseMap.h
+    native/src/main/native/thirdparty/llvm/include/wpi/DenseMapInfo.h
+    native/src/main/native/thirdparty/llvm/include/wpi/DenseMapInfoVariant.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Endian.h
+    native/src/main/native/thirdparty/llvm/include/wpi/EpochTracker.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Errc.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Errno.h
+    native/src/main/native/thirdparty/llvm/include/wpi/ErrorHandling.h
+    native/src/main/native/thirdparty/llvm/include/wpi/function_ref.h
+    native/src/main/native/thirdparty/llvm/include/wpi/FunctionExtras.h
+    native/src/main/native/thirdparty/llvm/include/wpi/Hashing.h
+    native/src/main/native/thirdparty/llvm/include/wpi/iterator.h
+    native/src/main/native/thirdparty/llvm/include/wpi/iterator_range.h
+    native/src/main/native/thirdparty/llvm/include/wpi/MapVector.h
+    native/src/main/native/thirdparty/llvm/include/wpi/MathExtras.h
+    native/src/main/native/thirdparty/llvm/include/wpi/MemAlloc.h
+    native/src/main/native/thirdparty/llvm/include/wpi/MemoryBuffer.h
+    native/src/main/native/thirdparty/llvm/include/wpi/PointerIntPair.h
+    native/src/main/native/thirdparty/llvm/include/wpi/PointerLikeTypeTraits.h
+    native/src/main/native/thirdparty/llvm/include/wpi/PointerUnion.h
+    native/src/main/native/thirdparty/llvm/include/wpi/raw_os_ostream.h
+    native/src/main/native/thirdparty/llvm/include/wpi/raw_ostream.h
+    native/src/main/native/thirdparty/llvm/include/wpi/ReverseIteration.h
+    native/src/main/native/thirdparty/llvm/include/wpi/SmallPtrSet.h
+    native/src/main/native/thirdparty/llvm/include/wpi/SmallSet.h
+    native/src/main/native/thirdparty/llvm/include/wpi/SmallString.h
+    native/src/main/native/thirdparty/llvm/include/wpi/SmallVector.h
+    native/src/main/native/thirdparty/llvm/include/wpi/SmallVectorMemoryBuffer.h
+    native/src/main/native/thirdparty/llvm/include/wpi/STLForwardCompat.h
+    native/src/main/native/thirdparty/llvm/include/wpi/StringExtras.h
+    native/src/main/native/thirdparty/llvm/include/wpi/SwapByteOrder.h
+    native/src/main/native/thirdparty/llvm/include/wpi/type_traits.h
+    native/src/main/native/thirdparty/llvm/include/wpi/VersionTuple.h
+    native/src/main/native/thirdparty/llvm/include/wpi/WindowsError.h
+    native/src/main/native/thirdparty/llvm/include/wpi/xxhash.h
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/align.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/assert.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/container_node_sizes.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/debug_helpers.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/ebo_storage.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/free_list.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/free_list_array.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/ilog2.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/lowlevel_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/memory_stack.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/small_free_list.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/detail/utility.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/aligned_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/allocator_storage.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/allocator_traits.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/config.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/config_impl.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/container.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/debugging.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/default_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/deleter.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/error.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/fallback_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/heap_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/iteration_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/joint_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/malloc_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/memory_arena.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/memory_pool.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/memory_pool_collection.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/memory_pool_type.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/memory_resource_adapter.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/memory_stack.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/namespace_alias.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/new_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/segregator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/smart_ptr.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/static_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/std_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/temporary_allocator.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/threading.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/tracking.hpp
+    native/src/main/native/thirdparty/memory/include/wpi/memory/virtual_memory.hpp
+    native/src/main/native/thirdparty/memory/src/detail/align.cpp
+    native/src/main/native/thirdparty/memory/src/detail/assert.cpp
+    native/src/main/native/thirdparty/memory/src/detail/debug_helpers.cpp
+    native/src/main/native/thirdparty/memory/src/detail/free_list.cpp
+    native/src/main/native/thirdparty/memory/src/detail/free_list_array.cpp
+    native/src/main/native/thirdparty/memory/src/detail/free_list_utils.hpp
+    native/src/main/native/thirdparty/memory/src/detail/small_free_list.cpp
+    native/src/main/native/thirdparty/memory/src/debugging.cpp
+    native/src/main/native/thirdparty/memory/src/error.cpp
+    native/src/main/native/thirdparty/memory/src/heap_allocator.cpp
+    native/src/main/native/thirdparty/memory/src/iteration_allocator.cpp
+    native/src/main/native/thirdparty/memory/src/malloc_allocator.cpp
+    native/src/main/native/thirdparty/memory/src/memory_arena.cpp
+    native/src/main/native/thirdparty/memory/src/memory_pool.cpp
+    native/src/main/native/thirdparty/memory/src/memory_pool_collection.cpp
+    native/src/main/native/thirdparty/memory/src/memory_stack.cpp
+    native/src/main/native/thirdparty/memory/src/new_allocator.cpp
+    native/src/main/native/thirdparty/memory/src/static_allocator.cpp
+    native/src/main/native/thirdparty/memory/src/temporary_allocator.cpp
+    native/src/main/native/thirdparty/memory/src/virtual_memory.cpp
+    native/src/main/native/thirdparty/mpack/include/wpi/mpack.h
+    native/src/main/native/thirdparty/mpack/src/mpack.cpp
+    native/src/main/native/thirdparty/nanopb/include/pb.h
+    native/src/main/native/thirdparty/nanopb/include/pb_common.h
+    native/src/main/native/thirdparty/nanopb/include/pb_decode.h
+    native/src/main/native/thirdparty/nanopb/include/pb_encode.h
+    native/src/main/native/thirdparty/nanopb/src/pb_common.cpp
+    native/src/main/native/thirdparty/nanopb/src/pb_decode.cpp
+    native/src/main/native/thirdparty/nanopb/src/pb_encode.cpp
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/compiler/importer.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/compiler/parser.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/coded_stream.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/gzip_stream.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/io_win32.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/printer.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/strtod.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/tokenizer.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/zero_copy_stream.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/zero_copy_stream_impl.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/io/zero_copy_stream_impl_lite.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/bytestream.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/callback.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/casts.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/common.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/hash.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/int128.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/logging.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/macros.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/map_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/mathutil.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/mutex.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/once.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/platform_macros.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/port.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/status.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/status_macros.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/statusor.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/stl_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/stringpiece.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/stringprintf.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/strutil.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/substitute.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/template_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/stubs/time.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/constants.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/datapiece.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/default_value_objectwriter.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/error_listener.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/field_mask_utility.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/json_escaping.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/json_objectwriter.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/json_stream_parser.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/location_tracker.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/object_location_tracker.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/object_source.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/object_writer.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/proto_writer.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/protostream_objectsource.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/protostream_objectwriter.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/structured_objectwriter.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/type_info.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/internal/utility.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/delimited_message_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/field_comparator.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/field_mask_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/json_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/message_differencer.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/time_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/type_resolver.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/util/type_resolver_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/any.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/any.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/api.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/arena.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/arena_impl.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/arenastring.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/arenaz_sampler.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/descriptor.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/descriptor.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/descriptor_database.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/duration.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/dynamic_message.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/empty.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/endian.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/explicitly_constructed.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/extension_set.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/extension_set_inl.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/field_access_listener.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/field_mask.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_enum_reflection.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_enum_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_message_bases.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_message_reflection.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_message_tctable_decl.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_message_tctable_impl.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/generated_message_util.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/has_bits.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/implicit_weak_message.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/inlined_string_field.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map_entry.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map_entry_lite.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map_field.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map_field_inl.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map_field_lite.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/map_type_handler.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/message.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/message_lite.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/metadata.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/metadata_lite.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/parse_context.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/port.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/reflection.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/reflection_internal.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/reflection_ops.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/repeated_field.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/repeated_ptr_field.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/service.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/source_context.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/struct.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/text_format.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/timestamp.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/type.pb.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/unknown_field_set.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/wire_format.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/wire_format_lite.h
+    native/src/main/native/thirdparty/protobuf/include/google/protobuf/wrappers.pb.h
+    native/src/main/native/thirdparty/protobuf/src/compiler/importer.cpp
+    native/src/main/native/thirdparty/protobuf/src/compiler/parser.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/coded_stream.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/gzip_stream.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/io_win32.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/printer.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/strtod.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/tokenizer.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/zero_copy_stream.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/zero_copy_stream_impl.cpp
+    native/src/main/native/thirdparty/protobuf/src/io/zero_copy_stream_impl_lite.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/bytestream.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/common.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/int128.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/status.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/statusor.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/stringpiece.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/stringprintf.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/structurally_valid.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/strutil.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/substitute.cpp
+    native/src/main/native/thirdparty/protobuf/src/stubs/time.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/datapiece.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/default_value_objectwriter.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/error_listener.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/field_mask_utility.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/json_escaping.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/json_objectwriter.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/json_stream_parser.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/object_writer.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/proto_writer.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/protostream_objectsource.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/protostream_objectwriter.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/type_info.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/internal/utility.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/delimited_message_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/field_comparator.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/field_mask_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/json_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/message_differencer.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/time_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/util/type_resolver_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/any.cpp
+    native/src/main/native/thirdparty/protobuf/src/any.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/any_lite.cpp
+    native/src/main/native/thirdparty/protobuf/src/api.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/arena.cpp
+    native/src/main/native/thirdparty/protobuf/src/arenastring.cpp
+    native/src/main/native/thirdparty/protobuf/src/arenaz_sampler.cpp
+    native/src/main/native/thirdparty/protobuf/src/descriptor.cpp
+    native/src/main/native/thirdparty/protobuf/src/descriptor.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/descriptor_database.cpp
+    native/src/main/native/thirdparty/protobuf/src/duration.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/dynamic_message.cpp
+    native/src/main/native/thirdparty/protobuf/src/empty.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/extension_set.cpp
+    native/src/main/native/thirdparty/protobuf/src/extension_set_heavy.cpp
+    native/src/main/native/thirdparty/protobuf/src/field_mask.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/generated_enum_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/generated_message_bases.cpp
+    native/src/main/native/thirdparty/protobuf/src/generated_message_reflection.cpp
+    native/src/main/native/thirdparty/protobuf/src/generated_message_tctable_full.cpp
+    native/src/main/native/thirdparty/protobuf/src/generated_message_tctable_lite.cpp
+    native/src/main/native/thirdparty/protobuf/src/generated_message_util.cpp
+    native/src/main/native/thirdparty/protobuf/src/implicit_weak_message.cpp
+    native/src/main/native/thirdparty/protobuf/src/inlined_string_field.cpp
+    native/src/main/native/thirdparty/protobuf/src/map.cpp
+    native/src/main/native/thirdparty/protobuf/src/map_field.cpp
+    native/src/main/native/thirdparty/protobuf/src/message.cpp
+    native/src/main/native/thirdparty/protobuf/src/message_lite.cpp
+    native/src/main/native/thirdparty/protobuf/src/parse_context.cpp
+    native/src/main/native/thirdparty/protobuf/src/reflection_ops.cpp
+    native/src/main/native/thirdparty/protobuf/src/repeated_field.cpp
+    native/src/main/native/thirdparty/protobuf/src/repeated_ptr_field.cpp
+    native/src/main/native/thirdparty/protobuf/src/service.cpp
+    native/src/main/native/thirdparty/protobuf/src/source_context.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/struct.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/text_format.cpp
+    native/src/main/native/thirdparty/protobuf/src/timestamp.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/type.pb.cpp
+    native/src/main/native/thirdparty/protobuf/src/unknown_field_set.cpp
+    native/src/main/native/thirdparty/protobuf/src/wire_format.cpp
+    native/src/main/native/thirdparty/protobuf/src/wire_format_lite.cpp
+    native/src/main/native/thirdparty/protobuf/src/wrappers.pb.cpp
+    native/src/main/native/thirdparty/sigslot/include/wpi/Signal.h
+    native/src/main/native/unix/Demangle.cpp
+    native/src/main/native/unix/StackTrace.cpp
+    # native/src/main/native/windows/Demangle.cpp
+    # native/src/main/native/windows/StackTrace.cpp
+)
