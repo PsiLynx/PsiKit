@@ -5,9 +5,9 @@ plugins {
 library {
     targetMachines = [machines.linux.x86_64] // Add more if needed
     linkage = [Linkage.SHARED]
-    source.from fileTree('src/main/cpp')
-    privateHeaders.from file('src/main/cpp/include')
-    privateHeaders.from file('src/main/cpp')
+    source.from fileTree('src/main/native/cpp')
+    privateHeaders.from file('src/main/native/cpp/include')
+    privateHeaders.from file('src/main/native/cpp')
 
     privateHeaders.from files(
             System.getenv("JAVA_HOME") + "/include",
