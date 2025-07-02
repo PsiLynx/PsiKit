@@ -2,12 +2,11 @@ package test;
 
 import org.junit.Test;
 import org.psilynx.psikit.Logger;
-import org.psilynx.psikit.RLOGServer;
+import org.psilynx.psikit.rlog.RLOGServer;
 
 import java.util.Random;
 
 import static java.lang.Thread.sleep;
-import static org.junit.Assert.*;
 
 public class LoggerTest {
 

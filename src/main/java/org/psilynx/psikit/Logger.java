@@ -339,23 +339,6 @@ public class Logger {
    *     "/ReplayOutputs"
    * @param value The value of the field.
    */
-  public static void recordOutput(String key, byte[][] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
   public static void recordOutput(String key, boolean value) {
     if (running) {
       outputTable.put(key, value);
@@ -391,23 +374,6 @@ public class Logger {
    * @param value The value of the field.
    */
   public static void recordOutput(String key, boolean[] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static void recordOutput(String key, boolean[][] value) {
     if (running) {
       outputTable.put(key, value);
     }
@@ -475,23 +441,6 @@ public class Logger {
    *     "/ReplayOutputs"
    * @param value The value of the field.
    */
-  public static void recordOutput(String key, int[][] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
   public static void recordOutput(String key, long value) {
     if (running) {
       outputTable.put(key, value);
@@ -526,75 +475,7 @@ public class Logger {
    *     "/ReplayOutputs"
    * @param value The value of the field.
    */
-  public static void recordOutput(String key, long[] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static void recordOutput(String key, long[][] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
   public static void recordOutput(String key, float value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static void recordOutput(String key, float[] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static void recordOutput(String key, float[][] value) {
     if (running) {
       outputTable.put(key, value);
     }
@@ -662,23 +543,6 @@ public class Logger {
    *     "/ReplayOutputs"
    * @param value The value of the field.
    */
-  public static void recordOutput(String key, double[][] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
   public static void recordOutput(String key, String value) {
     if (running) {
       outputTable.put(key, value);
@@ -702,73 +566,6 @@ public class Logger {
     }
   }
 
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static void recordOutput(String key, String[][] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static <E extends Enum<E>> void recordOutput(String key, E value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static <E extends Enum<E>> void recordOutput(String key, E[] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static <E extends Enum<E>> void recordOutput(String key, E[][] value) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
   /**
    * Records a single output field for easy access when viewing the log. On the simulator, use this
    * method to record extra data based on the original inputs.
@@ -805,23 +602,6 @@ public class Logger {
    * @param value The value of the field.
    */
   public static <T> void recordOutput(String key, Struct<T> struct, T[] value) {
-    if (running) {
-      outputTable.put(key, struct, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static <T> void recordOutput(String key, Struct<T> struct, T[][] value) {
     if (running) {
       outputTable.put(key, struct, value);
     }
@@ -867,27 +647,6 @@ public class Logger {
           String key,
           T[] value
   ) {
-    if (running) {
-      outputTable.put(key, value);
-    }
-  }
-
-  /**
-   * Records a single output field for easy access when viewing the log. On the simulator, use this
-   * method to record extra data based on the original inputs.
-   *
-   * <p>This method serializes an array of objects as a struct automatically. Top-level protobuf
-   * arrays are not supported.
-   *
-   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. See
-   * the "Common Issues" page in the documentation for more details.
-   *
-   * @param <T> The type
-   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
-   *     "/ReplayOutputs"
-   * @param value The value of the field.
-   */
-  public static <T extends StructSerializable> void recordOutput(String key, T[][] value) {
     if (running) {
       outputTable.put(key, value);
     }

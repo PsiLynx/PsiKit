@@ -5,9 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.psilynx.psikit;
-
-import org.psilynx.psikit.LogTable.LogValue;
+package org.psilynx.psikit.rlog;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
