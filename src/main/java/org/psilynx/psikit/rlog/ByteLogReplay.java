@@ -1,5 +1,7 @@
 package org.psilynx.psikit.rlog;
 
+import org.psilynx.psikit.LogTable;
+
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,9 +9,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import org.littletonrobotics.junction.LogTable;
 
 /** Replays log values from a custom binary format. */
 public class ByteLogReplay implements LogReplaySource {
@@ -31,7 +30,7 @@ public class ByteLogReplay implements LogReplaySource {
       file = new FileInputStream(filename);
       data = new DataInputStream(file);
     } catch (FileNotFoundException e) {
-      DriverStation.reportError("Failed to open replay log file.", true);
+      System.out.println("Failed to open replay log file.");
     }
   }
 

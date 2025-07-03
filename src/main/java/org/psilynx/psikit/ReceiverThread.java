@@ -1,11 +1,8 @@
-// Copyright (c) 2021-2025 Littleton Robotics
-// http://github.com/Mechanical-Advantage
-//
-// Use of this source code is governed by a BSD
-// license that can be found in the LICENSE file
-// at the root directory of this project.
-
 package org.psilynx.psikit;
+
+import org.psilynx.psikit.rlog.ByteEncoder;
+import org.psilynx.psikit.rlog.LogDataReceiver;
+import org.psilynx.psikit.rlog.LogRawDataReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +11,13 @@ import java.util.concurrent.BlockingQueue;
 public class ReceiverThread extends Thread {
 
   private final BlockingQueue<LogTable> queue;
+
+  private ByteEncoder encoder;
   private List<LogDataReceiver> dataReceivers = new ArrayList<>();
+  private List<LogRawDataReceiver> rawDataReceivers = new ArrayList<>();
 
   ReceiverThread(BlockingQueue<LogTable> queue) {
-    super("PsiKit_LogReceiver");
+    super("LogReceiver");
     this.setDaemon(true);
     this.queue = queue;
   }
@@ -26,19 +26,41 @@ public class ReceiverThread extends Thread {
     dataReceivers.add(dataReceiver);
   }
 
+  void addDataReceiver(LogRawDataReceiver dataReceiver) {
+    rawDataReceivers.add(dataReceiver);
+  }
+
   public void run() {
+    // Create new byte encoder (resets persistent data)
+    if (rawDataReceivers.size() > 0) {
+      encoder = new ByteEncoder();
+    } else {
+      encoder = null;
+    }
+
     // Start data receivers
     for (int i = 0; i < dataReceivers.size(); i++) {
       dataReceivers.get(i).start();
+    }
+    for (int i = 0; i < rawDataReceivers.size(); i++) {
+      rawDataReceivers.get(i).start(encoder);
     }
 
     try {
       while (true) {
         LogTable entry = queue.take(); // Wait for data
 
+        // Encode to byte format
+        if (rawDataReceivers.size() > 0) {
+          encoder.encodeTable(entry);
+        }
+
         // Send data to receivers
         for (int i = 0; i < dataReceivers.size(); i++) {
-          dataReceivers.get(i).putTable(entry);
+          dataReceivers.get(i).putEntry(entry);
+        }
+        for (int i = 0; i < rawDataReceivers.size(); i++) {
+          rawDataReceivers.get(i).processEntry();
         }
       }
     } catch (InterruptedException exception) {
@@ -46,6 +68,9 @@ public class ReceiverThread extends Thread {
       // End all data receivers
       for (int i = 0; i < dataReceivers.size(); i++) {
         dataReceivers.get(i).end();
+      }
+      for (int i = 0; i < rawDataReceivers.size(); i++) {
+        rawDataReceivers.get(i).end();
       }
     }
   }

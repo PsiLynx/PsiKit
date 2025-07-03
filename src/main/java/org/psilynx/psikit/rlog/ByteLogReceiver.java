@@ -1,6 +1,6 @@
 package org.psilynx.psikit.rlog;
 
-import org.psilynx.psikit.LogRawDataReceiver;
+import org.psilynx.psikit.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.psilynx.psikit.Logger;
 
 
 /** Records log values to a custom binary format. */
@@ -90,8 +89,8 @@ public class ByteLogReceiver implements LogRawDataReceiver {
         if (!updatedTime) {
           if (System.currentTimeMillis() > 1638334800000L) { // 12/1/2021, the RIO 2 defaults to 7/1/2021
             if (firstUpdatedTime == null) {
-              firstUpdatedTime = Logger.getRealTimestamp();
-            } else if (Logger.getRealTimestamp() - firstUpdatedTime > timestampUpdateDelay) {
+              firstUpdatedTime = Logger.getInstance().getRealTimestamp();
+            } else if (Logger.getInstance().getRealTimestamp() - firstUpdatedTime > timestampUpdateDelay) {
               rename(new SimpleDateFormat("'Log'_yy-MM-dd_HH-mm-ss'.rlog'").format(new Date()));
               updatedTime = true;
             }
@@ -105,8 +104,8 @@ public class ByteLogReceiver implements LogRawDataReceiver {
           .put(writeBuffer.array()).put(encoder.getOutput().array());
 
       // Write data to file
-      if (Logger.getRealTimestamp() - lastWriteTimestamp > writePeriodSecs) {
-        lastWriteTimestamp = Logger.getRealTimestamp();
+      if (Logger.getInstance().getRealTimestamp() - lastWriteTimestamp > writePeriodSecs) {
+        lastWriteTimestamp = Logger.getInstance().getRealTimestamp();
         try {
           fileStream.write(writeBuffer.array());
           fileStream.getFD().sync();

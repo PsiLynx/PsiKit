@@ -1,8 +1,8 @@
 package test;
 
 import org.junit.Test;
+import org.psilynx.psikit.LogSocketServer;
 import org.psilynx.psikit.Logger;
-import org.psilynx.psikit.rlog.RLOGServer;
 
 import java.util.Random;
 
@@ -12,17 +12,17 @@ public class LoggerTest {
 
     @Test
     public void testLogger() throws InterruptedException {
-        RLOGServer server = new RLOGServer();
-        Logger.addDataReceiver(server);
-        Logger.start();
-        Logger.periodicAfterUser(0, 0);
+        LogSocketServer server = new LogSocketServer(5800);
+        Logger.getInstance().addDataReceiver(server);
+        Logger.getInstance().start();
+        Logger.getInstance().periodicAfterUser();
 
         while(true){
-            Logger.periodicBeforeUser();
-            System.out.println("test");
-            System.out.println(new Random().nextDouble());
+            Logger.getInstance().periodicBeforeUser();
+            Logger.getInstance().recordOutput("test", new Random().nextDouble());
+            Logger.getInstance().recordOutput("time", Logger.getInstance().getTimestamp());
             Thread.sleep(20);
-            Logger.periodicAfterUser(0, 0);
+            Logger.getInstance().periodicAfterUser();
         }
     }
 }
