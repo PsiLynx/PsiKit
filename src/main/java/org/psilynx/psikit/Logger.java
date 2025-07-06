@@ -7,6 +7,7 @@
 
 package org.psilynx.psikit;
 
+import org.psilynx.psikit.io.LogDataReceiver;
 import org.psilynx.psikit.mechanism.LoggedMechanism2d;
 import org.psilynx.psikit.wpi.Struct;
 import org.psilynx.psikit.wpi.StructSerializable;

@@ -5,12 +5,14 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.psilynx.psikit;
+package org.psilynx.psikit.io;
 
+import org.psilynx.psikit.LogTable;
 import org.psilynx.psikit.LogTable.LogValue;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,9 +124,8 @@ class RLOGEncoder {
   }
 
   private static ByteBuffer encodeKey(short keyID, String key, String type) {
-    try {
-      byte[] keyBytes = key.getBytes("UTF-8");
-      byte[] typeBytes = type.getBytes("UTF-8");
+      byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+      byte[] typeBytes = type.getBytes(StandardCharsets.UTF_8);
       ByteBuffer buffer =
           ByteBuffer.allocate(
               1 + Short.BYTES + Short.BYTES + keyBytes.length + Short.BYTES + typeBytes.length);
@@ -135,9 +136,6 @@ class RLOGEncoder {
       buffer.putShort((short) typeBytes.length);
       buffer.put(typeBytes);
       return buffer;
-    } catch (UnsupportedEncodingException e) {
-      return ByteBuffer.allocate(0);
-    }
   }
 
   private static ByteBuffer encodeValue(short keyID, LogValue value) {

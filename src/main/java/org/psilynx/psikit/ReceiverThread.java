@@ -7,6 +7,8 @@
 
 package org.psilynx.psikit;
 
+import org.psilynx.psikit.io.LogDataReceiver;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

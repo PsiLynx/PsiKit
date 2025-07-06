@@ -5,7 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.psilynx.psikit;
+package org.psilynx.psikit.io;
+
+import org.psilynx.psikit.LogTable;
 
 import java.io.IOException;
 import java.io.InputStream;

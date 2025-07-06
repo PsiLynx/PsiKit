@@ -35,9 +35,9 @@ public class LogTable {
 
   /** Timestamp wrapper to enable passing by reference to subtables. */
   private static class SharedTimestamp {
-    public long value = 0;
+    public double value = 0;
 
-    public SharedTimestamp(long value) {
+    public SharedTimestamp(double value) {
       this.value = value;
     }
   }
@@ -59,7 +59,7 @@ public class LogTable {
   }
 
   /** Creates a new LogTable, to serve as the root table. */
-  public LogTable(long timestamp) {
+  public LogTable(double timestamp) {
     this(
         "/",
         0,
@@ -68,7 +68,20 @@ public class LogTable {
         new HashMap<>(),
         new HashMap<>());
   }
-
+  
+  /**
+   * Creates a new LogTable, copying data from the given source.
+   */
+  public LogTable(double timestamp, LogTable source) {
+    this.timestamp = new SharedTimestamp(timestamp);
+    this.depth = 0;
+    prefix = source.prefix;
+    data = new HashMap<>();
+    structBuffers = new HashMap<>();
+    structTypeCache = new HashMap<>();
+    data.putAll(source.data);
+  }
+  
   /** Creates a new LogTable, to reference a subtable. */
   private LogTable(String prefix, LogTable parent) {
     this(
@@ -98,12 +111,12 @@ public class LogTable {
   }
 
   /** Updates the timestamp of the table. */
-  public void setTimestamp(long timestamp) {
+  public void setTimestamp(double timestamp) {
     this.timestamp.value = timestamp;
   }
 
   /** Returns the timestamp of the table. */
-  public long getTimestamp() {
+  public double getTimestamp() {
     return timestamp.value;
   }
 
@@ -576,6 +589,11 @@ public class LogTable {
     }
   }
 
+  /** Removes a field from the table. */
+  public void remove(String key) {
+    data.remove(prefix + key);
+  }
+
   /** Reads a generic value from the table. */
   public LogValue get(String key) {
     return data.get(prefix + key);
@@ -950,7 +968,7 @@ public class LogTable {
 
   /** Returns a string representation of the table. */
   public String toString() {
-    String output = "Timestamp=" + Long.toString(timestamp.value) + "\n";
+    String output = "Timestamp=" + timestamp.value + "\n";
     output += "Prefix=\"" + prefix + "\"\n";
     output += "{\n";
     for (Map.Entry<String, LogValue> field : getAll(true).entrySet()) {

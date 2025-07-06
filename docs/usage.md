@@ -69,48 +69,49 @@ AdvantageKit examples will not be covered by these docs.**
 ### Example Op Mode
 This example opMode has everything necessary to run the 
 Psi Kit live data server
+
 ```java
     package org.firstinspires.ftc.teamcode;
 
-    import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-    import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-    import org.psilynx.psikit.Logger;
-    import org.psilynx.psikit.RLOGServer;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.psilynx.psikit.Logger;
+import org.psilynx.psikit.io.RLOGServer;
 
-    @Teleop(name="ConceptPsiKitLogger")
-    class ConceptPsiKitLogger {
-        @Override
-        public void init() {
-            RLOGServer server = new RLOGServer();
-            Logger.addDataReceiver(server);
-            Logger.recordMetadata("opMode name", "ConceptPsiKitLogger")
-            Logger.start();
-            Logger.periodicAfterUser(0, 0);
-            Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-        }
+@Teleop(name = "ConceptPsiKitLogger")
+class ConceptPsiKitLogger {
+   @Override
+   public void init() {
+      RLOGServer server = new RLOGServer();
+      Logger.addDataReceiver(server);
+      Logger.recordMetadata("opMode name", "ConceptPsiKitLogger")
+      Logger.start();
+      Logger.periodicAfterUser(0, 0);
+      Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+   }
 
-        @Override
-        public void loop() {
-            double beforeUserStart = Logger.getTimestamp()
-            Logger.periodicBeforeUser();
-            double beforeUserEnd = Logger.getTimestamp()
-            
-            
-            // all logic goes here
-            Logger.recordOutput("OpMode/example", 2.0);
-            
-            
-            double afterUserStart = Logger.getTimestamp()
-            Logger.periodicAfterUser(
-                afterUserStart - beforeUserEnd,
-                beforeUserEnd - beforeUserStart
-            );
-        }
-        
-        @Override
-        public void stop() {
-            Logger.end()
-        }
-    }
+   @Override
+   public void loop() {
+      double beforeUserStart = Logger.getTimestamp()
+      Logger.periodicBeforeUser();
+      double beforeUserEnd = Logger.getTimestamp()
+
+
+      // all logic goes here
+      Logger.recordOutput("OpMode/example", 2.0);
+
+
+      double afterUserStart = Logger.getTimestamp()
+      Logger.periodicAfterUser(
+              afterUserStart - beforeUserEnd,
+              beforeUserEnd - beforeUserStart
+      );
+   }
+
+   @Override
+   public void stop() {
+      Logger.end()
+   }
+}
 ```
 ### Next, &nbsp;[Install Advantage Scope](installAscope.md)
