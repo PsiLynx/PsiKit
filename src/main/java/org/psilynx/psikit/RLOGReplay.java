@@ -65,7 +65,7 @@ public class RLOGReplay implements LogReplaySource {
     if (file != null) {
       LogTable table = decoder.decodeTable(data);
       if (table == null) {
-        System.out.println("Replay of log has ended.");
+        System.out.println("[PsiKit] Replay of log has ended.");
       }
       return table;
     } else {

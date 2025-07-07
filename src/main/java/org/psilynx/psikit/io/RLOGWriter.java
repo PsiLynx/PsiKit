@@ -52,19 +52,11 @@ public class RLOGWriter implements LogDataReceiver {
       // If broadcast is behind, drop this cycle and encode changes in the next cycle
       byte[] data;
       synchronized (encoderLock) {
-        encoder.encodeTable(table, false);
-        data = encodeData(encoder.getOutput().array());
+        encoder.encodeTable(table, true);
+        data = encoder.getOutput().array();
       }
       thread.broadcastQueue.put(data);
     }
-  }
-
-  private byte[] encodeData(byte[] data) {
-    byte[] lengthBytes = ByteBuffer.allocate(Integer.BYTES).putInt(data.length).array();
-    byte[] fullData = new byte[lengthBytes.length + data.length];
-    System.arraycopy(lengthBytes, 0, fullData, 0, lengthBytes.length);
-    System.arraycopy(data, 0, fullData, lengthBytes.length, data.length);
-    return fullData;
   }
 
   private class WriterThread extends Thread {
@@ -88,7 +80,10 @@ public class RLOGWriter implements LogDataReceiver {
     }
 
     public void run() {
+      File file = new File(filePath);
+      file.delete();
       try {
+        file.createNewFile();
         fileOutputStream = new FileOutputStream(filePath, true);
       }
       catch (IOException e){
@@ -104,11 +99,11 @@ public class RLOGWriter implements LogDataReceiver {
       while (true) {
         try {
           byte[] data;
-          synchronized (encoderLock) {
-            data = encodeData(encoder.getNewcomerData().array());
-          }
-          this.fileOutputStream.write(data);
-        } catch (IOException e) {
+          //if( !this.broadcastQueue.isEmpty() ) {
+            data = this.broadcastQueue.take();
+            this.fileOutputStream.write(data);
+          //}
+        } catch (IOException | InterruptedException e) {
           e.printStackTrace();
         }
       }

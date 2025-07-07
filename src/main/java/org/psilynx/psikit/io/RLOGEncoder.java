@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Converts log tables to the RLOG format. Based on RLOG R2 with support for custom type strings.
  */
-class RLOGEncoder {
+public class RLOGEncoder {
   public static final byte logRevision = (byte) 2;
 
   private ByteBuffer nextOutput;

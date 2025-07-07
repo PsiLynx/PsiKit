@@ -182,10 +182,14 @@ public class Logger {
       double entryUpdateStart = timeSource.getAsDouble();
       if (replaySource == null) {
         synchronized (entry) {
-          entry.setTimestamp((long)(timeSource.getAsDouble() * 1000000));
+          entry.setTimestamp((long)(getTimestamp() * 1000000));
         }
       } else {
         if (!replaySource.updateTable(entry)) {
+          System.out.println(
+            "[PsiKit] logger received false from " +
+            "replay source, ending and exiting"
+          );
           end();
           System.exit(0);
         }
@@ -195,10 +199,10 @@ public class Logger {
       double entryUpdateEnd = timeSource.getAsDouble();
 
       // Record timing data
-      recordOutput(
-              "Logger/EntryUpdateMS",
-              (entryUpdateEnd - entryUpdateStart) * 1000.0
-       );
+      //recordOutput(
+              //"Logger/EntryUpdateMS",
+              //(entryUpdateEnd - entryUpdateStart) * 1000.0
+       //);
     }
   }
 
@@ -214,14 +218,14 @@ public class Logger {
       AutoLogOutputManager.periodic();
       double autoLogEnd = timeSource.getAsDouble();
       // Record timing data
-      recordOutput("Logger/AutoLogMS", (autoLogEnd - autoLogStart) * 1000.0);
-      recordOutput("LoggedRobot/UserCodeMS", userCodeLength * 1000.0);
-      recordOutput(
-          "LoggedRobot/LogPeriodicMS", (periodicBeforeLength) * 1000.0);
-      recordOutput(
-          "LoggedRobot/FullCycleMS",
-          (periodicBeforeLength + userCodeLength) * 1000.0);
-      recordOutput("Logger/QueuedCycles", receiverQueue.size());
+      //recordOutput("Logger/AutoLogMS", (autoLogEnd - autoLogStart) * 1000.0);
+      //recordOutput("LoggedRobot/UserCodeMS", userCodeLength * 1000.0);
+      //recordOutput(
+          //"LoggedRobot/LogPeriodicMS", (periodicBeforeLength) * 1000.0);
+      //recordOutput(
+          //"LoggedRobot/FullCycleMS",
+          //(periodicBeforeLength + userCodeLength) * 1000.0);
+      //recordOutput("Logger/QueuedCycles", receiverQueue.size());
 
       double consoleCaptureStart = getTimestamp();
       if (enableConsole) {
@@ -244,6 +248,10 @@ public class Logger {
         );
       }
     }
+  }
+
+  public static LogTable getEntry(){
+    return entry;
   }
 
   /**

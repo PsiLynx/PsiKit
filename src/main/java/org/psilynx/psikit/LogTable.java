@@ -35,7 +35,7 @@ public class LogTable {
 
   /** Timestamp wrapper to enable passing by reference to subtables. */
   private static class SharedTimestamp {
-    public double value = 0;
+    public double value;
 
     public SharedTimestamp(double value) {
       this.value = value;
@@ -61,7 +61,7 @@ public class LogTable {
   /** Creates a new LogTable, to serve as the root table. */
   public LogTable(double timestamp) {
     this(
-        "/",
+        "",
         0,
         new SharedTimestamp(timestamp),
         new HashMap<>(),
@@ -74,12 +74,14 @@ public class LogTable {
    */
   public LogTable(double timestamp, LogTable source) {
     this.timestamp = new SharedTimestamp(timestamp);
-    this.depth = 0;
+    this.depth = source.depth;
     prefix = source.prefix;
     data = new HashMap<>();
     structBuffers = new HashMap<>();
     structTypeCache = new HashMap<>();
     data.putAll(source.data);
+    structBuffers.putAll(source.structBuffers);
+    structTypeCache.putAll(source.structTypeCache);
   }
   
   /** Creates a new LogTable, to reference a subtable. */
@@ -99,15 +101,16 @@ public class LogTable {
    * modified without affecting the copy.
    */
   public static LogTable clone(LogTable source) {
-    Map<String, LogValue> data = new HashMap<String, LogValue>();
-    data.putAll(source.data);
+    Map<String, LogValue> data = new HashMap<>(source.data);
+      Map<String, StructBuffer<?>> structBuffers = new HashMap<>(source.structBuffers);
+      Map<String, Struct<?>> structTypeCache = new HashMap<>(source.structTypeCache);
     return new LogTable(
         source.prefix,
         source.depth,
         new SharedTimestamp(source.timestamp.value),
         data,
-        new HashMap<>(),
-        new HashMap<>());
+        structBuffers,
+        structTypeCache);
   }
 
   /** Updates the timestamp of the table. */
