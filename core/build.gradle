@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.0'
+    //id 'dev.frozenmilk.doc' version '0.0.4'
+}
+
+group = 'org.psilynx'
+version = '0.0.3'
+
+publishing {
+    repositories {
+        maven {
+            name = "dairyPrivate"
+            url = uri("https://repo.dairy.foundation/releases")
+            credentials(PasswordCredentials)
+
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = "org.psilynx"
+            artifactId = "psikit.core"
+	    
+	    //artifact(dairyDoc.dokkaHtmlJar)
+	    //artifact(dairyDoc.dokkaJavadocJar)
+
+            version = "0.0.3"
+            from components.java
+        }
+    }
+}
+java {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
+}
+repositories {
+    google()
+    mavenCentral()
+}
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
+    implementation 'io.kaitai:kaitai-struct-runtime:0.10'
+    testImplementation 'junit:junit:4.12'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+kotlin {
+    jvmToolchain(11)
+}
