@@ -2,6 +2,7 @@
 
 | Feature           | Psi Kit                                                                                                                         | FTC Dash                                                                       |
 |-------------------|---------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| logging           | supports logging inputs and outputs, as well as replaying those log files                                                       | no log support                                                                 |
 | preference saving | advantage scope automatically saves which values you were trying to display where, **even through computer power cycles**       | you must add values you want to graph back in every time you start the op mode |
 | telemetry         | display any primitive data types and Strings, as well as poses, mechanisms, and custom data types                               | display primitive data types and strings only                                  |
 | 2D field          | logged poses and arrays of poses can be **automatically** drawn as robots, arrows, paths, or other visual representations       | must draw all shapes yourself                                                  |

@@ -2,5 +2,6 @@
 * [Comparison to FTC Dash](compare.md)
 * [Installing](installing.md)
 * [Usage](usage.md)
+* [Replay](replay.md)
 * [Install Advantage Scope](installAscope.md)
 * [changelog](changelog.md)

@@ -6,13 +6,16 @@ It acts as a manager for all the I/O going on.
 1. During Opmode initialization, add an `RLOGServer` to the Logger using
 `Logger.addDataReceiver(new RLOGServer())` this will serve the data
 from the robot, allowing it to be available on your computer.
+> Note that the RLOG Server **must** be disabled during competition to be legal.
 
 2. Add any metadata with `Logger.recordMetadata(String key, String value)`
 
-3. Start the logger with `Logger.start()`. After this,
+3. Optionally, start recording to a log file using `Logger.addDataReceiver(new RLOGWriter(String folder, String fileName))`
+
+4. Start the logger with `Logger.start()`. After this,
 no new metadata or data receivers can be added.
 
-4. During the opMode loop, you must call `Logger.periodicBeforeUser()`
+5. During the opMode loop, you must call `Logger.periodicBeforeUser()`
 at the beginning of every loop, and 
 `Logger.periodicAfterUser(long userCodeLength, long periodicBeforeLength))`
 at the end of every loop. 
@@ -24,7 +27,7 @@ to run in between in beforeUser and afterUser
 is completely okay, they are only used to log additional information 
 about how long things took. 
 
-5. During stop, call `Logger.end()` so it can clean things up.
+6. During stop, call `Logger.end()` so it can clean things up.
 
 ### Other Methods
 In addition to the methods listed above, here are the most common ways
@@ -66,12 +69,14 @@ ___
 is a very good resource, things that work the same in Psi Kit as in the 
 AdvantageKit examples will not be covered by these docs.**
 
+### Next, &nbsp;[Start Using Replay](/replay.md)
+
 ### Example Op Mode
 This example opMode has everything necessary to run the 
 Psi Kit live data server
 
 ```java
-    package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
