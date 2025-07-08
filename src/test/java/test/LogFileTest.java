@@ -5,13 +5,17 @@ import org.psilynx.psikit.LogTable;
 import org.psilynx.psikit.RLOGReplay;
 import org.psilynx.psikit.Logger;
 import org.psilynx.psikit.io.RLOGDecoder;
+import org.psilynx.psikit.io.RLOGServer;
+import org.psilynx.psikit.io.RLOGWriter;
 import org.psilynx.psikit.wpi.Pose2d;
+import org.psilynx.psikit.wpi.Rotation2d;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -19,6 +23,7 @@ public class LogFileTest {
 
     @Test
     public void testReadFile() throws InterruptedException {
+        Logger.reset();
         RLOGReplay replaySource = new RLOGReplay(
                 "logs/testLog.rlog"
         );
@@ -32,26 +37,37 @@ public class LogFileTest {
             Logger.periodicBeforeUser();
             Logger.processInputs("TestInput", inputs);
             LogTable table = Logger.getEntry();
-            // System.out.println(
-                // "length: " +
-                // table.getAll(false).size()
-            // );
-            for(Map.Entry<String, LogTable.LogValue> entry:
-                table.getAll(false).entrySet()
-            ){
-                //System.out.println("key: " + entry.getKey());
-                //System.out.println("value: " + entry.getValue());
-                if(entry.getValue().type == LogTable.LoggableType.Integer) {
-                    //System.out.println("int: " + entry.getValue().getInteger());
-                }
-            }
-            // System.out.println(Logger.getTimestamp());
             System.out.println(i);
             System.out.println(inputs.pose.getX());
             System.out.println();
             assert inputs.number == i;
             assert inputs.pose.getX() == i;
             Logger.periodicAfterUser(0, 0);
+        }
+        Logger.end();
+    }
+    @Test
+    public void testCreateFile() throws InterruptedException {
+        Logger.reset();
+        Logger.recordMetadata("alliance", "red");
+        RLOGWriter writer = new RLOGWriter("logs/", "serverTestLog");
+        TestInput inputs = new TestInput();
+        Logger.disableConsoleCapture();
+        Logger.addDataReceiver(writer);
+        Logger.start();
+        Logger.periodicAfterUser(0, 0);
+
+        int i = 0;
+        while(i < 50){
+            inputs.number = i;
+            inputs.pose = new Pose2d(i, 2, Rotation2d.kZero);
+            Logger.periodicBeforeUser();
+            Logger.processInputs("TestInput", inputs);
+            Logger.recordOutput("Test/test", new Random().nextDouble());
+            Logger.recordOutput("Test/i", i);
+            Thread.sleep(20);
+            Logger.periodicAfterUser(0, 0);
+            i ++;
         }
         Logger.end();
     }
@@ -95,5 +111,6 @@ public class LogFileTest {
         assertNotNull(decoded);
         assertEquals(1.23, decoded.getTimestamp(), 1e-6);
         assertEquals(42.0, decoded.get("/Drivetrain/LeftPos", 0.0), 1e-6);
+
     }
 }

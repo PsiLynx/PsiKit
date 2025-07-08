@@ -37,8 +37,8 @@ public class Logger {
   private static ConsoleSource console = null;
   private static LogReplaySource replaySource;
   private static final BlockingQueue<LogTable> receiverQueue =
-      new ArrayBlockingQueue<LogTable>(receiverQueueCapcity);
-  private static final ReceiverThread receiverThread = new ReceiverThread(receiverQueue);
+      new ArrayBlockingQueue<>(receiverQueueCapcity);
+  private static ReceiverThread receiverThread = new ReceiverThread(receiverQueue);
   private static boolean receiverQueueFault = false;
   private static DoubleSupplier timeSource =
           () -> System.nanoTime() / 1000000000.0 - startTime;
@@ -46,6 +46,25 @@ public class Logger {
   private static boolean enableConsole = true;
 
   private Logger() {}
+
+  public static void reset(){
+    startTime = 0.0;
+    running = false;
+    cycleCount = 0;
+    entry = new LogTable(0);
+    outputTable = null;
+    metadata = new HashMap<>();
+    dashboardInputs = new ArrayList<>();
+    console = null;
+    replaySource = null;
+    receiverQueue.clear();
+    receiverThread = new ReceiverThread(receiverQueue);
+    receiverQueueFault = false;
+    DoubleSupplier timeSource =
+            () -> System.nanoTime() / 1000000000.0 - startTime;
+    simulation = false;
+    enableConsole = true;
+  }
 
   /**
    * sets the source of real time on the robot. defualt is System.nanoTime()
