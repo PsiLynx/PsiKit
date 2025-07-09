@@ -80,8 +80,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.psilynx.psikit.Logger;
-import org.psilynx.psikit.io.RLOGServer;
+import org.psilynx.psikit.core.Logger;
+import org.psilynx.psikit.core.io.RLOGServer;
 
 @Teleop(name = "ConceptPsiKitLogger")
 class ConceptPsiKitLogger {
