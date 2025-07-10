@@ -7,30 +7,24 @@ plugins {
 
 group = 'org.psilynx'
 version = '0.0.4'
-// Place in your build.gradle (Groovy DSL)
-def releaseDir = file("docs/gradle")
 
-tasks.register("release") {
-    group = "distribution"
-    description = "Packages release artifacts to $releaseDir"
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
-    dependsOn assemble
-
-    doLast {
-        releaseDir.mkdirs()
-
-        // Example: Copy all JARs or AARs from build outputs
-        copy {
-            from("build/libs") {
-                include("*.jar", "*.aar")
-            }
-            into(releaseDir)
+            // Optional: set artifactId if different from project name
+            // artifactId = 'my-lib'
         }
+    }
 
-        println "Release artifacts copied to $releaseDir"
+    repositories {
+        maven {
+            name = "GitHubPages"
+            url = uri("file://${projectDir}/docs/gradle")
+        }
     }
 }
-
 //publishing {
  //   repositories {
   //      maven {
