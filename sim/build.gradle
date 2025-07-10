@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'org.psilynx.psikit.ftc'
+    namespace 'org.psilynx.psikit.sim'
     compileSdk 35
 
     defaultConfig {

@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc
+package org.psilynx.psikit.ftc.fakehardware
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse

@@ -1,11 +1,10 @@
 package org.psilynx.psikit.ftc
 
 import com.qualcomm.hardware.lynx.LynxModule
-import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.psilynx.psikit.ftc.fakehardware.FakeLynxGetBulkInputDataResponse
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.LoggableInputs
-import java.lang.reflect.Field
 import kotlin.reflect.jvm.isAccessible
 
 class HardwareMapInput(
@@ -47,7 +46,7 @@ class HardwareMapInput(
                     != LynxModule.BulkCachingMode.MANUAL
                 ) module.bulkCachingMode =
                     LynxModule.BulkCachingMode.MANUAL
-                
+
                 val data = module.bulkData
 
                 //put(isControl, "revProductNumer", module.revProductNumber)
