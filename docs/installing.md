@@ -25,7 +25,7 @@ you need to add the two lines mentioned as `IMPORTANT`
         implementation project(':FtcRobotController')
 
         // IMPORTANT
-        implementation 'org.psilynx:psikit:0.0.3'
+        implementation 'org.psilynx:psikit:0.0.4'
     }
 ```
 ### That's It! Everything's Installed, You Can Move On To The &nbsp;[Usage Guide](usage.md)
