@@ -50,7 +50,6 @@ class FakeIMU: FakeHardware, IMU{
         )
         return true
     }
-    fun getParameters() = _parameters
 
     override fun resetYaw() {
         _orientation = YawPitchRollAngles(
@@ -69,19 +68,15 @@ class FakeIMU: FakeHardware, IMU{
         p1: AxesOrder?,
         p2: AngleUnit?
     ): Orientation {
-        TODO("no one actually uses this right?")
+        TODO("Not Yet Implemented")
     }
 
-    override fun getRobotOrientationAsQuaternion() = TODO("I need to learn what the heck a quaternion is. :)")
+    override fun getRobotOrientationAsQuaternion() = TODO("Not Yet Implemented")
 
     override fun getRobotAngularVelocity(p0: AngleUnit?): AngularVelocity = (
             if (p0 != RADIANS) _angularVelocity
             else _angularVelocity.toAngleUnit(DEGREES)
             )
-
-    fun setRobotAngularVelocity(p0: AngularVelocity){
-        _angularVelocity = p0
-    }
 
     override fun update(deltaTime: Double) { }
 

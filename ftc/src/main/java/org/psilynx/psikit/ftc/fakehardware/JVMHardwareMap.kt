@@ -24,7 +24,6 @@ import com.qualcomm.robotcore.hardware.ServoController
 import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.TouchSensorMultiplexer
 import com.qualcomm.robotcore.hardware.UltrasonicSensor
-import org.psilynx.psikit.ftc.command.internal.CommandScheduler
 
 abstract class JVMHardwareMap: HardwareMap(null, null) {
     abstract var deviceTypes:

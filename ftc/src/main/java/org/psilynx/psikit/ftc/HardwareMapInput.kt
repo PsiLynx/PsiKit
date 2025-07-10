@@ -2,9 +2,10 @@ package org.psilynx.psikit.ftc
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.psilynx.psikit.ftc.fakehardware.FakeLynxGetBulkInputDataResponse
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.LoggableInputs
+import org.psilynx.psikit.ftc.fakehardware.FakeLynxGetBulkInputDataResponse
+import java.lang.reflect.Field
 import kotlin.reflect.jvm.isAccessible
 
 class HardwareMapInput(
@@ -13,7 +14,7 @@ class HardwareMapInput(
     val readExpansionHub: Boolean
 ):
     LoggableInputs {
-    val lynxFields = LynxModule::class.java.fields
+    val lynxFields: Array<out Field> = LynxModule::class.java.fields
 
     val bulkCachingLock = lynxFields.firstOrNull {
         it.name == "bulkCachingLock"
@@ -122,6 +123,7 @@ class HardwareMapInput(
                     get(isControl, "Digital", arrayOf<Boolean>()),
                 )
                 val bulkData = bulkDataConstructor.call(
+                    response,
                     get(isControl, "isFake", false)
                 )
                 lastBulkData.set(module, bulkData)

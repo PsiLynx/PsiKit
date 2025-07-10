@@ -13,9 +13,7 @@ class FakeLynxModule(isParent: Boolean): LynxModule(
     isParent,
     false
 ){
-    override fun sendCommand(command: LynxMessage?) {
-
-    }
+    override fun sendCommand(command: LynxMessage?) { }
 
     override fun getBulkData(): LynxModule.BulkData? {
         val constructor =  LynxModule.BulkData::class.constructors.first()

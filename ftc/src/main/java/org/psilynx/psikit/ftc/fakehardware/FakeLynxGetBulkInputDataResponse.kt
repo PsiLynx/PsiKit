@@ -3,7 +3,7 @@ package org.psilynx.psikit.ftc.fakehardware
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse
 
-class FakeLynxGetBulkInputDataResponse(
+public class FakeLynxGetBulkInputDataResponse(
     module: LynxModule,
     val quadraturePositions: Array<Int>,
     val quadratureVelocities: Array<Int>,

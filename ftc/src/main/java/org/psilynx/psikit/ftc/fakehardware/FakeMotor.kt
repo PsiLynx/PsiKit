@@ -1,44 +1,22 @@
 package org.psilynx.psikit.ftc.fakehardware
 
 import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.FLOAT
+import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.UNKNOWN
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType
-import org.psilynx.psikit.ftc.hardware.DeviceTimes
-import org.psilynx.psikit.ftc.sim.FakeTimer
 import kotlin.math.abs
 
 open class FakeMotor: FakeHardware, DcMotor {
 
     private var _power = 0.0
-    private var _pos = 0.0
     private var _direction = FORWARD
-    private var _zeroPowerBehavior = FLOAT
-
-    open var maxVelocityInTicksPerSecond = 500
-    open var maxAccel = 2
-    var speed: Double = 0.0
-        internal set
-
-    override fun update(deltaTime: Double) {
-        speed += ( _power - speed ) * maxAccel * deltaTime
-
-        if (abs(speed) < 0.02 && abs(_power) < 0.02) speed = 0.0
-
-        updatePosition(deltaTime)
-    }
-
-    private fun updatePosition(deltaTime: Double) {
-        _pos += (speed * maxVelocityInTicksPerSecond * deltaTime)
-    }
+    private var _zeroPowerBehavior = UNKNOWN
 
     override fun resetDeviceConfigurationForOpMode() {
-         zeroPowerBehavior = FLOAT
-         direction         = FORWARD
-        _pos               = 0.0
+         zeroPowerBehavior = UNKNOWN
+         direction         = FORWARD //TODO: make sure this is correct
         _power             = 0.0
-         speed             = 0.0
     }
 
     override fun getDirection() = _direction
@@ -47,7 +25,6 @@ open class FakeMotor: FakeHardware, DcMotor {
     override fun getPower() = _power
     override fun setPower(p0: Double) {
         _power = p0.coerceIn(-1.0, 1.0)
-        FakeTimer.addTime(DeviceTimes.chubMotor) //TODO: setup correctly
     }
 
     override fun getZeroPowerBehavior() = _zeroPowerBehavior
