@@ -6,33 +6,56 @@ plugins {
 }
 
 group = 'org.psilynx'
-version = '0.0.3'
+version = '0.0.4'
+// Place in your build.gradle (Groovy DSL)
+def releaseDir = file("docs/gradle")
 
-publishing {
-    repositories {
-        maven {
-            name = "dairyPrivate"
-            url = uri("https://repo.dairy.foundation/releases")
-            credentials(PasswordCredentials)
+tasks.register("release") {
+    group = "distribution"
+    description = "Packages release artifacts to $releaseDir"
 
-            authentication {
-                basic(BasicAuthentication)
+    dependsOn assemble
+
+    doLast {
+        releaseDir.mkdirs()
+
+        // Example: Copy all JARs or AARs from build outputs
+        copy {
+            from("build/libs") {
+                include("*.jar", "*.aar")
             }
+            into(releaseDir)
         }
-    }
-    publications {
-        maven(MavenPublication) {
-            groupId = "org.psilynx"
-            artifactId = "psikit"
-	    
-	    //artifact(dairyDoc.dokkaHtmlJar)
-	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = "0.0.3"
-            from components.java
-        }
+        println "Release artifacts copied to $releaseDir"
     }
 }
+
+//publishing {
+ //   repositories {
+  //      maven {
+   //         name = "dairyReleases"
+    //        url = uri("https://repo.dairy.foundation/releases")
+     //       credentials(PasswordCredentials)
+//
+ //           authentication {
+  //              basic(BasicAuthentication)
+   //         }
+    //    }
+    //}
+//    publications {
+ //       maven(MavenPublication) {
+  //          groupId = "org.psilynx"
+   //         artifactId = "psikit"
+//	    
+//	    //artifact(dairyDoc.dokkaHtmlJar)
+//	    //artifact(dairyDoc.dokkaJavadocJar)
+//
+ //           version = "0.0.4"
+  //          from components.java
+   //     }
+    //}
+//}
 java {
     sourceCompatibility JavaVersion.VERSION_11
     targetCompatibility JavaVersion.VERSION_11

@@ -17,8 +17,7 @@ you need to add the two lines mentioned as `IMPORTANT`
     }
     repositories {
         // IMPORTANT
-        maven { url 'https://repo.dairy.foundation/releases' }
-        // (thanks to dairy for hosting!)
+        maven { url 'https://psilynx.github.io/PsiKit/gradle' }
 
     }
 
