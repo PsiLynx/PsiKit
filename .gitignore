@@ -6,6 +6,15 @@ gradlew.bat
 
 # idea files
 docs/.idea/**
+.idea/**
 
 #build files
 build/**
+core/build/**
+ftc/build/**
+
+logs/**
+core/logs/**
+!core/logs/testLog.rlog
+
+local.properties
