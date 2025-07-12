@@ -5,9 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.psilynx.psikit.core.io;
-
-import org.psilynx.psikit.core.LogTable;
+package org.psilynx.psikit.core;
 
 /** Receives entries from the logging system during real operation or simulation. */
 public interface LogDataReceiver {

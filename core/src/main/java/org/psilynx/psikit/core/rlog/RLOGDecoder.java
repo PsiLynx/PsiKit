@@ -1,4 +1,4 @@
-package org.psilynx.psikit.core.io;
+package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogTable;
 import org.psilynx.psikit.core.LogTable.LoggableType;
@@ -11,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.Math.floor;
 
 /** Converts byte array format to log tables. */
 public class RLOGDecoder {

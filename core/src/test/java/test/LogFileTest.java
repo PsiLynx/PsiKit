@@ -2,11 +2,10 @@ package test;
 
 import org.junit.Test;
 import org.psilynx.psikit.core.LogTable;
-import org.psilynx.psikit.core.RLOGReplay;
+import org.psilynx.psikit.core.rlog.RLOGReplay;
 import org.psilynx.psikit.core.Logger;
-import org.psilynx.psikit.core.io.RLOGDecoder;
-import org.psilynx.psikit.core.io.RLOGServer;
-import org.psilynx.psikit.core.io.RLOGWriter;
+import org.psilynx.psikit.core.rlog.RLOGDecoder;
+import org.psilynx.psikit.core.rlog.RLOGWriter;
 import org.psilynx.psikit.core.wpi.Pose2d;
 import org.psilynx.psikit.core.wpi.Rotation2d;
 
@@ -14,7 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.*;

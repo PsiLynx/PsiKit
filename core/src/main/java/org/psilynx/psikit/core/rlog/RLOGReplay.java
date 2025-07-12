@@ -1,6 +1,7 @@
-package org.psilynx.psikit.core;
+package org.psilynx.psikit.core.rlog;
 
-import org.psilynx.psikit.core.io.RLOGDecoder;
+import org.psilynx.psikit.core.LogReplaySource;
+import org.psilynx.psikit.core.LogTable;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;

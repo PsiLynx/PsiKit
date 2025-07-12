@@ -5,15 +5,14 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.psilynx.psikit.core.io;
+package org.psilynx.psikit.core.rlog;
 
+import org.psilynx.psikit.core.LogDataReceiver;
 import org.psilynx.psikit.core.LogTable;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /** Sends log data over a socket connection using the RLOG format. */
 public class RLOGWriter implements LogDataReceiver {
@@ -24,12 +23,15 @@ public class RLOGWriter implements LogDataReceiver {
 
   public RLOGWriter(){
     this(
-            "/sdcard/FIRST/userLogs/",
-            Date.from(Instant.now()).toString()
+            "/sdcard/FIRST/",
+            "Log_" + Date.from(Instant.now())
     );
   }
-  public RLOGWriter(String fileName){
-    this("/sdcard/FIRST/userLogs/", fileName);
+  public RLOGWriter(String folderName){
+    this(
+            folderName,
+            "Log_" + Date.from(Instant.now())
+    );
   }
   public RLOGWriter(String folder, String fileName){
     if(!folder.endsWith("/")){

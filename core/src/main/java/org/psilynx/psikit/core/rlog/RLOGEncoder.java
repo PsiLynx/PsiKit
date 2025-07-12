@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.psilynx.psikit.core.io;
+package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogTable;
 import org.psilynx.psikit.core.LogTable.LogValue;

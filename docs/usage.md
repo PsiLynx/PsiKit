@@ -80,15 +80,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.psilynx.psikit.core.Logger;
-import org.psilynx.psikit.core.io.RLOGServer;
+import org.psilynx.psikit.core.rlog.RLOGServer;
+import org.psilynx.psikit.core.rlog.RLOGWriter;
+
+import java.util.logging.Logger;
 
 @Teleop(name = "ConceptPsiKitLogger")
 class ConceptPsiKitLogger {
    @Override
    public void init() {
-      RLOGServer server = new RLOGServer();
-      Logger.addDataReceiver(server);
+      Logger.addDataReceiver(new RLOGServer());
+      Logger.addDataReceiver(new RLOGWriter("/sdcard/FIRST"));
       Logger.recordMetadata("opMode name", "ConceptPsiKitLogger");
       Logger.start();
       Logger.periodicAfterUser(0, 0);

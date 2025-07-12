@@ -40,7 +40,7 @@ publishing {
 	    //artifact(dairyDoc.dokkaHtmlJar)
 	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = "0.0.3"
+            version = "0.0.5"
             from components.java
         }
     }
