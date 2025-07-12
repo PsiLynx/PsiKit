@@ -17,7 +17,7 @@ object FakeHardwareMap : JVMHardwareMap() {
         mutableMapOf(
             IMU::class.java to { FakeIMU() },
             Servo::class.java to { FakeServo() },
-            DcMotor::class.java to { FakeMotor() },
+            DcMotor::class.java to { FakeDcMotor() },
             CRServo::class.java to { FakeCRServo() },
             TouchSensor::class.java to { FakeTouchSensor() },
             LynxModule::class.java to { FakeLynxModule(true) },

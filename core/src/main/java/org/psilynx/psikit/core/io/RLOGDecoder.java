@@ -25,7 +25,7 @@ public class RLOGDecoder {
   private Map<Short, Pair<String, String>> keyIDs = new HashMap<>();
 
   public LogTable decodeTable(DataInputStream input) {
-    readTable: try {
+    try {
       if (logRevision == null) {
         this.total = input.available();
         logRevision = input.readByte();
@@ -78,7 +78,7 @@ public class RLOGDecoder {
       return null; // Problem decoding, might have been interrupted while writing this cycle
     }
 
-    return LogTable.clone(table);
+    return new LogTable(table.getTimestamp(), table);
   }
 
   private double decodeTimestamp(DataInputStream input) throws IOException {
@@ -117,8 +117,6 @@ public class RLOGDecoder {
         break;
       case Integer:
         long val = input.readLong();
-        System.out.println("[PsiKit] key: " + key);
-        System.out.println("[PsiKit] value: " + val);
         table.put(key, val);
         break;
       case Double:
@@ -169,13 +167,19 @@ public class RLOGDecoder {
             table.put(key, new LogTable.LogValue(value, typeString));
           }
         }
+        else if(typeString.equals("structschema")){
+          input.readNBytes(length);
+        }
         else {
           System.out.println(
             "[PsiKit] unsupported raw value: " + typeString
           );
-          input.skipBytes(length);
+          input.readNBytes(length);
         }
         break;
     }
+    try {
+      System.out.println("[PsiKit] value: " + table.get(key).toString());
+    } catch (Exception ignored){ }
   }
 }

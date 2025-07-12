@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.*;
+import static java.lang.Thread.sleep;
 
 public class LogFileTest {
 
@@ -30,25 +31,36 @@ public class LogFileTest {
         replaySource.start();
         TestInput inputs = new TestInput();
         Logger.setReplaySource(replaySource);
+        //RLOGServer server = new RLOGServer();
+        //Logger.addDataReceiver(server);
         Logger.start();
         Logger.periodicAfterUser(0, 0);
 
-        for (int i = 0; i < 40; i++) {
+        for (int i = 2; i < 40; i++) {
             Logger.periodicBeforeUser();
             Logger.processInputs("TestInput", inputs);
             LogTable table = Logger.getEntry();
+            System.out.println(table.getTimestamp());
             System.out.println(i);
             System.out.println(inputs.pose.getX());
             System.out.println();
             assert inputs.number == i;
+            assert Logger.getTimestamp() - ( i / 100.0 ) < 1e-6;
             assert inputs.pose.getX() == i;
+            sleep(20);
             Logger.periodicAfterUser(0, 0);
         }
         Logger.end();
     }
+    private int i = 1;
+    private double getFakeTime(){
+        System.out.println(i);
+        return i / 100.0;
+    }
     @Test
     public void testCreateFile() throws InterruptedException {
         Logger.reset();
+        Logger.setTimeSource(this::getFakeTime);
         Logger.recordMetadata("alliance", "red");
         RLOGWriter writer = new RLOGWriter("logs/", "serverTestLog");
         TestInput inputs = new TestInput();
@@ -57,17 +69,18 @@ public class LogFileTest {
         Logger.start();
         Logger.periodicAfterUser(0, 0);
 
-        int i = 0;
         while(i < 50){
+            i ++;
             inputs.number = i;
             inputs.pose = new Pose2d(i, 2, Rotation2d.kZero);
             Logger.periodicBeforeUser();
             Logger.processInputs("TestInput", inputs);
             Logger.recordOutput("Test/test", new Random().nextDouble());
             Logger.recordOutput("Test/i", i);
-            Thread.sleep(20);
+            //System.out.println(i);
+            System.out.println(Logger.getTimestamp());
+            sleep(20);
             Logger.periodicAfterUser(0, 0);
-            i ++;
         }
         Logger.end();
     }

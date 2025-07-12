@@ -40,7 +40,9 @@ public class RLOGReplay implements LogReplaySource {
       try {
         file.close();
         file = null;
-      } catch (IOException e) {}
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -48,6 +50,7 @@ public class RLOGReplay implements LogReplaySource {
   public boolean updateTable(LogTable table) {
     try {
       LogTable newTable = getEntry();
+      table.setTimestamp(newTable.getTimestamp());
       for (Map.Entry<String, LogTable.LogValue> entry :
               newTable.getAll(false).entrySet()
       ) {
@@ -57,6 +60,7 @@ public class RLOGReplay implements LogReplaySource {
       return true;
     }
     catch (NullPointerException e){
+      e.printStackTrace();
       return false; // null means replay is over
     }
   }

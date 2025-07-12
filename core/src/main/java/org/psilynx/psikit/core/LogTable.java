@@ -1034,6 +1034,23 @@ public class LogTable {
     public final String customTypeStr;
     private final Object value;
 
+    @Override
+    public String toString() {
+
+      if( type == LoggableType.Boolean ) return ((boolean) value) + "";
+      if( type == LoggableType.Double ) return ((double) value) + "";
+      if( type == LoggableType.Integer ) return ((long) value) + "";
+      if( type == LoggableType.Float ) return ((float) value) + "";
+      if( type == LoggableType.String ) return ((String) value);
+      if( type == LoggableType.Raw ) return Arrays.toString(((byte[]) value));
+      if( type == LoggableType.BooleanArray ) return Arrays.toString(((boolean[]) value));
+      if( type == LoggableType.IntegerArray ) return Arrays.toString(((long[]) value));
+      if( type == LoggableType.FloatArray ) return Arrays.toString(((float[]) value));
+      if( type == LoggableType.DoubleArray ) return Arrays.toString(((double[]) value));
+      if( type == LoggableType.StringArray ) return Arrays.toString(((String[]) value));
+      return super.toString();
+
+    }
     public LogValue(byte[] value, String typeStr) {
       type = LoggableType.Raw;
       customTypeStr = typeStr;

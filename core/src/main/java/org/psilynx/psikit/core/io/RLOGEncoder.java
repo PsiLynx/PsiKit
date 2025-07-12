@@ -44,7 +44,7 @@ public class RLOGEncoder {
     buffers.add(ByteBuffer.allocate(1).put(logRevision));
 
     // Encode timestamp
-    buffers.add(encodeTimestamp(lastTable.getTimestamp() / 1000000.0));
+    buffers.add(encodeTimestamp(lastTable.getTimestamp()));
 
     // Encode key IDs
     for (Map.Entry<String, Short> keyID : keyIDs.entrySet()) {
@@ -82,7 +82,8 @@ public class RLOGEncoder {
     }
 
     // Encode timestamp
-    buffers.add(encodeTimestamp(table.getTimestamp() / 1000000.0));
+    buffers.add(encodeTimestamp(table.getTimestamp()));
+    System.out.println("[PsiKit] encoded timestamp: " + table.getTimestamp());
 
     // Encode new/changed fields
     for (Map.Entry<String, LogValue> field : newMap.entrySet()) {

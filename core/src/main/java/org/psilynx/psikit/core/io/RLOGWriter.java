@@ -17,10 +17,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 /** Sends log data over a socket connection using the RLOG format. */
 public class RLOGWriter implements LogDataReceiver {
-  private WriterThread thread;
   private RLOGEncoder encoder = new RLOGEncoder();
-
-  private static Object encoderLock = new Object();
+  private static final Object encoderLock = new Object();
+  private final String filePath;
+  private FileOutputStream fileOutputStream = null;
 
   public RLOGWriter(){
     this(
@@ -32,85 +32,54 @@ public class RLOGWriter implements LogDataReceiver {
     this("/sdcard/FIRST/userLogs/", fileName);
   }
   public RLOGWriter(String folder, String fileName){
-    thread = new WriterThread(folder, fileName);
+    if(!folder.endsWith("/")){
+      folder = folder + "/";
+    }
+    if(!fileName.endsWith(".rlog")){
+      fileName = fileName + ".rlog";
+    }
+
+    this.filePath = folder + fileName;
   }
 
   public void start() {
-    thread.start();
     System.out.println("[PsiKit] RLOG writer started");
-  }
-
-  public void end() {
-    if (thread != null) {
-      thread.close();
-      thread = null;
+    File file = new File(filePath);
+    file.delete();
+    try {
+      file.createNewFile();
+      fileOutputStream = new FileOutputStream(filePath, true);
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.out.println("[PsiKit] error creating log file");
     }
   }
 
-  public void putTable(LogTable table) throws InterruptedException {
-    if (thread != null && thread.broadcastQueue.remainingCapacity() > 0) {
-      // If broadcast is behind, drop this cycle and encode changes in the next cycle
-      byte[] data;
-      synchronized (encoderLock) {
-        encoder.encodeTable(table, true);
-        data = encoder.getOutput().array();
-      }
-      thread.broadcastQueue.put(data);
+  public void putTable(LogTable table) {
+    byte[] data;
+    synchronized (encoderLock) {
+      encoder.encodeTable(table, true);
+      data = encoder.getOutput().array();
     }
+    appendData(data);
   }
 
-  private class WriterThread extends Thread {
-    ArrayBlockingQueue<byte[]> broadcastQueue = new ArrayBlockingQueue<>(500);
-    private FileOutputStream fileOutputStream;
-    private String filePath;
-
-    public WriterThread(String folder, String fileName) {
-      super("PsiKit_RLOGWriter");
-      this.setDaemon(true);
-
-      if(!folder.endsWith("/")){
-        folder = folder + "/";
-      }
-      if(!fileName.endsWith(".rlog")){
-        fileName = fileName + ".rlog";
-      }
-
-      this.filePath = folder + fileName;
-
-    }
-
-    public void run() {
-      File file = new File(filePath);
-      file.delete();
-      try {
-        file.createNewFile();
-        fileOutputStream = new FileOutputStream(filePath, true);
-      }
-      catch (IOException e){
-        e.printStackTrace();
+  private void appendData(byte[] data) {
+    try {
+      if(fileOutputStream == null){
         System.out.println(
-          "[PsiKit] error opening file \""
-          + this.filePath
-          + "\" for writing in the RLOG writer thread"
+          "[PsiKit] must start RLOGWriter before using append data"
         );
-        fileOutputStream = null;
-      }
-
-      while (true) {
-        try {
-          byte[] data;
-          //if( !this.broadcastQueue.isEmpty() ) {
-            data = this.broadcastQueue.take();
-            this.fileOutputStream.write(data);
-          //}
-        } catch (IOException | InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
+      } else fileOutputStream.write(data);
+    }
+    catch (IOException e){
+      e.printStackTrace();
+      System.out.println(
+        "[PsiKit] error opening file \""
+        + filePath
+        + "\" for writing in the RLOG writer thread"
+      );
     }
 
-    public void close() {
-      this.interrupt();
-    }
   }
 }

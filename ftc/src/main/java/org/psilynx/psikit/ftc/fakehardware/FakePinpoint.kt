@@ -1,13 +1,10 @@
 package org.psilynx.psikit.ftc.fakehardware
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
-import org.psilynx.psikit.ftc.fakehardware.FakeTimer
 import java.util.Optional
 import kotlin.Double.Companion.NaN
 import kotlin.random.Random
@@ -16,16 +13,16 @@ import kotlin.random.Random
 class FakePinpoint: GoBildaPinpointDriver(FakeI2cDeviceSynchSimple(), false) {
     private val fl =
         HardwareMap.frontLeft(DcMotorSimple.Direction.FORWARD).hardwareDevice
-        as FakeMotor
+        as FakeDcMotor
     private val fr =
         HardwareMap.frontRight(DcMotorSimple.Direction.FORWARD).hardwareDevice
-        as FakeMotor
+        as FakeDcMotor
     private val bl =
         HardwareMap.backLeft(DcMotorSimple.Direction.FORWARD).hardwareDevice
-        as FakeMotor
+        as FakeDcMotor
     private val br =
         HardwareMap.backRight(DcMotorSimple.Direction.FORWARD).hardwareDevice
-        as FakeMotor
+        as FakeDcMotor
 
     var chanceOfNaN = 0.0
 

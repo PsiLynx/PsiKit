@@ -9,5 +9,4 @@ interface FakeHardware: HardwareDevice {
     override fun getVersion() = 0
     override fun close() { }
 
-    fun update(deltaTime: Double)
 }

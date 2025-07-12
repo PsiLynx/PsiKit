@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor
 
 abstract class JVMHardwareMap: HardwareMap(null, null) {
     abstract var deviceTypes:
-        MutableMap<Class<out HardwareDevice>, (String) -> HardwareDevice>
+        MutableMap<Class<out HardwareDevice>, (LynxModule) -> HardwareDevice>
 
     override fun <T : Any?> getAll(classOrInterface: Class<out T?>?): List<T?>? {
         if(LynxModule::class.java.isAssignableFrom(classOrInterface)) {
@@ -92,7 +92,7 @@ abstract class JVMHardwareMap: HardwareMap(null, null) {
             mapping.entrySet().forEach { entry ->
                 val device = entry.value
                 (device!! as FakeHardware).update(deltaTime)
-//                if(device is FakeMotor){
+//                if(device is FakeDcMotor){
 //                    print("${entry.key} ")
 //                    println(device.speed)
 //                }

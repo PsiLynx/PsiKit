@@ -71,7 +71,7 @@ public class Logger {
    * @param newTimeSource a monotonic time source in seconds
    */
   public static void setTimeSource(DoubleSupplier newTimeSource){
-    timeSource = newTimeSource;
+    Logger.timeSource = newTimeSource;
   }
   /**
    * Sets the source to use for replaying data. Use null to disable replay. This method only works
@@ -128,7 +128,7 @@ public class Logger {
   public static void start() {
     if (!running) {
       running = true;
-      startTime = timeSource.getAsDouble();
+      startTime = getTimestamp();
 
       // Start console capture
       if (enableConsole) {
@@ -198,10 +198,9 @@ public class Logger {
     cycleCount++;
     if (running) {
       // Get next entry
-      double entryUpdateStart = timeSource.getAsDouble();
       if (replaySource == null) {
         synchronized (entry) {
-          entry.setTimestamp((long)(getTimestamp() * 1000000));
+          entry.setTimestamp(timeSource.getAsDouble());
         }
       } else {
         if (!replaySource.updateTable(entry)) {
@@ -215,7 +214,7 @@ public class Logger {
       }
 
       // Update Driver Station
-      double entryUpdateEnd = timeSource.getAsDouble();
+      double entryUpdateEnd = getTimestamp();
 
       // Record timing data
       //recordOutput(
@@ -233,18 +232,18 @@ public class Logger {
   public static void periodicAfterUser(double userCodeLength, double periodicBeforeLength) {
     if (running) {
       // Update automatic outputs from user code
-      double autoLogStart = timeSource.getAsDouble();
+      double autoLogStart = getTimestamp();
       AutoLogOutputManager.periodic();
-      double autoLogEnd = timeSource.getAsDouble();
+      double autoLogEnd = getTimestamp();
       // Record timing data
-      //recordOutput("Logger/AutoLogMS", (autoLogEnd - autoLogStart) * 1000.0);
-      //recordOutput("LoggedRobot/UserCodeMS", userCodeLength * 1000.0);
-      //recordOutput(
-          //"LoggedRobot/LogPeriodicMS", (periodicBeforeLength) * 1000.0);
-      //recordOutput(
-          //"LoggedRobot/FullCycleMS",
-          //(periodicBeforeLength + userCodeLength) * 1000.0);
-      //recordOutput("Logger/QueuedCycles", receiverQueue.size());
+      recordOutput("Logger/AutoLogMS", (autoLogEnd - autoLogStart) * 1000.0);
+      recordOutput("LoggedRobot/UserCodeMS", userCodeLength * 1000.0);
+      recordOutput(
+          "LoggedRobot/LogPeriodicMS", (periodicBeforeLength) * 1000.0);
+      recordOutput(
+          "LoggedRobot/FullCycleMS",
+          (periodicBeforeLength + userCodeLength) * 1000.0);
+      recordOutput("Logger/QueuedCycles", receiverQueue.size());
 
       double consoleCaptureStart = getTimestamp();
       if (enableConsole) {
@@ -302,7 +301,7 @@ public class Logger {
    * replayed.
    */
   public static double getRealTimestamp() {
-    return timeSource.getAsDouble();
+    return getTimestamp();
   }
 
   /**

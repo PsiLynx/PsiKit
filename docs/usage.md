@@ -89,7 +89,7 @@ class ConceptPsiKitLogger {
    public void init() {
       RLOGServer server = new RLOGServer();
       Logger.addDataReceiver(server);
-      Logger.recordMetadata("opMode name", "ConceptPsiKitLogger")
+      Logger.recordMetadata("opMode name", "ConceptPsiKitLogger");
       Logger.start();
       Logger.periodicAfterUser(0, 0);
       Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
@@ -97,16 +97,16 @@ class ConceptPsiKitLogger {
 
    @Override
    public void loop() {
-      double beforeUserStart = Logger.getTimestamp()
+      double beforeUserStart = Logger.getTimestamp();
       Logger.periodicBeforeUser();
-      double beforeUserEnd = Logger.getTimestamp()
+      double beforeUserEnd = Logger.getTimestamp();
 
 
       // all logic goes here
       Logger.recordOutput("OpMode/example", 2.0);
 
 
-      double afterUserStart = Logger.getTimestamp()
+      double afterUserStart = Logger.getTimestamp();
       Logger.periodicAfterUser(
               afterUserStart - beforeUserEnd,
               beforeUserEnd - beforeUserStart
@@ -115,7 +115,7 @@ class ConceptPsiKitLogger {
 
    @Override
    public void stop() {
-      Logger.end()
+      Logger.end();
    }
 }
 ```

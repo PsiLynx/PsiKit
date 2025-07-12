@@ -44,7 +44,7 @@ public class ReceiverThread extends Thread {
         }
       }
     } catch (InterruptedException exception) {
-
+      exception.printStackTrace();
       // End all data receivers
       for (int i = 0; i < dataReceivers.size(); i++) {
         dataReceivers.get(i).end();
