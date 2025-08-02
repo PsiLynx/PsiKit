@@ -20,6 +20,7 @@ public class RLOGWriter implements LogDataReceiver {
   private static final Object encoderLock = new Object();
   private final String filePath;
   private FileOutputStream fileOutputStream = null;
+  private double lastTimestamp = 0.0;
 
   public RLOGWriter(){
     this(
@@ -58,12 +59,15 @@ public class RLOGWriter implements LogDataReceiver {
   }
 
   public void putTable(LogTable table) {
-    byte[] data;
-    synchronized (encoderLock) {
-      encoder.encodeTable(table, true);
-      data = encoder.getOutput().array();
+    if(table.getTimestamp() - lastTimestamp > 0.0001) {
+      lastTimestamp = table.getTimestamp();
+      byte[] data;
+      synchronized (encoderLock) {
+        encoder.encodeTable(table, true);
+        data = encoder.getOutput().array();
+      }
+      appendData(data);
     }
-    appendData(data);
   }
 
   private void appendData(byte[] data) {

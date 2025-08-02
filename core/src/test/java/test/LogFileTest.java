@@ -34,7 +34,7 @@ public class LogFileTest {
         Logger.start();
         Logger.periodicAfterUser(0, 0);
 
-        for (int i = 2; i < 40; i++) {
+        for (int i = 2; i < 400; i++) {
             Logger.periodicBeforeUser();
             Logger.processInputs("TestInput", inputs);
             LogTable table = Logger.getEntry();
@@ -43,7 +43,7 @@ public class LogFileTest {
             System.out.println(inputs.pose.getX());
             System.out.println();
             assert inputs.number == i;
-            assert Logger.getTimestamp() - ( i / 100.0 ) < 1e-6;
+            assert Logger.getTimestamp() - ( i / 50000.0 ) < 1e-9;
             assert inputs.pose.getX() == i;
             sleep(20);
             Logger.periodicAfterUser(0, 0);
@@ -53,7 +53,7 @@ public class LogFileTest {
     private int i = 1;
     private double getFakeTime(){
         System.out.println(i);
-        return i / 100.0;
+        return i / 50000.0;
     }
     @Test
     public void testCreateFile() throws InterruptedException {
@@ -67,7 +67,7 @@ public class LogFileTest {
         Logger.start();
         Logger.periodicAfterUser(0, 0);
 
-        while(i < 50){
+        while(i < 500){
             i ++;
             inputs.number = i;
             inputs.pose = new Pose2d(i, 2, Rotation2d.kZero);
