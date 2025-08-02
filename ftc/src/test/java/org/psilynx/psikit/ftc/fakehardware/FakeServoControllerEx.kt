@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc.fakehardware
+package org.firstinspires.ftc.teamcode.fakehardware
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.PwmControl
@@ -6,7 +6,17 @@ import com.qualcomm.robotcore.hardware.ServoController
 import com.qualcomm.robotcore.hardware.ServoControllerEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 
-class FakeServoController: ServoController {
+class FakeServoControllerEx: ServoControllerEx {
+    override fun setServoPwmRange(servo: Int, range: PwmControl.PwmRange) { }
+    override fun getServoPwmRange(servo: Int): PwmControl.PwmRange {
+        TODO("Not yet implemented")
+    }
+    override fun setServoPwmEnable(servo: Int) { }
+    override fun setServoPwmDisable(servo: Int) { }
+    override fun isServoPwmEnabled(servo: Int): Boolean {
+        TODO("Not yet implemented")
+    }
+    override fun setServoType(servo: Int, servoType: ServoConfigurationType?){}
     override fun pwmEnable() { }
     override fun pwmDisable() { }
     override fun getPwmStatus(): ServoController.PwmStatus? {

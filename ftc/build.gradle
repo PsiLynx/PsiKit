@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -29,9 +30,46 @@ android {
     }
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId = "org.psilynx.psikit"
+                artifactId = "ftc"
+                version = "0.1.0-alpha3"
+
+                from components.release
+
+            }
+        }
+
+        repositories {
+            maven {
+                name = "dairyPrivate"
+                url = uri("https://repo.dairy.foundation/private")
+                credentials(PasswordCredentials)
+
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        }
+    }
+}
+
+
 repositories {
     google()
     mavenCentral()
+    maven {
+        name = "dairyPrivate"
+        url = uri("https://repo.dairy.foundation/private")
+        credentials(PasswordCredentials)
+
+        authentication {
+            basic(BasicAuthentication)
+        }
+    }
 }
 
 dependencies {

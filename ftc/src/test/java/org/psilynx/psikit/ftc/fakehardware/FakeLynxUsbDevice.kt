@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc.fakehardware
+package org.firstinspires.ftc.teamcode.fakehardware
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.lynx.LynxUsbDevice

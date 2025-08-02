@@ -1,11 +1,11 @@
-package org.psilynx.psikit.ftc.fakehardware
+package org.firstinspires.ftc.teamcode.fakehardware
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
-import org.psilynx.psikit.ftc.hardware.DeviceTimes
-import org.psilynx.psikit.ftc.sim.FakeTimer
+import org.firstinspires.ftc.teamcode.hardware.HardwareMap.DeviceTimes
+import org.firstinspires.ftc.teamcode.sim.FakeTimer
 
 class FakeServo : FakeHardware, ServoImplEx(
     FakeServoControllerEx(),

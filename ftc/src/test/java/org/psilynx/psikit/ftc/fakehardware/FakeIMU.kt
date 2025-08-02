@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc.fakehardware
+package org.firstinspires.ftc.teamcode.fakehardware
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
@@ -50,6 +50,7 @@ class FakeIMU: FakeHardware, IMU{
         )
         return true
     }
+    fun getParameters() = _parameters
 
     override fun resetYaw() {
         _orientation = YawPitchRollAngles(
@@ -68,15 +69,19 @@ class FakeIMU: FakeHardware, IMU{
         p1: AxesOrder?,
         p2: AngleUnit?
     ): Orientation {
-        TODO("Not Yet Implemented")
+        TODO("no one actually uses this right?")
     }
 
-    override fun getRobotOrientationAsQuaternion() = TODO("Not Yet Implemented")
+    override fun getRobotOrientationAsQuaternion() = TODO("I need to learn what the heck a quaternion is. :)")
 
     override fun getRobotAngularVelocity(p0: AngleUnit?): AngularVelocity = (
             if (p0 != RADIANS) _angularVelocity
             else _angularVelocity.toAngleUnit(DEGREES)
             )
+
+    fun setRobotAngularVelocity(p0: AngularVelocity){
+        _angularVelocity = p0
+    }
 
     override fun update(deltaTime: Double) { }
 

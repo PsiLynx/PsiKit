@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc.fakehardware
+package org.firstinspires.ftc.teamcode.fakehardware
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.lynx.LynxModule.BulkData
@@ -13,7 +13,9 @@ class FakeLynxModule(isParent: Boolean): LynxModule(
     isParent,
     false
 ){
-    override fun sendCommand(command: LynxMessage?) { }
+    override fun sendCommand(command: LynxMessage?) {
+
+    }
 
     override fun getBulkData(): LynxModule.BulkData? {
         val constructor =  LynxModule.BulkData::class.constructors.first()

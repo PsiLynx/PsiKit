@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc.fakehardware
+package org.firstinspires.ftc.teamcode.fakehardware
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AccelerationSensor
@@ -24,10 +24,11 @@ import com.qualcomm.robotcore.hardware.ServoController
 import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.TouchSensorMultiplexer
 import com.qualcomm.robotcore.hardware.UltrasonicSensor
+import org.firstinspires.ftc.teamcode.command.internal.CommandScheduler
 
 abstract class JVMHardwareMap: HardwareMap(null, null) {
     abstract var deviceTypes:
-        MutableMap<Class<out HardwareDevice>, (LynxModule) -> HardwareDevice>
+        MutableMap<Class<out HardwareDevice>, (String) -> HardwareDevice>
 
     override fun <T : Any?> getAll(classOrInterface: Class<out T?>?): List<T?>? {
         if(LynxModule::class.java.isAssignableFrom(classOrInterface)) {
@@ -92,7 +93,7 @@ abstract class JVMHardwareMap: HardwareMap(null, null) {
             mapping.entrySet().forEach { entry ->
                 val device = entry.value
                 (device!! as FakeHardware).update(deltaTime)
-//                if(device is FakeDcMotor){
+//                if(device is FakeMotor){
 //                    print("${entry.key} ")
 //                    println(device.speed)
 //                }
