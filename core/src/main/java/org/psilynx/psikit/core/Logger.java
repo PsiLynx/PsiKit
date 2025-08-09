@@ -42,6 +42,7 @@ public class Logger {
   private static DoubleSupplier timeSource =
           () -> System.nanoTime() / 1000000000.0 - startTime;
   private static boolean simulation = false;
+  private static boolean replay = false;
   private static boolean enableConsole = true;
 
   private Logger() {}
@@ -62,6 +63,7 @@ public class Logger {
     DoubleSupplier timeSource =
             () -> System.nanoTime() / 1000000000.0 - startTime;
     simulation = false;
+    replay = false;
     enableConsole = true;
   }
 
@@ -938,11 +940,17 @@ public class Logger {
     }
   }
 
-    public static boolean isSimulation() {
-        return simulation;
-    }
+  public static boolean isSimulation() {
+      return simulation;
+  }
+  public static void setSimulation(boolean simulation) {
+      Logger.simulation = simulation;
+  }
 
-    public static void setSimulation(boolean simulation) {
-        Logger.simulation = simulation;
-    }
+  public static boolean isReplay() {
+    return replay;
+  }
+  public static void setReplay(boolean replay) {
+    Logger.replay = replay;
+  }
 }

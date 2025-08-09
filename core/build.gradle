@@ -6,7 +6,6 @@ plugins {
 }
 
 group = 'org.psilynx.psikit'
-version = '0.1.0-alpha2'
 
 publishing {
     repositories {
@@ -28,7 +27,7 @@ publishing {
 	    //artifact(dairyDoc.dokkaHtmlJar)
 	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = "0.1.0-alpha2"
+            version = '0.1.0-alpha2-1'
             from components.java
         }
     }
