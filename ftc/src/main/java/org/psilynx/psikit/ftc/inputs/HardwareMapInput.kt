@@ -32,11 +32,11 @@ class HardwareMapInput(
         GoBildaPinpointDriver::class.java
             to (PinpointInput::class.java as Class<I2cInput<*>>)
     )
-    private val devicesToProcess = mutableListOf<LoggableInputs>()
+    internal val devicesToProcess = mutableMapOf<String, LoggableInputs>()
 
     override fun <T : Any?> get(
         classOrInterface: Class<out T?>?,
-        deviceName: String?
+        deviceName: String
     ): T? {
         val device = hardwareMap.get<T>(classOrInterface, deviceName)
 
@@ -49,7 +49,7 @@ class HardwareMapInput(
         println("[PsiKit] hardwaremap call on $classOrInterface, got i2c " +
                 "device $i2cDevice")
         if (i2cDevice != null) {
-            devicesToProcess.add(i2cDevice)
+            devicesToProcess.put(deviceName, i2cDevice)
             return i2cDevice as T
         }
         else return device

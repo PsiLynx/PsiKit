@@ -18,6 +18,9 @@ abstract class PsiKitOpMode: LinearOpMode() {
             "HardwareMap",
             this.hardwareMap as HardwareMapInput
         )
+        (this.hardwareMap as HardwareMapInput).devicesToProcess.forEach {
+            Logger.processInputs("HardwareMap/I2c/${it.key}", it.value)
+        }
     }
 
     override fun waitForStart() {
