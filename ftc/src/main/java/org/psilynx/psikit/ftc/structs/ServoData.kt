@@ -1,38 +1,60 @@
 package org.psilynx.psikit.ftc.structs
 
-import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.PwmControl
+import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoController
+import com.qualcomm.robotcore.hardware.ServoControllerEx
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import org.psilynx.psikit.core.wpi.Struct
-import org.psilynx.psikit.core.wpi.StructSerializable
 import java.nio.ByteBuffer
-import java.security.MessageDigest
 
-data class ServoData(
+class ServoData(
     val direction: Servo.Direction,
     val position: Double,
     val pwmLower: Double,
     val pwmUpper: Double,
     val pwmEnabled: Boolean,
-) : StructSerializable {
-    val struct = ServoDataStruct()
+): HardwareData {
 
-    val device = object : ServoImplEx(null, 0, ServoConfigurationType()) {
-            override fun getDirection() = this@ServoData.direction
-            override fun setDirection(direction: Servo.Direction) {}
-            override fun getPosition() = this@ServoData.position
-            override fun setPosition(position: Double) {}
-            override fun scaleRange(min: Double, max: Double) {}
-            override fun getPwmRange() = PwmControl.PwmRange(
-                this@ServoData.pwmLower,
-                this@ServoData.pwmUpper
-            )
-            override fun setPwmRange(range: PwmControl.PwmRange) {}
-            override fun isPwmEnabled() = this@ServoData.pwmEnabled
-            override fun setPwmEnable() {}
-            override fun setPwmDisable() {}
-        }
+    override val device = Device(this)
+
+    class Device(var thisRef: ServoData) : ServoImplEx(
+        object : ServoControllerEx {
+            override fun setServoPwmRange(servo: Int, range: PwmControl.PwmRange) {}
+            override fun getServoPwmRange(servo: Int) = PwmControl.PwmRange.defaultRange
+            override fun setServoPwmEnable(servo: Int) {}
+            override fun setServoPwmDisable(servo: Int) {}
+            override fun isServoPwmEnabled(servo: Int) = true
+            override fun setServoType(servo: Int, servoType: ServoConfigurationType?) {}
+            override fun pwmEnable() {}
+            override fun pwmDisable() {}
+            override fun getPwmStatus() = ServoController.PwmStatus.ENABLED
+            override fun setServoPosition(servo: Int, position: Double) {}
+            override fun getServoPosition(servo: Int) = 0.0
+            override fun getManufacturer() = HardwareDevice.Manufacturer.Other
+            override fun getDeviceName() = "MockServo"
+            override fun getConnectionInfo() = ""
+            override fun getVersion() = 1
+            override fun resetDeviceConfigurationForOpMode() {}
+            override fun close() {}
+        },
+        0,
+        ServoConfigurationType()
+    ) {
+        override fun getDirection() = thisRef.direction
+        override fun setDirection(direction: Servo.Direction) {}
+        override fun getPosition() = thisRef.position
+        override fun setPosition(position: Double) {}
+        override fun scaleRange(min: Double, max: Double) {}
+        override fun getPwmRange() = PwmControl.PwmRange(thisRef.pwmLower, thisRef.pwmUpper)
+        override fun setPwmRange(range: PwmControl.PwmRange) {}
+        override fun isPwmEnabled() = thisRef.pwmEnabled
+        override fun setPwmEnable() {}
+        override fun setPwmDisable() {}
+    }
+
     constructor(servo: ServoImplEx) : this(
         direction = servo.direction,
         position = servo.position,
@@ -47,10 +69,9 @@ data class ServoData(
         override fun getTypeName() = "servoData"
 
         override fun getSize() = (
-            8 * 4 +
             Struct.kSizeInt8 +       // direction
             Struct.kSizeDouble * 3 + // position, scaledMin, scaledMax, pwmLower, pwmUpper
-            Struct.kSizeBool         // pwmEnabled
+            Struct.kSizeInt8         // pwmEnabled
         )
 
         override fun getSchema() = (
@@ -86,6 +107,7 @@ data class ServoData(
             2500.0,
             true
         )
+        @JvmField
+        val struct = ServoDataStruct()
     }
-
 }

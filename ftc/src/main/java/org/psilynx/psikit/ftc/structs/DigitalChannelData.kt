@@ -2,28 +2,28 @@ package org.psilynx.psikit.ftc.structs
 
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.DigitalChannelController
-import com.qualcomm.robotcore.hardware.HardwareDevice.Manufacturer
+import com.qualcomm.robotcore.hardware.HardwareDevice
 import org.psilynx.psikit.core.wpi.Struct
-import org.psilynx.psikit.core.wpi.StructSerializable
 import java.nio.ByteBuffer
 
-data class DigitalChannelData(
+class DigitalChannelData(
     val mode: DigitalChannel.Mode,
     val state: Boolean,
-) : StructSerializable {
-    val struct = DigitalChannelDataStruct()
-    val device = object : DigitalChannel {
-        override fun setMode(mode: DigitalChannelController.Mode) {}
+) : HardwareData {
+
+    override val device = Device(this)
+
+    class Device(var thisRef: DigitalChannelData) : DigitalChannel {
+        override fun getMode() = thisRef.mode
         override fun setMode(mode: DigitalChannel.Mode) {}
+        override fun setMode(mode: DigitalChannelController.Mode) {}
+        override fun getState() = thisRef.state
         override fun setState(state: Boolean) {}
 
-        override fun getManufacturer() = Manufacturer.Other
+        override fun getManufacturer() = HardwareDevice.Manufacturer.Other
         override fun getDeviceName() = "MockDigitalChannel"
-        override fun getState() = this@DigitalChannelData.state
-        override fun getMode() = this@DigitalChannelData.mode
         override fun getConnectionInfo() = ""
         override fun getVersion() = 1
-
         override fun resetDeviceConfigurationForOpMode() {}
         override fun close() {}
     }
@@ -40,7 +40,7 @@ data class DigitalChannelData(
 
         override fun getSize() = (
             Struct.kSizeInt8 +      // mode (enum ordinal)
-            Struct.kSizeBool        // state
+            Struct.kSizeInt8        // state
         )
 
         override fun getSchema() = (
@@ -64,5 +64,7 @@ data class DigitalChannelData(
     }
     companion object {
         val empty = DigitalChannelData(DigitalChannel.Mode.INPUT, false)
+        @JvmField
+        val struct = DigitalChannelDataStruct()
     }
 }

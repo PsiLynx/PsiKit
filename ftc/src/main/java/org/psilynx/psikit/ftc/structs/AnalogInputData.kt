@@ -3,18 +3,18 @@ package org.psilynx.psikit.ftc.structs
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.HardwareDevice.Manufacturer
 import org.psilynx.psikit.core.wpi.Struct
-import org.psilynx.psikit.core.wpi.StructSerializable
 import java.nio.ByteBuffer
 
 class AnalogInputData(
     val voltage: Double,
     val maxVoltage: Double,
-) : StructSerializable {
-    val struct = AnalogInputDataStruct()
+) : HardwareData {
 
-    val device = object : AnalogInput(null, 0) {
-        override fun getVoltage() = this@AnalogInputData.voltage
-        override fun getMaxVoltage() = this@AnalogInputData.maxVoltage
+    override val device = Device(this)
+
+    class Device(var thisRef: AnalogInputData): AnalogInput(null, 0) {
+        override fun getVoltage() = thisRef.voltage
+        override fun getMaxVoltage() = thisRef.maxVoltage
         override fun getConnectionInfo() = ""
         override fun getDeviceName() = "MockAnalogInput"
         override fun getManufacturer() = Manufacturer.Other
@@ -22,7 +22,9 @@ class AnalogInputData(
         override fun close() {}
         override fun resetDeviceConfigurationForOpMode() {}
     }
-    constructor(input: AnalogInput) : this(
+    constructor(
+        input: AnalogInput
+    ) : this(
         voltage = input.voltage,
         maxVoltage = input.maxVoltage
     )
@@ -57,5 +59,8 @@ class AnalogInputData(
     }
     companion object {
         val empty = AnalogInputData(0.0, 0.0)
+
+        @JvmField
+        val struct = AnalogInputDataStruct()
     }
 }

@@ -2,33 +2,54 @@ package org.psilynx.psikit.ftc.structs
 
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.PwmControl
-import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoController
+import com.qualcomm.robotcore.hardware.ServoControllerEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import org.psilynx.psikit.core.wpi.Struct
-import org.psilynx.psikit.core.wpi.StructSerializable
 import java.nio.ByteBuffer
 
-data class CrServoData(
+class CrServoData(
     val direction: DcMotorSimple.Direction,
     val power: Double,
     val pwmLower: Double,
     val pwmUpper: Double,
     val pwmEnabled: Boolean,
-) : StructSerializable {
-    val struct = CrServoDataStruct()
+) : HardwareData {
 
-    val device = object : CRServoImplEx(null, 0, ServoConfigurationType()) {
-        override fun getDirection() = this@CrServoData.direction
+    override val device = Device(this)
+
+    class Device(var thisRef: CrServoData) : CRServoImplEx(
+        object : ServoControllerEx {
+            override fun setServoPwmRange(servo: Int, range: PwmControl.PwmRange) {}
+            override fun getServoPwmRange(servo: Int) = PwmControl.PwmRange.defaultRange
+            override fun setServoPwmEnable(servo: Int) {}
+            override fun setServoPwmDisable(servo: Int) {}
+            override fun isServoPwmEnabled(servo: Int) = true
+            override fun setServoType(servo: Int, servoType: ServoConfigurationType?) {}
+            override fun pwmEnable() {}
+            override fun pwmDisable() {}
+            override fun getPwmStatus() = ServoController.PwmStatus.ENABLED
+            override fun setServoPosition(servo: Int, position: Double) {}
+            override fun getServoPosition(servo: Int) = 0.0
+            override fun getManufacturer() = HardwareDevice.Manufacturer.Other
+            override fun getDeviceName() = "MockCrServo"
+            override fun getConnectionInfo() = ""
+            override fun getVersion() = 1
+            override fun resetDeviceConfigurationForOpMode() {}
+            override fun close() {}
+        },
+        0,
+        ServoConfigurationType()
+    ) {
+        override fun getDirection() = thisRef.direction
         override fun setDirection(direction: DcMotorSimple.Direction) {}
-        override fun getPower() = this@CrServoData.power
+        override fun getPower() = thisRef.power
         override fun setPower(power: Double) {}
-        override fun getPwmRange() = PwmControl.PwmRange(
-            this@CrServoData.pwmLower,
-            this@CrServoData.pwmUpper
-        )
+        override fun getPwmRange() = PwmControl.PwmRange(thisRef.pwmLower, thisRef.pwmUpper)
         override fun setPwmRange(range: PwmControl.PwmRange) {}
-        override fun isPwmEnabled() = this@CrServoData.pwmEnabled
+        override fun isPwmEnabled() = thisRef.pwmEnabled
         override fun setPwmEnable() {}
         override fun setPwmDisable() {}
     }
@@ -48,9 +69,8 @@ data class CrServoData(
 
         override fun getSize() = (
             Struct.kSizeInt8 +        // direction
-            Struct.kSizeDouble +      // power
-            Struct.kSizeDouble * 2 +  // pwmLower, pwmUpper
-            Struct.kSizeBool          // pwmEnabled
+            Struct.kSizeDouble * 3 +  // power, pwmLower, pwmUpper
+            Struct.kSizeInt8          // pwmEnabled
         )
 
         override fun getSchema() = (
@@ -87,5 +107,7 @@ data class CrServoData(
             2500.0,
             true
         )
+        @JvmField
+        val struct = CrServoDataStruct()
     }
 }

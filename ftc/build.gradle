@@ -36,7 +36,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId = "org.psilynx.psikit"
                 artifactId = "ftc"
-                version = "0.1.0-alpha6"
+                version = "0.1.0-alpha2-1"
 
                 from components.release
 
@@ -70,6 +70,7 @@ repositories {
             basic(BasicAuthentication)
         }
     }
+    maven { url "https://repo.dairy.foundation/releases" }
 }
 
 dependencies {
