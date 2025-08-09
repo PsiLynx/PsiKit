@@ -1,16 +1,15 @@
-package org.firstinspires.ftc.teamcode.fakehardware
+package org.psilynx.psikit.ftc.test.fakehardware
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AnalogInput
+import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.hardware.VoltageSensor
-import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.TouchSensor
-import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver
+import com.qualcomm.robotcore.hardware.VoltageSensor
 
 object FakeHardwareMap : JVMHardwareMap() {
     override var deviceTypes:

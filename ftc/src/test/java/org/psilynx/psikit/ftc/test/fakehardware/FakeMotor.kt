@@ -1,12 +1,10 @@
-package org.firstinspires.ftc.teamcode.fakehardware
+package org.psilynx.psikit.ftc.test.fakehardware
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.FLOAT
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType
-import org.firstinspires.ftc.teamcode.hardware.HardwareMap.DeviceTimes
-import org.firstinspires.ftc.teamcode.sim.FakeTimer
 import kotlin.math.abs
 
 open class FakeMotor: FakeHardware, DcMotor {

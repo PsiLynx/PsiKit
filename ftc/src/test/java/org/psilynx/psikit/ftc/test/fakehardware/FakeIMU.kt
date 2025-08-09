@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.fakehardware
+package org.psilynx.psikit.ftc.test.fakehardware
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection

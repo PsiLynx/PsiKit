@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.fakehardware
+package org.psilynx.psikit.ftc.test.fakehardware
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.lynx.LynxModule.BulkData

@@ -1,11 +1,8 @@
-package org.firstinspires.ftc.teamcode.fakehardware
+package org.psilynx.psikit.ftc.test.fakehardware
 
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD
-import org.firstinspires.ftc.teamcode.hardware.HardwareMap.DeviceTimes
-import org.firstinspires.ftc.teamcode.sim.FakeTimer
-
 
 class FakeCRServo: FakeHardware, CRServo {
     private var _power = 0.0
@@ -28,6 +25,6 @@ class FakeCRServo: FakeHardware, CRServo {
     }
     override fun getPower() = _power
 
-    override fun getController() = throw NotImplementedError("please don't. why would you even try and do that?")
+    override fun getController() = throw NotImplementedError("")
     override fun getPortNumber() = 0
 }
