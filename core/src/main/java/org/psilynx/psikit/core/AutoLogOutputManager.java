@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,7 +125,12 @@ public class AutoLogOutputManager {
                       } catch (IllegalAccessException
                           | IllegalArgumentException
                           | InvocationTargetException e) {
-                        e.printStackTrace();
+                        Logger.logError(
+                            "error while registering method "
+                            + method.getName()
+                            + " from " + declaringClass.getSimpleName()
+                            + "\n" + Arrays.toString(e.getStackTrace())
+                        );
                         return null;
                       }
                     });
@@ -153,7 +159,12 @@ public class AutoLogOutputManager {
                       try {
                         return field.get(root);
                       } catch (IllegalArgumentException | IllegalAccessException e) {
-                        e.printStackTrace();
+                          Logger.logError(
+                              "error while registering field "
+                              + field.getName()
+                              + " from " + declaringClass.getSimpleName()
+                              + "\n" + Arrays.toString(e.getStackTrace())
+                          );
                         return null;
                       }
                     });
@@ -388,8 +399,8 @@ public class AutoLogOutputManager {
                 try {
                   Logger.recordOutput(key, (WPISerializable) value);
                 } catch (ClassCastException e) {
-                  System.out.println(
-                      "[PsiKit] Auto serialization is not supported for type "
+                  Logger.logError(
+                      "Auto serialization is not supported for type "
                           + type.getSimpleName()
                       );
                 }
@@ -465,8 +476,8 @@ public class AutoLogOutputManager {
                 //Logger.recordOutput(key, (StructSerializable[]) value);
 
               } catch (ClassCastException e) {
-              System.out.println(
-                  "[PsiKit] Auto serialization is not supported for array type "
+              Logger.logError(
+                  "Auto serialization is not supported for array type "
                       + componentType.getSimpleName()
                   );
               }
@@ -543,8 +554,8 @@ public class AutoLogOutputManager {
                 try {
                   Logger.recordOutput(key, (StructSerializable[][]) value);
                 } catch (ClassCastException e) {
-                  System.out.println(
-                      "[PsiKit] Auto serialization is not supported for 2D array type "
+                  Logger.logError(
+                      "Auto serialization is not supported for 2D array type "
                           + componentType.getSimpleName()
                       );
                 }

@@ -2,6 +2,7 @@ package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogReplaySource;
 import org.psilynx.psikit.core.LogTable;
+import org.psilynx.psikit.core.Logger;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -9,8 +10,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Scanner;
 
 /** Replays log values from a custom binary format. */
 public class RLOGReplay implements LogReplaySource {
@@ -32,7 +34,9 @@ public class RLOGReplay implements LogReplaySource {
       file = new FileInputStream(filename);
       data = new DataInputStream(file);
     } catch (FileNotFoundException e) {
-      System.out.println("Failed to open replay log file.");
+      Logger.logError(
+        "Failed to open replay log file. File not found!"
+      );
     }
   }
 
@@ -42,7 +46,10 @@ public class RLOGReplay implements LogReplaySource {
         file.close();
         file = null;
       } catch (IOException e) {
-        e.printStackTrace();
+        Logger.logError(
+          "IO exception while trying to close file\n"
+          + Arrays.toString(e.getStackTrace())
+        );
       }
     }
   }
@@ -61,7 +68,11 @@ public class RLOGReplay implements LogReplaySource {
       return true;
     }
     catch (NullPointerException e){
-      e.printStackTrace();
+      Logger.logWarning(
+          "NullPointerException while updating table. this is usually "
+          + "normal, and happens at the end of replay.\n"
+          + Arrays.toString(e.getStackTrace())
+      );
       return false; // null means replay is over
     }
   }
@@ -70,7 +81,7 @@ public class RLOGReplay implements LogReplaySource {
     if (file != null) {
       LogTable table = decoder.decodeTable(data);
       if (table == null) {
-        System.out.println("[PsiKit] Replay of log has ended.");
+        Logger.logInfo("Replay of log has ended.");
       }
       return table;
     } else {
@@ -101,7 +112,7 @@ public class RLOGReplay implements LogReplaySource {
     } catch (IOException e) {
     }
     if (advantageScopeLogPath != null) {
-      System.out.println("Using log from Advantage Scope - \"" + advantageScopeLogPath + "\"");
+      Logger.logInfo("Using log from Advantage Scope - \"" + advantageScopeLogPath + "\"");
       return advantageScopeLogPath;
     }
 

@@ -7,12 +7,19 @@
 
 package org.psilynx.psikit.core;
 
+import static org.psilynx.psikit.core.Logger.LogLevel.CRITICAL;
+import static org.psilynx.psikit.core.Logger.LogLevel.DEBUG;
+import static org.psilynx.psikit.core.Logger.LogLevel.ERROR;
+import static org.psilynx.psikit.core.Logger.LogLevel.INFO;
+import static org.psilynx.psikit.core.Logger.LogLevel.WARNING;
+
 import org.psilynx.psikit.core.mechanism.LoggedMechanism2d;
 import org.psilynx.psikit.core.wpi.Struct;
 import org.psilynx.psikit.core.wpi.StructSerializable;
 import org.psilynx.psikit.core.wpi.WPISerializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +51,7 @@ public class Logger {
   private static boolean simulation = false;
   private static boolean replay = false;
   private static boolean enableConsole = true;
+  private static LogLevel currentLogLevel = LogLevel.INFO;
 
   private Logger() {}
 
@@ -174,7 +182,7 @@ public class Logger {
         try {
           console.close();
         } catch (Exception e) {
-          System.out.println("[PsiKit] Failed to stop console capture.");
+          Logger.logError("Failed to stop console capture.");
         }
       }
       if (replaySource != null) {
@@ -184,9 +192,13 @@ public class Logger {
       try {
         receiverThread.join();
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        Logger.logError(
+          "error ending the receiver ("
+          + receiverThread.getName() + ") thread\n"
+          + Arrays.toString(e.getStackTrace())
+        );
       }
-      //TODO: supposet to tell the robot to use the normal time source
+      //TODO: supposed to tell the robot to use the normal time source
       //RobotController.setTimeSource(RobotController::getFPGATime);
     }
   }
@@ -205,8 +217,8 @@ public class Logger {
         }
       } else {
         if (!replaySource.updateTable(entry)) {
-          System.out.println(
-            "[PsiKit] logger received false from " +
+          Logger.logInfo(
+            "logger received false from " +
             "replay source, ending and exiting"
           );
           end();
@@ -262,7 +274,7 @@ public class Logger {
         receiverQueueFault = false;
       } catch (IllegalStateException exception) {
         receiverQueueFault = true;
-        System.out.println(
+        Logger.logCritical(
             "[PsiKit] Capacity of receiver queue exceeded, data will NOT be logged."
         );
       }
@@ -952,5 +964,56 @@ public class Logger {
   }
   public static void setReplay(boolean replay) {
     Logger.replay = replay;
+  }
+
+  public static LogLevel getLogLevel() {
+    return currentLogLevel;
+  }
+
+  public static void setLogLevel(LogLevel logLevel) {
+    Logger.currentLogLevel = logLevel;
+  }
+
+  public static void logDebug(String message){
+    if(currentLogLevel.ordinal() >= DEBUG.ordinal()){
+      System.out.println("[PsiKit] DD: " + message);
+    }
+  }
+  public static void logInfo(String message){
+    if(currentLogLevel.ordinal() >= INFO.ordinal()){
+      System.out.println("[PsiKit] II: " + message);
+    }
+  }
+  public static void logWarning(String message){
+    if(currentLogLevel.ordinal() >= WARNING.ordinal()){
+      System.out.println("[PsiKit] WW: " + message);
+    }
+  }
+  public static void logError(String message){
+    if(currentLogLevel.ordinal() >= ERROR.ordinal()){
+      System.out.println("[PsiKit] EE: " + message);
+    }
+  }
+  public static void logCritical(String message){
+    if(currentLogLevel.ordinal() >= CRITICAL.ordinal()){
+      System.out.println("[PsiKit] CC: " + message);
+    }
+  }
+
+  /**
+   * log levels for debugging messages. <br>
+   * - CRITICAL (CC) logs are exceptions that will most likely cause
+   * significant portions of functionality to be unrecoverable <br>
+   * - ERROR (EE) logs are exceptions that PsiKit can usually keep running after
+   * encountering, although usually not perfectly <br>
+   * - WARNING (WW) logs are events that are generally perfectly fine to have
+   * occur, but can be symptoms of issues <br>
+   * - INFO (II) logs let you know that something happened, like the
+   * server connecting to a client. <br>
+   * - DEBUG (DD) logs will produce a large amount of data meant for fixing
+   * bugs. it will be much more than is necessary for the average user <br>
+   */
+  public enum LogLevel {
+    CRITICAL, ERROR, WARNING, INFO, DEBUG
   }
 }

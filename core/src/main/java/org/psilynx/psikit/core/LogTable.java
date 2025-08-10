@@ -166,8 +166,8 @@ public class LogTable {
       return true;
     }
     if (!currentValue.type.equals(type)) {
-      System.out.println(
-          "[PsiKit] Failed to write to field \""
+      Logger.logError(
+          "Failed to write to field \""
               + prefix
               + key
               + "\" - attempted to write "
@@ -179,8 +179,8 @@ public class LogTable {
     }
     if (currentValue.customTypeStr != customTypeStr
         && !currentValue.customTypeStr.equals(customTypeStr)) {
-      System.out.println(
-          "[PsiKit] Failed to write to field \""
+      Logger.logError(
+          "Failed to write to field \""
               + prefix
               + key
               + "\" - attempted to write "
@@ -442,8 +442,8 @@ public class LogTable {
   public <T extends LoggableInputs> void put(String key, T value) {
     if (value == null) return;
     if (this.depth > 100) {
-      System.out.println(
-          "[PsiKit] Detected recursive table structure when logging value to field \""
+      Logger.logWarning(
+          "Detected recursive table structure when logging value to field \""
               + prefix
               + key
               + "\". using LoggableInputs. Consider revising the table structure or refactoring to avoid recursion."
@@ -465,7 +465,11 @@ public class LogTable {
     try {
       data.put(key, new LogValue(struct.getSchema().getBytes("UTF-8"), "structschema"));
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      Logger.logError(
+        "unsuported encoding for "
+        + struct.getTypeString() + "\n"
+        + Arrays.toString(e.getStackTrace())
+      );
     }
     for (Struct<?> inner : struct.getNested()) {
       addStructSchema(inner, seen);
@@ -554,8 +558,8 @@ public class LogTable {
     if (struct != null) {
       put(key, struct, value);
     } else {
-      System.out.println(
-          "[PsiKit] Auto serialization is not supported for type "
+      Logger.logError(
+          "Auto serialization is not supported for type "
               + value.getClass().getSimpleName()
           );
     }
@@ -573,8 +577,8 @@ public class LogTable {
     if (struct != null) {
       put(key, struct, value);
     } else {
-      System.out.println(
-              "[PsiKit] Auto serialization is not supported for array type "
+      Logger.logError(
+              "Auto serialization is not supported for array type "
                       + value.getClass().getComponentType().getSimpleName()
       );
     }

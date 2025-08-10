@@ -9,6 +9,7 @@ package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogDataReceiver;
 import org.psilynx.psikit.core.LogTable;
+import org.psilynx.psikit.core.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -40,7 +42,7 @@ public class RLOGServer implements LogDataReceiver {
   public void start() {
     thread = new ServerThread(port);
     thread.start();
-    System.out.println("[PsiKit] RLOG server started on port " + Integer.toString(port));
+    Logger.logInfo("RLOG server started on port " + port);
   }
 
   public void end() {
@@ -88,7 +90,10 @@ public class RLOGServer implements LogDataReceiver {
       try {
         server = new ServerSocket(port);
       } catch (IOException e) {
-        e.printStackTrace();
+        Logger.logError(
+          "error while opening a socket in RLOG server\n"
+          + Arrays.toString(e.getStackTrace())
+        );
       }
     }
 
@@ -116,11 +121,15 @@ public class RLOGServer implements LogDataReceiver {
             sockets.add(socket);
             lastHeartbeats.add(System.nanoTime() / 1000000000.0);
           }
-          System.out.println(
-              "[PsiKit] Connected to RLOG client - "
-                  + socket.getInetAddress().getHostAddress());
+          Logger.logInfo(
+            "Connected to RLOG client - "
+            + socket.getInetAddress().getHostAddress()
+          );
         } catch (IOException e) {
-          e.printStackTrace();
+          Logger.logError(
+            "rlog server threw an exception\n"
+            + Arrays.toString(e.getStackTrace())
+          );
         }
       }
     }
@@ -183,7 +192,7 @@ public class RLOGServer implements LogDataReceiver {
     }
 
     private void printDisconnectMessage(Socket socket, String reason) {
-      System.out.println(
+      Logger.logInfo(
           "Disconnected from RLOG client ("
               + reason
               + ") - "
@@ -196,7 +205,10 @@ public class RLOGServer implements LogDataReceiver {
           server.close();
           server = null;
         } catch (IOException e) {
-          e.printStackTrace();
+          Logger.logError(
+            "rlog server could not be closed while shutting down\n"
+            + Arrays.toString(e.getStackTrace())
+          );
         }
       }
       if (broadcastThread != null) {

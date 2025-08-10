@@ -9,6 +9,7 @@ package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogTable;
 import org.psilynx.psikit.core.LogTable.LogValue;
+import org.psilynx.psikit.core.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -83,7 +84,7 @@ public class RLOGEncoder {
 
     // Encode timestamp
     buffers.add(encodeTimestamp(table.getTimestamp()));
-    System.out.println("[PsiKit] encoded timestamp: " + table.getTimestamp());
+    Logger.logDebug("encoded timestamp: " + table.getTimestamp());
 
     // Encode new/changed fields
     for (Map.Entry<String, LogValue> field : newMap.entrySet()) {

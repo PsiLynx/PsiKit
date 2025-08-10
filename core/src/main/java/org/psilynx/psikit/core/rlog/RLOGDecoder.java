@@ -2,12 +2,14 @@ package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogTable;
 import org.psilynx.psikit.core.LogTable.LoggableType;
+import org.psilynx.psikit.core.Logger;
 import org.psilynx.psikit.core.Pair;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class RLOGDecoder {
         this.total = input.available();
         logRevision = input.readByte();
         if (!supportedLogRevisions.contains(logRevision)) {
-          System.out.println(
+          Logger.logCritical(
             "Log revision "
             + (logRevision & 0xff)
             + " is not supported."
@@ -38,22 +40,22 @@ public class RLOGDecoder {
         input.skip(1); // Second byte specifies timestamp type, this will be assumed
       }
 //      if (input.available() == 0) {
-//        System.out.println("[Psikit] end of file");
+//        Logger.logDebug("end of file");
 //        return null; // No more data, so we can't start a new table
 //      }
 
       try {
-        System.out.println("[PsiKit] read bytes: " + ( this.total - input.available() ));
+        Logger.logDebug("read bytes: " + (this.total - input.available()));
         table = new LogTable(decodeTimestamp(input), table);
         boolean done = false;
         while (!done) {
-          System.out.println("[PsiKit] read bytes: " + ( total - input.available() ));
+          Logger.logDebug("read bytes: " + ( total - input.available() ));
 //        if (input.available() == 0) {
 //          break readTable; // This was the last cycle, return the data
 //        }
 
           byte type = input.readByte();
-          System.out.println("[Psikit] type: " + type);
+          Logger.logDebug("type: " + type);
           switch (type) {
             case 0: // Next timestamp
               done = true;
@@ -67,12 +69,14 @@ public class RLOGDecoder {
           }
         }
       } catch (EOFException ignored){
-        System.out.println("[Psikit] got EOF, ignoring");
+        Logger.logInfo("got EOF, ignoring");
       }
 
     } catch (IOException e) {
-      e.printStackTrace();
-      System.out.println("[Psikit] problem reading file");
+      Logger.logError(
+        "problem reading file\n"
+        + Arrays.toString(e.getStackTrace())
+      );
       return null; // Problem decoding, might have been interrupted while writing this cycle
     }
 
@@ -81,7 +85,7 @@ public class RLOGDecoder {
 
   private double decodeTimestamp(DataInputStream input) throws IOException {
     double timestamp = input.readDouble();
-    System.out.println("[Psikit] decoded timestamp: " + timestamp);
+    Logger.logDebug("decoded timestamp: " + timestamp);
     return timestamp;
   }
 
@@ -98,13 +102,13 @@ public class RLOGDecoder {
       StandardCharsets.UTF_8
     );
     keyIDs.put(keyID, new Pair<>(key, type));
-    System.out.println("[PsiKit] Key defined: ID=" + keyID + ", key=" + key + ", type=" + type);
+    Logger.logDebug("Key defined: ID=" + keyID + ", key=" + key + ", type=" + type);
   }
 
   private void decodeValue(DataInputStream input) throws IOException {
     Pair<String, String> keyID = keyIDs.get(input.readShort());
     short length = input.readShort();
-    System.out.println("[PsiKit] length of value: " + length);
+    Logger.logDebug("length of value: " + length);
     String key = keyID.getFirst();
     String typeString = keyID.getSecond();
     LoggableType type = LoggableType.fromWPILOGType(typeString);
@@ -169,15 +173,15 @@ public class RLOGDecoder {
           input.readNBytes(length);
         }
         else {
-          System.out.println(
-            "[PsiKit] unsupported raw value: " + typeString
+          Logger.logWarning(
+            "unsupported raw value: " + typeString
           );
           input.readNBytes(length);
         }
         break;
     }
     try {
-      System.out.println("[PsiKit] value: " + table.get(key).toString());
+      Logger.logDebug("value: " + table.get(key).toString());
     } catch (Exception ignored){ }
   }
 }

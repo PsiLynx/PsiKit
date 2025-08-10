@@ -9,9 +9,11 @@ package org.psilynx.psikit.core.rlog;
 
 import org.psilynx.psikit.core.LogDataReceiver;
 import org.psilynx.psikit.core.LogTable;
+import org.psilynx.psikit.core.Logger;
 
 import java.io.*;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 
 /** Sends log data over a socket connection using the RLOG format. */
@@ -46,15 +48,17 @@ public class RLOGWriter implements LogDataReceiver {
   }
 
   public void start() {
-    System.out.println("[PsiKit] RLOG writer started");
+    Logger.logInfo("RLOG writer started");
     File file = new File(filePath);
     file.delete();
     try {
       file.createNewFile();
       fileOutputStream = new FileOutputStream(filePath, true);
     } catch (IOException e) {
-      e.printStackTrace();
-      System.out.println("[PsiKit] error creating log file");
+      Logger.logError(
+        "error opening log file\n"
+        + Arrays.toString(e.getStackTrace())
+      );
     }
   }
 
@@ -73,17 +77,17 @@ public class RLOGWriter implements LogDataReceiver {
   private void appendData(byte[] data) {
     try {
       if(fileOutputStream == null){
-        System.out.println(
-          "[PsiKit] must start RLOGWriter before using append data"
+        Logger.logError(
+          "must start RLOGWriter before using append data"
         );
       } else fileOutputStream.write(data);
     }
     catch (IOException e){
-      e.printStackTrace();
-      System.out.println(
-        "[PsiKit] error opening file \""
+      Logger.logError(
+        "error opening file \""
         + filePath
-        + "\" for writing in the RLOG writer thread"
+        + "\" for writing in the RLOG writer thread\n"
+        + Arrays.toString(e.getStackTrace())
       );
     }
 
