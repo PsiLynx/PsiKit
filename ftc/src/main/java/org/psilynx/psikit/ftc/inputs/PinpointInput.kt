@@ -31,13 +31,29 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
     var _xOffset = 0f
     var _yOffset = 0f
 
+    private var cachedDeviceID: Int? = null
+    private var cachedDeviceVersion: Int? = null
+    private var cachedYawScalar: Float? = null
+    private var cachedDeviceStatus: DeviceStatus? = null
+    private var cachedLoopTime: Int? = null
+    private var cachedEncoderX: Int? = null
+    private var cachedEncoderY: Int? = null
+
     override fun new(wrapped: GoBildaPinpointDriver) = PinpointInput(wrapped)
 
     override fun toLog(table: LogTable) {
+        if(cachedDeviceID == null) cachedDeviceID = deviceID
+        if(cachedDeviceVersion == null) cachedDeviceVersion = deviceVersion
+        if(cachedYawScalar == null) cachedYawScalar = yawScalar
+        if(cachedDeviceStatus == null) cachedDeviceStatus = deviceStatus
+        if(cachedLoopTime == null) cachedLoopTime = loopTime
+        if(cachedEncoderX == null) cachedEncoderX = encoderX
+        if(cachedEncoderY == null) cachedEncoderY = encoderY
+
         table.put("deviceId", deviceID)
         table.put("deviceVersion", deviceVersion)
         table.put("yawScalar", yawScalar)
-        table.put("deviceStatus", deviceStatus)
+        table.put("deviceStatus", deviceStatus.ordinal)
         table.put("loopTime", loopTime)
         table.put("xEncoderValue", encoderX)
         table.put("yEncoderValue", encoderY)
@@ -55,7 +71,10 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
         _deviceID      = table.get("deviceId",0)
         _deviceVersion = table.get("deviceVersion", 0)
         _yawScalar     = table.get("yawScalar", 0f)
-        _deviceStatus  = table.get("deviceStatus", 0)
+        _deviceStatus  = table.get(
+            "deviceStatus",
+            DeviceStatus.CALIBRATING.ordinal
+        )
         _loopTime      = table.get("loopTime", 0)
         _xEncoderValue = table.get("xEncoderValue", 0)
         _yEncoderValue = table.get("yEncoderValue", 0)

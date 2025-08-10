@@ -46,7 +46,7 @@ class HardwareMapInput(
             ?.newInstance(device)
         )
 
-        println("[PsiKit] hardwaremap call on $classOrInterface, got i2c " +
+        println("hardwaremap call on $classOrInterface, got i2c " +
                 "device $i2cDevice")
         if (i2cDevice != null) {
             devicesToProcess.put(deviceName, i2cDevice)

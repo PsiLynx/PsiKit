@@ -25,23 +25,23 @@ read input values from the Input class you made in step 2
 ```java
 package org.firstinspires.ftc.teamcode;
 
-public class LiftInput implements LoggableInputs{
+public class LiftInput implements LoggableInputs {
     private IntSupplier posSupplier;
     private int position;
-    
-    public LiftInput(IntSupplier posSupplier){
+
+    public LiftInput(IntSupplier posSupplier) {
         this.posSupplier = posSupplier;
         // supplier would be something like myMotor::getPosition
     }
-    
+
     /**
      * if in replay mode, returns the next logged input, 
      * otherwise returns the measured value
      */
-    public int getPosition(){
+    public int getPosition() {
         return position;
     }
-    
+
     /**
      * Only called while actually running, updates the value of position
      * and writes it to a table. 
@@ -49,11 +49,11 @@ public class LiftInput implements LoggableInputs{
      * by this Input
      */
     @Override
-    public void ToLog(LogTable table){
+    public void ToLog(LogTable table) {
         position = posSupplier.getAsInt();
         table.put("position", position);
     }
-    
+
     /**
      * Only called while replaying, updates the value of position
      * by reading its value from the LogTable
@@ -61,10 +61,11 @@ public class LiftInput implements LoggableInputs{
      * at this point in time
      */
     @Override
-    public void FromLog(LogTable table){
+    public void FromLog(LogTable table) {
         position = table.get("position", 0.0);
         // the second value is the defualt, in case "position" isn't found in the table
     }
+}
 ```
 ##### Example Usage Of An Input
 ```java

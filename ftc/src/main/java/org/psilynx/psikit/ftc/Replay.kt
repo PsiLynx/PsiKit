@@ -50,7 +50,7 @@ class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
                 DcMotor::class.java        -> MotorData.empty
 
                 else                       -> error(
-                    "[PsiKit] while replaying the OpMode " +
+                    "while replaying the OpMode " +
                     "\"${opMode::class.simpleName}\", it requested a " +
                     "${classOrInterface?.simpleName}, which is a " +
                     "device type that PsiKit doesn't auto log"
