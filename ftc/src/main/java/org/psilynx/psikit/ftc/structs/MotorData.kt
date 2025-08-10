@@ -3,6 +3,7 @@ package org.psilynx.psikit.ftc.structs
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorControllerEx
 import com.qualcomm.robotcore.hardware.DcMotorImplEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.PIDCoefficients
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
@@ -62,7 +63,9 @@ class MotorData(
             override fun setMotorCurrentAlert(motor: Int, current: Double, unit: CurrentUnit?) {}
             override fun isMotorOverCurrent(motor: Int) = thisRef.overCurrent
         },
-        0
+        0,
+        DcMotorSimple.Direction.FORWARD,
+        MotorConfigurationType()
     ) {
         override fun getZeroPowerBehavior() = thisRef.zeroPowerBehavior
         override fun getCurrentPosition() = thisRef.currentPos

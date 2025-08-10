@@ -1,5 +1,6 @@
 package org.psilynx.psikit.ftc
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
@@ -17,6 +18,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.TouchSensor
 import org.psilynx.psikit.core.LogReplaySource
 import org.psilynx.psikit.core.Logger
+import org.psilynx.psikit.ftc.inputs.PinpointInput
 import org.psilynx.psikit.ftc.structs.AnalogInputData
 import org.psilynx.psikit.ftc.structs.CrServoData
 import org.psilynx.psikit.ftc.structs.DigitalChannelData
@@ -30,24 +32,26 @@ class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
                 classOrInterface: Class<out T?>?,
                 deviceName: String?
             ) = when(classOrInterface){
-                DigitalChannel::class.java -> DigitalChannelData.empty
-                RevTouchSensor::class.java -> DigitalChannelData.empty
-                TouchSensor::class.java    -> DigitalChannelData.empty
+                GoBildaPinpointDriver::class.java -> PinpointInput(null)
 
-                AnalogInput::class.java    -> AnalogInputData.empty
+                DigitalChannel::class.java -> DigitalChannelData.empty.device
+                RevTouchSensor::class.java -> DigitalChannelData.empty.device
+                TouchSensor::class.java    -> DigitalChannelData.empty.device
 
-                CRServoImplEx::class.java  -> CrServoData.empty
-                CRServoImpl::class.java    -> CrServoData.empty
-                CRServo::class.java        -> CrServoData.empty
+                AnalogInput::class.java    -> AnalogInputData.empty.device
 
-                ServoImplEx::class.java    -> ServoData.empty
-                ServoImpl::class.java      -> ServoData.empty
-                Servo::class.java          -> ServoData.empty
+                CRServoImplEx::class.java  -> CrServoData.empty.device
+                CRServoImpl::class.java    -> CrServoData.empty.device
+                CRServo::class.java        -> CrServoData.empty.device
 
-                DcMotorImplEx::class.java  -> MotorData.empty
-                DcMotorSimple::class.java  -> MotorData.empty
-                DcMotorImpl::class.java    -> MotorData.empty
-                DcMotor::class.java        -> MotorData.empty
+                ServoImplEx::class.java    -> ServoData.empty.device
+                ServoImpl::class.java      -> ServoData.empty.device
+                Servo::class.java          -> ServoData.empty.device
+
+                DcMotorImplEx::class.java  -> MotorData.empty.device
+                DcMotorSimple::class.java  -> MotorData.empty.device
+                DcMotorImpl::class.java    -> MotorData.empty.device
+                DcMotor::class.java        -> MotorData.empty.device
 
                 else                       -> error(
                     "while replaying the OpMode " +

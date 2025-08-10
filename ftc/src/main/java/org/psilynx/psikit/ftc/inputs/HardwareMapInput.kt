@@ -89,7 +89,7 @@ class HardwareMapInput(
                 it.key == name
             }
             if(existing == null) dcMotor.put(name, value.device)
-            else (existing as MotorData.Device).thisRef = value
+            else (existing.value as MotorData.Device).thisRef = value
         }
         table.getSubtable("Servos").getAll(true).forEach { (name, _) ->
             val value = table.getSubtable("Servos").get(
@@ -100,7 +100,7 @@ class HardwareMapInput(
                 it.key == name
             }
             if(existing == null) hardwareMap.servo.put(name, value.device)
-            else (existing as ServoData.Device).thisRef = value
+            else (existing.value as ServoData.Device).thisRef = value
         }
 
         table.getSubtable("CrServos").getAll(true).forEach { (name, _) ->
@@ -112,7 +112,7 @@ class HardwareMapInput(
                 it.key == name
             }
             if(existing == null) hardwareMap.crservo.put(name, value.device)
-            else (existing as CrServoData.Device).thisRef = value
+            else (existing.value as CrServoData.Device).thisRef = value
         }
         table.getSubtable("AnalogInputs").getAll(true).forEach { (name, _) ->
             val value = table.getSubtable("AnalogInputs").get(
@@ -124,7 +124,7 @@ class HardwareMapInput(
                 it.key == name
             }
             if(existing == null) hardwareMap.analogInput.put(name, value.device)
-            else (existing as AnalogInputData.Device).thisRef = value
+            else (existing.value as AnalogInputData.Device).thisRef = value
         }
         table.getSubtable("DigitalChannels").getAll(true).forEach { (name, _) ->
             val value = table.getSubtable("DigitalChannels").get(
@@ -137,7 +137,7 @@ class HardwareMapInput(
                 it.key == name
             }
             if(existing == null) hardwareMap.digitalChannel.put(name, value.device)
-            else (existing as DigitalChannelData.Device).thisRef = value
+            else (existing.value as DigitalChannelData.Device).thisRef = value
         }
 
     }

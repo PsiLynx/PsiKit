@@ -11,9 +11,10 @@ import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.Logger
 import kotlin.math.PI
 
-class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDriver>,
+class PinpointInput(val device: GoBildaPinpointDriver?):
+    I2cInput<GoBildaPinpointDriver>,
     GoBildaPinpointDriver(
-    device?.deviceClient, true
+    device?.deviceClient ?: MockI2cDeviceSyncSimple(), true
 ) {
     var _deviceID = 0
     var _deviceVersion = 0
@@ -50,6 +51,8 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
         if(cachedEncoderX == null) cachedEncoderX = encoderX
         if(cachedEncoderY == null) cachedEncoderY = encoderY
 
+        device!!
+
         table.put("deviceId", deviceID)
         table.put("deviceVersion", deviceVersion)
         table.put("yawScalar", yawScalar)
@@ -57,14 +60,14 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
         table.put("loopTime", loopTime)
         table.put("xEncoderValue", encoderX)
         table.put("yEncoderValue", encoderY)
-        table.put("xPosition", super.getPosX(MM))
-        table.put("yPosition", super.getPosY(MM))
-        table.put("hOrientation", super.getHeading(RADIANS))
-        table.put("xVelocity", super.getVelX(MM))
-        table.put("yVelocity", super.getVelY(MM))
-        table.put("hVelocity", super.getHeadingVelocity(RADIANS))
-        table.put("xOffset", super.getXOffset(MM))
-        table.put("yOffset", super.getYOffset(MM))
+        table.put("xPosition", device.getPosX(MM))
+        table.put("yPosition", device.getPosY(MM))
+        table.put("hOrientation", device.getHeading(RADIANS))
+        table.put("xVelocity", device.getVelX(MM))
+        table.put("yVelocity", device.getVelY(MM))
+        table.put("hVelocity", device.getHeadingVelocity(RADIANS))
+        table.put("xOffset", device.getXOffset(MM))
+        table.put("yOffset", device.getYOffset(MM))
     }
 
     override fun fromLog(table: LogTable) {
@@ -88,8 +91,10 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
         _yOffset       = table.get("yOffset", 0f)
     }
 
-    override fun update(){ }
-    override fun update(unused: ReadData) { }
+    override fun update(){ if(!Logger.isReplay()) device!!.update() }
+    override fun update(readData: ReadData){
+        if(!Logger.isReplay()) device!!.update(readData)
+    }
 
     override fun getDeviceID(): Int {
         return if (Logger.isReplay()) _deviceID
@@ -97,19 +102,19 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
     }
     override fun getDeviceVersion(): Int {
         return if(Logger.isReplay()) _deviceVersion
-        else super.getDeviceVersion()
+        else device!!.deviceVersion
     }
     override fun getYawScalar(): Float {
         return if(Logger.isReplay()) _yawScalar
-        else super.getYawScalar()
+        else device!!.yawScalar
     }
     override fun getDeviceStatus(): DeviceStatus {
         return if (Logger.isReplay()) DeviceStatus.entries[_deviceStatus]
-        else super.getDeviceStatus()
+        else device!!.deviceStatus
     }
     override fun getLoopTime(): Int {
         return if (Logger.isReplay())_loopTime
-        else super.getLoopTime()
+        else device!!.loopTime
     }
     override fun getFrequency(): Double {
         return if (_loopTime != 0) {
@@ -120,55 +125,55 @@ class PinpointInput(device: GoBildaPinpointDriver?): I2cInput<GoBildaPinpointDri
     }
     override fun getEncoderX(): Int {
         return if (Logger.isReplay()) _xEncoderValue
-        else super.getEncoderX()
+        else device!!.encoderX
     }
     override fun getEncoderY(): Int {
         return if (Logger.isReplay()) _yEncoderValue
-        else super.getEncoderY()
+        else device!!.encoderY
     }
     override fun getPosX(distanceUnit: DistanceUnit): Double {
         return if (Logger.isReplay()) distanceUnit.fromMm(_xPosition)
-        else super.getPosX(distanceUnit)
+        else device!!.getPosX(distanceUnit)
     }
     override fun getPosY(distanceUnit: DistanceUnit): Double {
         return if (Logger.isReplay()) distanceUnit.fromMm(_yPosition)
-        else super.getPosY(distanceUnit)
+        else device!!.getPosY(distanceUnit)
     }
     override fun getHeading(angleUnit: AngleUnit): Double {
         return if (Logger.isReplay()) angleUnit.fromRadians(
             ( _hOrientation + PI ) % ( 2 * PI ) - PI
         )
-        else super.getHeading(angleUnit)
+        else device!!.getHeading(angleUnit)
     }
     override fun getHeading(unnormalizedAngleUnit: UnnormalizedAngleUnit): Double {
         return if (Logger.isReplay())
             unnormalizedAngleUnit.fromRadians(_hOrientation)
-        else super.getHeading(unnormalizedAngleUnit)
+        else device!!.getHeading(unnormalizedAngleUnit)
     }
     override fun getVelX(distanceUnit: DistanceUnit): Double {
         return if (Logger.isReplay()) distanceUnit.fromMm(_xVelocity)
-        else super.getVelX(distanceUnit)
+        else device!!.getVelX(distanceUnit)
     }
     override fun getVelY(distanceUnit: DistanceUnit): Double {
         return if (Logger.isReplay()) distanceUnit.fromMm(_yVelocity)
-        else super.getVelY(distanceUnit)
+        else device!!.getVelY(distanceUnit)
     }
     override fun getHeadingVelocity(
         unnormalizedAngleUnit: UnnormalizedAngleUnit
     ): Double {
         return if (Logger.isReplay())
             unnormalizedAngleUnit.fromRadians(_hOrientation)
-        else super.getHeadingVelocity(unnormalizedAngleUnit)
+        else device!!.getHeadingVelocity(unnormalizedAngleUnit)
     }
     override fun getXOffset(distanceUnit: DistanceUnit): Float {
         return if (Logger.isReplay())
             distanceUnit.fromMm(_xOffset.toDouble()).toFloat()
-        else super.getXOffset(distanceUnit)
+        else device!!.getXOffset(distanceUnit)
     }
     override fun getYOffset(distanceUnit: DistanceUnit): Float {
         return if (Logger.isReplay())
             distanceUnit.fromMm(_yOffset.toDouble()).toFloat()
-        else super.getYOffset(distanceUnit)
+        else device!!.getYOffset(distanceUnit)
     }
     override fun getPosition() = Pose2D(
         MM, getPosX(MM), getPosY(MM),
