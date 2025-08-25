@@ -1,4 +1,4 @@
-package org.psilynx.psikit.ftc.inputs
+package org.psilynx.psikit.ftc
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareDeviceHealth

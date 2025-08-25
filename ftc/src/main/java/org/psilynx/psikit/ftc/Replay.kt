@@ -18,12 +18,13 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.TouchSensor
 import org.psilynx.psikit.core.LogReplaySource
 import org.psilynx.psikit.core.Logger
-import org.psilynx.psikit.ftc.inputs.PinpointInput
-import org.psilynx.psikit.ftc.structs.AnalogInputData
-import org.psilynx.psikit.ftc.structs.CrServoData
-import org.psilynx.psikit.ftc.structs.DigitalChannelData
-import org.psilynx.psikit.ftc.structs.MotorData
-import org.psilynx.psikit.ftc.structs.ServoData
+import org.psilynx.psikit.ftc.wrappers.AnalogInputWrapper
+import org.psilynx.psikit.ftc.wrappers.CrServoWrapper
+import org.psilynx.psikit.ftc.wrappers.DigitalChannelWrapper
+import org.psilynx.psikit.ftc.wrappers.GamepadWrapper
+import org.psilynx.psikit.ftc.wrappers.MotorWrapper
+import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
+import org.psilynx.psikit.ftc.wrappers.ServoWrapper
 
 class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
     fun run(){
@@ -32,26 +33,26 @@ class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
                 classOrInterface: Class<out T?>?,
                 deviceName: String?
             ) = when(classOrInterface){
-                GoBildaPinpointDriver::class.java -> PinpointInput(null)
+                GoBildaPinpointDriver::class.java -> PinpointWrapper(null)
 
-                DigitalChannel::class.java -> DigitalChannelData.empty.device
-                RevTouchSensor::class.java -> DigitalChannelData.empty.device
-                TouchSensor::class.java    -> DigitalChannelData.empty.device
+                DigitalChannel::class.java -> DigitalChannelWrapper(null)
+                RevTouchSensor::class.java -> DigitalChannelWrapper(null)
+                TouchSensor::class.java    -> DigitalChannelWrapper(null)
 
-                AnalogInput::class.java    -> AnalogInputData.empty.device
+                AnalogInput::class.java    -> AnalogInputWrapper(null)
 
-                CRServoImplEx::class.java  -> CrServoData.empty.device
-                CRServoImpl::class.java    -> CrServoData.empty.device
-                CRServo::class.java        -> CrServoData.empty.device
+                CRServoImplEx::class.java  -> CrServoWrapper(null)
+                CRServoImpl::class.java    -> CrServoWrapper(null)
+                CRServo::class.java        -> CrServoWrapper(null)
 
-                ServoImplEx::class.java    -> ServoData.empty.device
-                ServoImpl::class.java      -> ServoData.empty.device
-                Servo::class.java          -> ServoData.empty.device
+                ServoImplEx::class.java    -> ServoWrapper(null)
+                ServoImpl::class.java      -> ServoWrapper(null)
+                Servo::class.java          -> ServoWrapper(null)
 
-                DcMotorImplEx::class.java  -> MotorData.empty.device
-                DcMotorSimple::class.java  -> MotorData.empty.device
-                DcMotorImpl::class.java    -> MotorData.empty.device
-                DcMotor::class.java        -> MotorData.empty.device
+                DcMotorImplEx::class.java  -> MotorWrapper(null)
+                DcMotorSimple::class.java  -> MotorWrapper(null)
+                DcMotorImpl::class.java    -> MotorWrapper(null)
+                DcMotor::class.java        -> MotorWrapper(null)
 
                 else                       -> error(
                     "while replaying the OpMode " +
@@ -61,6 +62,8 @@ class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
                 )
             } as T
         }
+        opMode.gamepad1 = GamepadWrapper(null)
+        opMode.gamepad2 = GamepadWrapper(null)
         Logger.setReplay(true)
         Logger.setReplaySource(replaySource)
         opMode.runOpMode()

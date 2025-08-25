@@ -1,21 +1,22 @@
-package org.psilynx.psikit.ftc.inputs
+package org.psilynx.psikit.ftc.wrappers
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit.RADIANS
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.Logger
+import org.psilynx.psikit.ftc.wrappers.HardwareInput
+import org.psilynx.psikit.ftc.MockI2cDeviceSyncSimple
 import kotlin.math.PI
 
-class PinpointInput(val device: GoBildaPinpointDriver?):
-    I2cInput<GoBildaPinpointDriver>,
+class PinpointWrapper(val device: GoBildaPinpointDriver?):
+    HardwareInput<GoBildaPinpointDriver>,
     GoBildaPinpointDriver(
-    device?.deviceClient ?: MockI2cDeviceSyncSimple(), true
-) {
+        device?.deviceClient ?: MockI2cDeviceSyncSimple(), true
+    )
+{
     var _deviceID = 0
     var _deviceVersion = 0
     var _yawScalar = 0f
@@ -40,7 +41,7 @@ class PinpointInput(val device: GoBildaPinpointDriver?):
     private var cachedEncoderX: Int? = null
     private var cachedEncoderY: Int? = null
 
-    override fun new(wrapped: GoBildaPinpointDriver) = PinpointInput(wrapped)
+    override fun new(wrapped: GoBildaPinpointDriver) = PinpointWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
         if(cachedDeviceID == null) cachedDeviceID = deviceID
@@ -60,18 +61,18 @@ class PinpointInput(val device: GoBildaPinpointDriver?):
         table.put("loopTime", loopTime)
         table.put("xEncoderValue", encoderX)
         table.put("yEncoderValue", encoderY)
-        table.put("xPosition", device.getPosX(MM))
-        table.put("yPosition", device.getPosY(MM))
-        table.put("hOrientation", device.getHeading(RADIANS))
-        table.put("xVelocity", device.getVelX(MM))
-        table.put("yVelocity", device.getVelY(MM))
-        table.put("hVelocity", device.getHeadingVelocity(RADIANS))
-        table.put("xOffset", device.getXOffset(MM))
-        table.put("yOffset", device.getYOffset(MM))
+        table.put("xPosition", device.getPosX(DistanceUnit.MM))
+        table.put("yPosition", device.getPosY(DistanceUnit.MM))
+        table.put("hOrientation", device.getHeading(UnnormalizedAngleUnit.RADIANS))
+        table.put("xVelocity", device.getVelX(DistanceUnit.MM))
+        table.put("yVelocity", device.getVelY(DistanceUnit.MM))
+        table.put("hVelocity", device.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS))
+        table.put("xOffset", device.getXOffset(DistanceUnit.MM))
+        table.put("yOffset", device.getYOffset(DistanceUnit.MM))
     }
 
     override fun fromLog(table: LogTable) {
-        _deviceID      = table.get("deviceId",0)
+        _deviceID      = table.get("deviceId", 0)
         _deviceVersion = table.get("deviceVersion", 0)
         _yawScalar     = table.get("yawScalar", 0f)
         _deviceStatus  = table.get(
@@ -141,7 +142,7 @@ class PinpointInput(val device: GoBildaPinpointDriver?):
     }
     override fun getHeading(angleUnit: AngleUnit): Double {
         return if (Logger.isReplay()) angleUnit.fromRadians(
-            ( _hOrientation + PI ) % ( 2 * PI ) - PI
+            ( _hOrientation + PI) % ( 2 * PI) - PI
         )
         else device!!.getHeading(angleUnit)
     }
@@ -176,7 +177,7 @@ class PinpointInput(val device: GoBildaPinpointDriver?):
         else device!!.getYOffset(distanceUnit)
     }
     override fun getPosition() = Pose2D(
-        MM, getPosX(MM), getPosY(MM),
+        DistanceUnit.MM, getPosX(DistanceUnit.MM), getPosY(DistanceUnit.MM),
         AngleUnit.RADIANS, getHeading(AngleUnit.RADIANS),
     )
 

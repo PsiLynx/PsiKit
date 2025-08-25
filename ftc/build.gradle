@@ -36,7 +36,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId = "org.psilynx.psikit"
                 artifactId = "ftc"
-                version = "0.1.0-alpha2-10"
+                version = "0.1.0-alpha3-1"
 
                 from components.release
 

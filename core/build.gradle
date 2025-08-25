@@ -27,7 +27,7 @@ publishing {
 	    //artifact(dairyDoc.dokkaHtmlJar)
 	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = '0.1.0-alpha2-3'
+            version = '0.1.0-alpha3-1'
             from components.java
         }
     }

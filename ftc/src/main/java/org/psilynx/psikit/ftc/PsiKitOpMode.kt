@@ -4,7 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.psilynx.psikit.core.Logger
-import org.psilynx.psikit.ftc.inputs.HardwareMapInput
+import org.psilynx.psikit.ftc.wrappers.GamepadWrapper
+import org.psilynx.psikit.ftc.HardwareMapWrapper
 
 
 abstract class PsiKitOpMode: LinearOpMode() {
@@ -13,15 +14,13 @@ abstract class PsiKitOpMode: LinearOpMode() {
      * any hardware every loop. It's safest to call it right after
      * Logger.periodicBeforeUser()
      */
-    fun processHardwareMapInput() {
-        Logger.processInputs(
-            "HardwareMap",
-            this.hardwareMap as HardwareMapInput
-        )
-        (this.hardwareMap as HardwareMapInput).devicesToProcess.forEach {
+    fun processHardwareInputs() {
+        (this.hardwareMap as HardwareMapWrapper).devicesToProcess.forEach {
             Logger.processInputs("HardwareMap/I2c/${it.key}", it.value)
         }
     }
+
+    override fun getRuntime() = Logger.getTimestamp()
 
     override fun waitForStart() {
         if(!Logger.isReplay()) super.waitForStart()
@@ -32,7 +31,9 @@ abstract class PsiKitOpMode: LinearOpMode() {
      *  to override init(), you must call super.init() as the first line.
      */
     fun psikitSetup() {
-        this.hardwareMap = HardwareMapInput(hardwareMap)
+        this.hardwareMap = HardwareMapWrapper(hardwareMap)
+        this.gamepad1 = GamepadWrapper(this.gamepad1)
+        this.gamepad2 = GamepadWrapper(this.gamepad2)
         val annotation = this::class.annotations.first {
             it is Autonomous || it is TeleOp
         }
@@ -45,8 +46,16 @@ abstract class PsiKitOpMode: LinearOpMode() {
             }
         )
         Logger.recordMetadata(
-            "Is Autonomous",
-            (annotation is Autonomous).toString()
+            "OpMode type",
+            if(annotation is Autonomous) "Autonomous" else "TeleOp"
         )
+
+        /*
+        val startedField = OpMode::class.java.fields.first {
+            it.name == "isStarted"
+        }
+        startedField.isAccessible = true
+        startedField.set(this, true)
+         */
     }
 }

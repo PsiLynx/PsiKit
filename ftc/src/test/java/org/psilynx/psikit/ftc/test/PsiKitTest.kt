@@ -39,7 +39,7 @@ class PsiKitTest {
 
                     while(Logger.getTimestamp() < 295) {
                         Logger.periodicBeforeUser()
-                        processHardwareMapInput()
+                        processHardwareInputs()
 
                         println(device.position)
 
