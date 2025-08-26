@@ -69,7 +69,8 @@ public class RLOGDecoder {
           }
         }
       } catch (EOFException ignored){
-        Logger.logInfo("got EOF, ignoring");
+        Logger.logInfo("got EOF, ending read of input file");
+        return new LogTable(table.getTimestamp(), table);
       }
 
     } catch (IOException e) {
