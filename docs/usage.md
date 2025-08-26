@@ -73,7 +73,7 @@ AdvantageKit examples will not be covered by these docs.**
 
 ### Example Op Mode
 This example opMode has everything necessary to run the 
-Psi Kit live data server
+Psi Kit live data server, and log data for replay later.
 
 ```java
 package org.firstinspires.ftc.teamcode;
@@ -81,45 +81,67 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.psilynx.psikit.core.Logger;
 import org.psilynx.psikit.core.rlog.RLOGServer;
 import org.psilynx.psikit.core.rlog.RLOGWriter;
+import org.psilynx.psikit.core.Logger;
 
-import java.util.logging.Logger;
+import org.psilynx.psikit.ftc.PsiKitOpMode;
 
-@Teleop(name = "ConceptPsiKitLogger")
-class ConceptPsiKitLogger {
+@TeleOp(name="ConceptPsiKitLogger")
+class ConceptPsiKitLogger extends PsiKitOpMode {
    @Override
-   public void init() {
+   public void runOpMode() {
       Logger.addDataReceiver(new RLOGServer());
-      Logger.addDataReceiver(new RLOGWriter("/sdcard/FIRST"));
-      Logger.recordMetadata("opMode name", "ConceptPsiKitLogger");
-      Logger.start();
-      Logger.periodicAfterUser(0, 0);
+      Logger.addDataReceiver(new RLOGWriter("/sdcard/FIRST/log.rlog"));
+      Logger.recordMetadata("some metadata", "string value");
       Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-   }
+      Logger.periodicAfterUser(0, 0);
 
-   @Override
-   public void loop() {
-      double beforeUserStart = Logger.getTimestamp();
-      Logger.periodicBeforeUser();
-      double beforeUserEnd = Logger.getTimestamp();
+      while(!getPsiKit_isStarted()){
+         Logger.periodicBeforeUser();
+
+         processHardwareInputs();
+         // this MUST come before any logic
+            
+         /*
+            
+          Init logic goes here
+            
+         */
+
+         Logger.periodicAfterUser(0.0, 0.0);
+         // logging these timestamps is completely optional
+      }
+      
+      // alternately the waitForStart() function works as expected.
+
+      while(!getPsiKit_isStopRequested()) {
+
+         double beforeUserStart = Logger.getTimestamp();
+         Logger.periodicBeforeUser();
+         double beforeUserEnd = Logger.getTimestamp();
+
+         processHardwareInputs();
+         // this MUST come before any logic
+
+         /*
+            
+          OpMode logic goes here
+             
+         */
+
+         Logger.recordOutput("OpMode/example", 2.0);
+         // example
 
 
-      // all logic goes here
-      Logger.recordOutput("OpMode/example", 2.0);
-
-
-      double afterUserStart = Logger.getTimestamp();
-      Logger.periodicAfterUser(
-              afterUserStart - beforeUserEnd,
-              beforeUserEnd - beforeUserStart
-      );
-   }
-
-   @Override
-   public void stop() {
-      Logger.end();
+         double afterUserStart = Logger.getTimestamp();
+         Logger.periodicAfterUser(
+                 afterUserStart - beforeUserEnd,
+                 beforeUserEnd - beforeUserStart
+         );
+         // alternetly, keep track of how long some things are taking. up to 
+         // you on what you want to do
+      }
    }
 }
 ```

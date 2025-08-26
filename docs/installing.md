@@ -28,7 +28,8 @@ you need to add the two lines mentioned as `IMPORTANT`
         implementation project(':FtcRobotController')
 
         // IMPORTANT
-        implementation 'org.psilynx.psikit:core:0.0.5'
+        implementation 'org.psilynx.psikit:core:0.1.0'
+        implementation 'org.psilynx.psikit:ftc:0.1.0'
         // IMPORTANT
     }
 ```
