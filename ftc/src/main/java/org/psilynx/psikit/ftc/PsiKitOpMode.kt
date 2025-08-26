@@ -1,5 +1,7 @@
 package org.psilynx.psikit.ftc
 
+import com.qualcomm.hardware.lynx.LynxModule
+import com.qualcomm.hardware.lynx.LynxModule.BulkCachingMode.MANUAL
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -9,9 +11,11 @@ import kotlin.time.measureTime
 
 
 abstract class PsiKitOpMode: LinearOpMode() {
-    val psiKit_isStopRequested get() = OpModeControls.stopped
+    val psiKitIsStopRequested get() = OpModeControls.stopped
 
-    val psiKit_isStarted get() = OpModeControls.started
+    val psiKitIsStarted get() = OpModeControls.started
+
+    lateinit var allHubs: List<LynxModule>
 
     /*
      * updates the hardware map input. this must be called before accessing
@@ -21,6 +25,8 @@ abstract class PsiKitOpMode: LinearOpMode() {
      * update this in that loop as well.
      */
     fun processHardwareInputs() {
+        allHubs.forEach(LynxModule::clearBulkCache)
+
         Logger.processInputs("OpModeControls", OpModeControls)
 
         (this.hardwareMap as HardwareMapWrapper).devicesToProcess.forEach {
@@ -44,6 +50,11 @@ abstract class PsiKitOpMode: LinearOpMode() {
      * Initializes the hardwaremap and gamepads to use the wrapped PsiKit ones, logs some metadata
      */
     fun psikitSetup() {
+        allHubs = this.hardwareMap.getAll(LynxModule::class.java)
+
+        allHubs.forEach {
+            it.bulkCachingMode = MANUAL
+        }
         this.hardwareMap = HardwareMapWrapper(hardwareMap)
         this.gamepad1 = GamepadWrapper(this.gamepad1)
         this.gamepad2 = GamepadWrapper(this.gamepad2)
