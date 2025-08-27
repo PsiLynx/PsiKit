@@ -142,6 +142,7 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
          // alternetly, keep track of how long some things are taking. up to 
          // you on what you want to do
       }
+      Logger.end();
    }
 }
 ```
