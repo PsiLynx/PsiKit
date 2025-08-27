@@ -22,7 +22,7 @@ class PsiKitTest {
         Replay(
             @TeleOp object : PsiKitOpMode() {
                 override fun runOpMode() {
-                    psikitSetup()
+                    psiKitSetup()
                     println("setup!")
 
                     val server = RLOGServer()

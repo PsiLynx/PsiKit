@@ -27,6 +27,8 @@ abstract class PsiKitOpMode: LinearOpMode() {
     fun processHardwareInputs() {
         allHubs.forEach(LynxModule::clearBulkCache)
 
+        OpModeControls.started = isStarted
+        OpModeControls.stopped = isStopRequested
         Logger.processInputs("OpModeControls", OpModeControls)
 
         (this.hardwareMap as HardwareMapWrapper).devicesToProcess.forEach {
@@ -49,7 +51,7 @@ abstract class PsiKitOpMode: LinearOpMode() {
     /*
      * Initializes the hardwaremap and gamepads to use the wrapped PsiKit ones, logs some metadata
      */
-    fun psikitSetup() {
+    fun psiKitSetup() {
         allHubs = this.hardwareMap.getAll(LynxModule::class.java)
 
         allHubs.forEach {

@@ -15,7 +15,7 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
         Logger.periodicAfterUser(0, 0);
 
-        while(!getPsiKit_isStarted()){
+        while(!getPsiKitIsStarted()){
             Logger.periodicBeforeUser();
 
             processHardwareInputs();
@@ -31,7 +31,7 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
             // logging these timestamps is completely optional
         }
 
-        while(!getPsiKit_isStopRequested()) {
+        while(!getPsiKitIsStopRequested()) {
 
             double beforeUserStart = Logger.getTimestamp();
             Logger.periodicBeforeUser();
