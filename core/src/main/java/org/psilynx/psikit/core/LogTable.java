@@ -1125,6 +1125,8 @@ public class LogTable {
       this.value = value;
     }
 
+    public Object getObject(){ return getObject(new Object()); }
+
     public byte[] getRaw() {
       return getRaw(new byte[] {});
     }
@@ -1169,6 +1171,9 @@ public class LogTable {
       return getStringArray(new String[] {});
     }
 
+    public Object getObject(Object defaultValue){
+      return value != null ? value : defaultValue;
+    }
     public byte[] getRaw(byte[] defaultValue) {
       return type == LoggableType.Raw ? (byte[]) value : defaultValue;
     }
