@@ -15,9 +15,16 @@ class AnalogInputWrapper(
     private var _voltage = 0.0
     private var _version = 0
 
-    override fun new(wrapped: AnalogInput) = AnalogInputWrapper(wrapped)
+    override fun new(wrapped: AnalogInput?) = AnalogInputWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
+        device!!
+        _connectionInfo = device.connectionInfo
+        _manufacturer   = device.manufacturer
+        _deviceName     = device.deviceName
+        _maxVoltage     = device.maxVoltage
+        _voltage        = device.voltage
+        _version        = device.version
 
         table.put("connectionInfo", connectionInfo)
         table.put("manufacturer", manufacturer)
@@ -26,12 +33,6 @@ class AnalogInputWrapper(
         table.put("voltage", voltage)
         table.put("version", version)
 
-        _connectionInfo = connectionInfo
-        _manufacturer   = manufacturer
-        _deviceName     = deviceName
-        _maxVoltage     = maxVoltage
-        _voltage        = voltage
-        _version        = version
     }
 
     override fun fromLog(table: LogTable) {

@@ -41,10 +41,10 @@ class PinpointWrapper(val device: GoBildaPinpointDriver?):
     private var cachedYOffset by Delegates.notNull<Float>()
     private var cacheFilled = false
 
-    override fun new(wrapped: GoBildaPinpointDriver) = PinpointWrapper(wrapped)
+    override fun new(wrapped: GoBildaPinpointDriver?) = PinpointWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
-        if(!cacheFilled) {
+       if(!cacheFilled) {
             cachedDeviceID = deviceID
             cachedDeviceVersion = deviceVersion
             cachedYawScalar = yawScalar
@@ -52,9 +52,11 @@ class PinpointWrapper(val device: GoBildaPinpointDriver?):
             cachedXOffset = getXOffset(DistanceUnit.MM)
             cachedYOffset = getYOffset(DistanceUnit.MM)
         }
-	cacheFilled = true
+        cacheFilled = true
 
         device!!
+
+
 
         table.put("deviceId", cachedDeviceID)
         table.put("deviceVersion", cachedDeviceVersion)

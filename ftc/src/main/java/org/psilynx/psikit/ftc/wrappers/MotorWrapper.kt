@@ -69,30 +69,32 @@ class MotorWrapper(
     private var _connectionInfo = ""
     private var _manufacturer   = HardwareDevice.Manufacturer.Other
 
-    override fun new(wrapped: DcMotorImplEx) = MotorWrapper(wrapped)
+    override fun new(wrapped: DcMotorImplEx?) = MotorWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
-        table.put("zeroPowerBehavior", zeroPowerBehavior)
-        table.put("powerFloat", powerFloat)
-        table.put("overCurrent", isOverCurrent)
-        table.put("currentPos", currentPosition)
-        table.put("currentVel", velocity)
-        table.put("power", power)
-        table.put("deviceName", deviceName)
-        table.put("version", version)
-        table.put("connectionInfo", connectionInfo)
-        table.put("manufacturer", manufacturer)
+        device!!
+        _zeroPowerBehavior = device.zeroPowerBehavior
+        _powerFloat        = device.powerFloat
+        _overCurrent       = device.isOverCurrent
+        _currentPos        = device.currentPosition
+        _currentVel        = device.velocity
+        _power             = device.power
+        _deviceName        = device.deviceName
+        _version           = device.version
+        _connectionInfo    = device.connectionInfo
+        _manufacturer      = device.manufacturer
 
-        _zeroPowerBehavior = zeroPowerBehavior
-        _powerFloat        = powerFloat
-        _overCurrent       = isOverCurrent
-        _currentPos        = currentPosition
-        _currentVel        = velocity
-        _power             = power
-        _deviceName        = deviceName
-        _version           = version
-        _connectionInfo    = connectionInfo
-        _manufacturer      = manufacturer
+        table.put("zeroPowerBehavior", _zeroPowerBehavior)
+        table.put("powerFloat", _powerFloat)
+        table.put("overCurrent", _overCurrent)
+        table.put("currentPos", _currentPos)
+        table.put("currentVel", _currentVel)
+        table.put("power", _power)
+        table.put("deviceName", _deviceName)
+        table.put("version", _version)
+        table.put("connectionInfo", _connectionInfo)
+        table.put("manufacturer", _manufacturer)
+
     }
 
     override fun fromLog(table: LogTable) {

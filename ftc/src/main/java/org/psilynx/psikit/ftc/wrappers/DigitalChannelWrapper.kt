@@ -16,9 +16,17 @@ class DigitalChannelWrapper(
     private var _connectionInfo = ""
     private var _manufacturer   = HardwareDevice.Manufacturer.Other
 
-    override fun new(wrapped: DigitalChannel) = DigitalChannelWrapper(wrapped)
+    override fun new(wrapped: DigitalChannel?) = DigitalChannelWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
+        device!!
+        _mode          = device.mode
+        _state         = device.state
+        _deviceName    = device.deviceName
+        _version       = device.version
+        _connectionInfo = device.connectionInfo
+        _manufacturer   = device.manufacturer
+
         table.put("mode", mode)
         table.put("state", state)
         table.put("deviceName", deviceName)
@@ -26,12 +34,6 @@ class DigitalChannelWrapper(
         table.put("connectionInfo", connectionInfo)
         table.put("manufacturer", manufacturer)
 
-        _mode          = mode
-        _state         = state
-        _deviceName    = deviceName
-        _version       = version
-        _connectionInfo = connectionInfo
-        _manufacturer   = manufacturer
     }
 
     override fun fromLog(table: LogTable) {

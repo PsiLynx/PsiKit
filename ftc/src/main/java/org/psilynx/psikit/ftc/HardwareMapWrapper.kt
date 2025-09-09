@@ -41,9 +41,9 @@ import java.util.Spliterator
 import java.util.function.Consumer
 
 class HardwareMapWrapper(
-    val hardwareMap: HardwareMap
+    val hardwareMap: HardwareMap?
 ): HardwareMap(
-    hardwareMap.appContext,
+    hardwareMap?.appContext,
     null
 ){
     /*
@@ -64,6 +64,7 @@ class HardwareMapWrapper(
             Servo::class.java                 to ServoWrapper(null),
         )
     internal val devicesToProcess = mutableMapOf<String, LoggableInputs>()
+    /*
     init {
         this.allDeviceMappings.forEach { mapping ->
             this.getAll(mapping.deviceTypeClass)
@@ -74,14 +75,15 @@ class HardwareMapWrapper(
         }
 
     }
+     */
 
     private fun <T : Any> wrap(
         classOrInterface: Class<out T?>?,
         name: String,
-        device: T
+        device: T?
     ): T {
         if(device is HardwareInput<*>) return device
-        if(device !is HardwareDevice) Logger.logCritical(
+        if(device !is HardwareDevice && device != null) Logger.logCritical(
             "tried to get something from the hardwaremap that doesn't extend"
             + " HardwareDevice"
         )
@@ -116,12 +118,12 @@ class HardwareMapWrapper(
             is LED -> this.led.put( name, device )
             else -> {
                 Logger.logWarning(
-                    "device type ${device::class.qualifiedName} "
-                    + "not in all device mappings"
+                    "device type ${device?.apply { this::class.qualifiedName }}"
+                    + " not in all device mappings"
                 )
             }
         }
-        device as HardwareDevice
+        device as HardwareDevice?
         val wrapper = (
             deviceWrappers[classOrInterface as Class<HardwareDevice>]
             as? HardwareInput<HardwareDevice>
@@ -134,7 +136,14 @@ class HardwareMapWrapper(
             devicesToProcess.put(name, wrapper)
             return wrapper as T
         }
-        else return device
+        if (device != null) return device
+        else {
+            Logger.logCritical(
+                "device to wrap is null, and no wrapper can be found." +
+                " exiting with error"
+            )
+            error("")
+        }
     }
 
     override fun <T : Any> get(
@@ -143,11 +152,16 @@ class HardwareMapWrapper(
     ) = wrap(
         classOrInterface,
         deviceName,
-        hardwareMap.get<T>(classOrInterface, deviceName)
+        hardwareMap?.get<T>(classOrInterface, deviceName)
     )
 
     override fun <T : Any> getAll(classOrInterface: Class<out T>): List<T> {
-        return hardwareMap.getAll(classOrInterface).map {
+
+        Logger.logError(
+            "method getAll not wrapped correctly, it is very "
+            + "likely that using this will break determinism"
+        )
+        return hardwareMap?.getAll(classOrInterface)?.map {
             val name = getNamesOf(it as HardwareDevice).first()
             if(name == null) {
                 Logger.logError(
@@ -159,28 +173,52 @@ class HardwareMapWrapper(
                 name ?: "None",
                 it
             )
-        }
+        } ?: listOf()
     }
 
-    override fun get(deviceName: String): HardwareDevice {
-        val device = hardwareMap.get(deviceName)
+    override fun get(deviceName: String): HardwareDevice? {
+        Logger.logError(
+            "method get (without a class) not wrapped correctly, it is very "
+            + "likely that using this will break determinism"
+        )
+
+        val device = hardwareMap?.get(deviceName)
+        if(device == null) return null
+
         return wrap(device::class.java, deviceName, device)
     }
 
     override fun forEach(action: Consumer<in HardwareDevice>) {
-        hardwareMap.forEach(action)
+        hardwareMap?.forEach(action)
     }
 
     override fun spliterator(): Spliterator<HardwareDevice?> {
+        Logger.logError(
+            "method spliterator not wrapped correctly, it is very "
+            + "likely that using this will break determinism"
+            + " I'm gonna be real, I have no idea what a \"Spliterator\" is "
+            + "or why I should waste my time implementing it"
+        )
+        if(hardwareMap == null) error(
+            "okay you can't even get the spliterator in replay"
+        )
         return hardwareMap.spliterator()
     }
 
     override fun getAllNames(classOrInterface: Class<out HardwareDevice?>?): SortedSet<String?>? {
-        return hardwareMap.getAllNames(classOrInterface)
+        Logger.logError(
+            "method getAllNames not wrapped correctly, it is very "
+            + "likely that using this will break determinism"
+        )
+        return hardwareMap?.getAllNames(classOrInterface) ?: sortedSetOf()
     }
 
     override fun getNamesOf(device: HardwareDevice?): Set<String?> {
-        return hardwareMap.getNamesOf(device)
+        Logger.logWarning(
+            "you used hardwaremap.getNamesOf, this does not 100% guarantee "
+            + "determinsism (also like what are you even using it for"
+        )
+        return hardwareMap?.getNamesOf(device) ?: setOf(device?.deviceName)
     }
 
     override fun <T : Any?> get(
@@ -188,11 +226,13 @@ class HardwareMapWrapper(
         serialNumber: SerialNumber?
     ): T {
 
-        val device = hardwareMap.get(classOrInterface, serialNumber)!!
-        val name = getNamesOf(device as HardwareDevice).first()
+        val device = hardwareMap?.get(classOrInterface, serialNumber)
+        val name = getNamesOf(device as? HardwareDevice).first()
         if(name == null) {
             Logger.logError(
-                "couldn't get a name for ${device::class.qualifiedName}"
+                "couldn't get a name for ${
+                    device?.apply { this::class .qualifiedName}
+                }"
             )
         };
         return wrap(
@@ -203,24 +243,31 @@ class HardwareMapWrapper(
     }
 
     override fun iterator(): MutableIterator<HardwareDevice?> {
+        Logger.logError(
+            "method iterator not wrapped correctly, it is very "
+            + "likely that using this will break determinism"
+        )
+        if(hardwareMap == null) error(
+            "okay you can't even get the iterator in replay"
+        )
         return hardwareMap.iterator()
     }
 
     override fun toString(): String {
-        return hardwareMap.toString()
+        return hardwareMap?.toString() ?: super.toString()
     }
 
     override fun <T : Any> tryGet(
         classOrInterface: Class<out T>,
         deviceName: String
     ): T? {
-        val device = hardwareMap.get(deviceName)
+        val device = hardwareMap?.tryGet<T>(classOrInterface, deviceName)
         return (
-            if(device != null) wrap(
-                device::class.java,
+            if(hardwareMap == null || device != null) wrap(
+                classOrInterface,
                 deviceName,
                 device
-            ) as T
+            ) as T?
 
             else null
         )

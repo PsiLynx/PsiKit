@@ -25,7 +25,7 @@ abstract class PsiKitOpMode: LinearOpMode() {
      * update this in that loop as well.
      */
     fun processHardwareInputs() {
-        allHubs.forEach(LynxModule::clearBulkCache)
+        allHubs.forEach { it.clearBulkCache() }
 
         OpModeControls.started = isStarted
         OpModeControls.stopped = isStopRequested
@@ -33,7 +33,7 @@ abstract class PsiKitOpMode: LinearOpMode() {
 
         (this.hardwareMap as HardwareMapWrapper).devicesToProcess.forEach {
             val timeToLog = measureTime {
-                Logger.processInputs("HardwareMap/I2c/${it.key}", it.value)
+                Logger.processInputs("HardwareMap/${it.key}", it.value)
             }
             Logger.recordOutput(
                 "PsiKit/logTimes (us)/${it.key}",

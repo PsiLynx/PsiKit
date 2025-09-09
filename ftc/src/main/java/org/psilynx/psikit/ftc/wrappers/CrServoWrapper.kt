@@ -46,28 +46,31 @@ class CrServoWrapper(private val device: CRServoImplEx?):
     private var _connectionInfo = ""
     private var _manufacturer   = HardwareDevice.Manufacturer.Other
 
-    override fun new(wrapped: CRServoImplEx) = CrServoWrapper(wrapped)
+    override fun new(wrapped: CRServoImplEx?) = CrServoWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
+        device!!
+
+        _direction      = device.direction
+        _power          = device.power
+        _pwmLower       = device.pwmRange.usPulseLower.toDouble()
+        _pwmUpper       = device.pwmRange.usPulseUpper.toDouble()
+        _pwmEnabled     = device.isPwmEnabled
+        _deviceName     = device.deviceName
+        _version        = device.version
+        _connectionInfo = device.connectionInfo
+        _manufacturer   = device.manufacturer
+
         table.put("direction", direction)
         table.put("power", power)
-        table.put("pwmLower", pwmRange.usPulseLower.toDouble())
-        table.put("pwmUpper", pwmRange.usPulseUpper.toDouble())
+        table.put("pwmLower", pwmRange.usPulseLower)
+        table.put("pwmUpper", pwmRange.usPulseUpper)
         table.put("pwmEnabled", isPwmEnabled)
         table.put("deviceName", deviceName)
         table.put("version", version)
         table.put("connectionInfo", connectionInfo)
         table.put("manufacturer", manufacturer)
 
-        _direction      = direction
-        _power          = power
-        _pwmLower       = pwmRange.usPulseLower.toDouble()
-        _pwmUpper       = pwmRange.usPulseUpper.toDouble()
-        _pwmEnabled     = isPwmEnabled
-        _deviceName     = deviceName
-        _version        = version
-        _connectionInfo = connectionInfo
-        _manufacturer   = manufacturer
     }
 
     override fun fromLog(table: LogTable) {

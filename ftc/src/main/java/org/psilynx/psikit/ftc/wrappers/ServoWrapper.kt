@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import org.psilynx.psikit.core.LogTable
 
-class ServoWrapper(private val servo: ServoImplEx?):
+class ServoWrapper(private val device: ServoImplEx?):
     ServoImplEx(
         object : ServoControllerEx {
             override fun setServoPwmRange(servo: Int, range: PwmControl.PwmRange) {}
@@ -40,29 +40,35 @@ class ServoWrapper(private val servo: ServoImplEx?):
 
     override fun getDirection(): Servo.Direction = _direction
     override fun setDirection(direction: Servo.Direction) {
-        servo?.direction = direction
+        device?.direction = direction
     }
 
     override fun getPosition(): Double = _position
     override fun setPosition(position: Double) {
-        servo?.position = position
+        device?.position = position
     }
 
     override fun getPwmRange(): PwmControl.PwmRange = _pwmRange
     override fun setPwmRange(range: PwmControl.PwmRange) {
-        servo?.pwmRange = range
+        device?.pwmRange = range
     }
 
     override fun isPwmEnabled(): Boolean = _pwmEnabled
     override fun setPwmEnable() {
-        servo?.setPwmEnable()
+        device?.setPwmEnable()
     }
 
     override fun setPwmDisable() {
-        servo?.setPwmDisable()
+        device?.setPwmDisable()
     }
 
     override fun toLog(table: LogTable) {
+        device!!
+        _direction = device.direction
+        _position = device.position
+        _pwmRange = device.pwmRange
+        _pwmEnabled = device.isPwmEnabled
+
         table.put("Direction", direction.ordinal)
         table.put("Position", position)
         table.put("PwmLower", pwmRange.usPulseLower)
@@ -79,5 +85,5 @@ class ServoWrapper(private val servo: ServoImplEx?):
         _pwmEnabled = table.get("PwmEnabled", isPwmEnabled)
     }
 
-    override fun new(wrapped: ServoImplEx) = ServoWrapper(wrapped)
+    override fun new(wrapped: ServoImplEx?) = ServoWrapper(wrapped)
 }

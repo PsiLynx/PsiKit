@@ -1,6 +1,5 @@
 package org.psilynx.psikit.ftc.wrappers
 
-import android.R.attr.version
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.psilynx.psikit.core.LogTable
@@ -15,20 +14,24 @@ class VoltageSensorWrapper(
     private var _connectionInfo = ""
     private var _manufacturer = HardwareDevice.Manufacturer.Other
 
-    override fun new(wrapped: VoltageSensor) = VoltageSensorWrapper(wrapped)
+    override fun new(wrapped: VoltageSensor?) = VoltageSensorWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
+        device!!
+
+        _voltage = device.voltage
+        _deviceName = device.deviceName
+        _version = device.version
+        _connectionInfo = device.connectionInfo
+        _manufacturer = device.manufacturer
+
         table.put("voltage", voltage)
         table.put("deviceName", deviceName)
         table.put("version", version)
         table.put("connectionInfo", connectionInfo)
         table.put("manufacturer", manufacturer)
 
-        _voltage = voltage
-        _deviceName = deviceName
-        _version = version
-        _connectionInfo = connectionInfo
-        _manufacturer = manufacturer
+
     }
 
     override fun fromLog(table: LogTable) {
