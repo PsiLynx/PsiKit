@@ -1,12 +1,12 @@
 package org.psilynx.psikit.ftc.test
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.psilynx.psikit.core.Logger
 import org.psilynx.psikit.core.rlog.RLOGReplay
 import org.psilynx.psikit.core.rlog.RLOGServer
+import org.psilynx.psikit.ftc.GoBildaPinpointDriver
 import org.psilynx.psikit.ftc.PsiKitOpMode
 import org.psilynx.psikit.ftc.Replay
 import org.robolectric.RobolectricTestRunner

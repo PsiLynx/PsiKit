@@ -1,6 +1,6 @@
 package org.psilynx.psikit.ftc
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.hardware.AccelerationSensor
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
@@ -35,6 +35,7 @@ import org.psilynx.psikit.ftc.wrappers.HardwareInput
 import org.psilynx.psikit.ftc.wrappers.MotorWrapper
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 import org.psilynx.psikit.ftc.wrappers.ServoWrapper
+import org.psilynx.psikit.ftc.wrappers.SparkFunOTOSWrapper
 import org.psilynx.psikit.ftc.wrappers.VoltageSensorWrapper
 import java.util.SortedSet
 import java.util.Spliterator
@@ -58,6 +59,7 @@ class HardwareMapWrapper(
 
             DigitalChannel::class.java        to DigitalChannelWrapper(null),
             VoltageSensor::class.java         to VoltageSensorWrapper(null),
+            SparkFunOTOS::class.java          to SparkFunOTOSWrapper(null),
             AnalogInput::class.java           to AnalogInputWrapper(null),
             CRServo::class.java               to CrServoWrapper(null),
             DcMotor::class.java               to MotorWrapper(null),

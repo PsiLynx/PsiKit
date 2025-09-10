@@ -52,12 +52,13 @@ abstract class PsiKitOpMode: LinearOpMode() {
      * Initializes the hardwaremap and gamepads to use the wrapped PsiKit ones, logs some metadata
      */
     fun psiKitSetup() {
+        this.hardwareMap = HardwareMapWrapper(hardwareMap)
+
         allHubs = this.hardwareMap.getAll(LynxModule::class.java)
 
         allHubs.forEach {
             it.bulkCachingMode = MANUAL
         }
-        this.hardwareMap = HardwareMapWrapper(hardwareMap)
         this.gamepad1 = GamepadWrapper(this.gamepad1)
         this.gamepad2 = GamepadWrapper(this.gamepad2)
         val annotation = this::class.annotations.firstOrNull {

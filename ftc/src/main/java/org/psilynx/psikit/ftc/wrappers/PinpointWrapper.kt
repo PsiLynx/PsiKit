@@ -1,12 +1,13 @@
 package org.psilynx.psikit.ftc.wrappers
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.Logger
+import org.psilynx.psikit.ftc.GoBildaPinpointDriver
 import org.psilynx.psikit.ftc.MockI2cDeviceSyncSimple
 import kotlin.math.PI
 import kotlin.properties.Delegates
@@ -32,6 +33,12 @@ class PinpointWrapper(val device: GoBildaPinpointDriver?):
     var _hVelocity = 0.0
     var _xOffset = 0f
     var _yOffset = 0f
+    var _quaternionW = 0f
+    var _quaternionX = 0f
+    var _quaternionY = 0f
+    var _quaternionZ = 0f
+    var _pitch = 0.0
+    var _roll = 0.0
 
     private var cachedDeviceID by Delegates.notNull<Int>()
     private var cachedDeviceVersion by Delegates.notNull<Int>()
@@ -73,6 +80,14 @@ class PinpointWrapper(val device: GoBildaPinpointDriver?):
         table.put("xVelocity", device.getVelX(DistanceUnit.MM))
         table.put("yVelocity", device.getVelY(DistanceUnit.MM))
         table.put("hVelocity", device.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS))
+        if(deviceVersion > 1){
+            table.put("quaternionW", device.quaternion.w)
+            table.put("quaternionX", device.quaternion.x)
+            table.put("quaternionY", device.quaternion.y)
+            table.put("quaternionZ", device.quaternion.z)
+            table.put("pitch", device.getPitch(AngleUnit.RADIANS))
+            table.put("roll", device.getRoll(AngleUnit.RADIANS))
+        }
     }
 
     override fun fromLog(table: LogTable) {
@@ -94,11 +109,29 @@ class PinpointWrapper(val device: GoBildaPinpointDriver?):
         _hVelocity     = table.get("hVelocity", 0.0)
         _xOffset       = table.get("xOffset", 0f)
         _yOffset       = table.get("yOffset", 0f)
+        if(deviceVersion > 1){
+            _quaternionW = table.get("quaternionW", 0f)
+            _quaternionX = table.get("quaternionX", 0f)
+            _quaternionY = table.get("quaternionY", 0f)
+            _quaternionZ = table.get("quaternionZ", 0f)
+            _pitch = table.get("pitch", 0.0)
+            _roll = table.get("roll", 0.0)
+
+        }
     }
 
-    override fun update(){ if(!Logger.isReplay()) device!!.update() }
-    override fun update(readData: ReadData){
-        if(!Logger.isReplay()) device!!.update(readData)
+    override fun update(){ device?.update() }
+
+    override fun readRegister(register: Register){
+        device?.readRegister (register)
+    }
+
+    override fun setBulkReadScope(vararg registers: Register){
+        device?.setBulkReadScope(*registers)
+    }
+
+    override fun setErrorDetectionType(e: ErrorDetectionType){
+        device?.setErrorDetectionType(e)
     }
 
     override fun getDeviceID(): Int {
@@ -208,5 +241,33 @@ class PinpointWrapper(val device: GoBildaPinpointDriver?):
         DistanceUnit.MM, getPosX(DistanceUnit.MM), getPosY(DistanceUnit.MM),
         AngleUnit.RADIANS, getHeading(AngleUnit.RADIANS),
     )
+
+    override fun getQuaternion(): Quaternion{
+        if(deviceVersion < 2) throw RuntimeException(
+            "Quaternion output is not supported on this device firmware"
+        );
+        return device?.quaternion ?: Quaternion(
+            _quaternionW,
+            _quaternionX,
+            _quaternionY,
+            _quaternionZ,
+            0,
+        )
+    }
+    override fun getPitch(angleUnit: AngleUnit): Double{
+        if(deviceVersion < 2) throw RuntimeException(
+            "IMU Pitch output is not supported on this device firmware"
+        );
+        return if (Logger.isReplay()) angleUnit.fromRadians(_pitch)
+               else device!!.getPitch(angleUnit)
+    }
+
+    override fun getRoll(angleUnit: AngleUnit): Double{
+        if(deviceVersion < 2) throw RuntimeException(
+            "IMU Roll output is not supported on this device firmware"
+        );
+        return if (Logger.isReplay()) angleUnit.fromRadians(_roll)
+               else device!!.getRoll(angleUnit)
+    }
 
 }
