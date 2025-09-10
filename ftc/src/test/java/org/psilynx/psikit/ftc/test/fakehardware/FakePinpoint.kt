@@ -1,11 +1,11 @@
 package org.psilynx.psikit.ftc.test.fakehardware
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
+import org.psilynx.psikit.ftc.GoBildaPinpointDriver
 import kotlin.Double.Companion.NaN
 import kotlin.random.Random
 

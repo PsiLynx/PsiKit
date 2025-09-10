@@ -1,6 +1,5 @@
 package org.psilynx.psikit.ftc.test.fakehardware
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
@@ -10,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import org.psilynx.psikit.ftc.GoBildaPinpointDriver
 
 object FakeHardwareMap : JVMHardwareMap() {
     override var deviceTypes:
