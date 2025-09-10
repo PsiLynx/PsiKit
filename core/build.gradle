@@ -10,8 +10,8 @@ group = 'org.psilynx.psikit'
 publishing {
     repositories {
         maven {
-            name = "dairyPrivate"
-            url = uri("https://repo.dairy.foundation/private")
+            name = "dairyRelease"
+            url = uri("https://repo.dairy.foundation/releases")
             credentials(PasswordCredentials)
 
             authentication {
@@ -27,7 +27,7 @@ publishing {
 	    //artifact(dairyDoc.dokkaHtmlJar)
 	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = '0.1.0-alpha3-7'
+            version = '0.1.0-beta1'
             from components.java
         }
     }
