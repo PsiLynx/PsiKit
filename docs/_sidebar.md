@@ -3,5 +3,6 @@
 * [Installing](installing.md)
 * [Usage](usage.md)
 * [Replay](replay.md)
+* [Supported Hardware)(supported.md)]
 * [Install Advantage Scope](installAscope.md)
 * [changelog](changelog.md)
