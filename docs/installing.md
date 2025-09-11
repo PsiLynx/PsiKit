@@ -1,36 +1,34 @@
 # Installation process
 ![TeamCode build.gradle](_media/teamcode_build_gradle.png)
-1. This is the TeamCode build.gradle, (**in blue above**)
-you need to add the two lines mentioned as `IMPORTANT`
+1. This is the TeamCode `build.gradle` (**in blue above**), you need to add the two lines mentioned as `IMPORTANT`:
 ```groovy
-    // TeamCode/build.gradle
-    
-    apply from: '../build.common.gradle'
-    apply from: '../build.dependencies.gradle'
+// TeamCode/build.gradle
 
-    android {
-        namespace = 'org.firstinspires.ftc.teamcode'
-        
-        packagingOptions {
-            jniLibs.useLegacyPackaging true
-        }
-    }
-    repositories {
-        
-        // IMPORTANT
-        maven { url 'https://repo.dairy.foundation/releases' }
-        // IMPORTANT
-        
-        // (thanks to dairy for hosting!)
-    }
+apply from: '../build.common.gradle'
+apply from: '../build.dependencies.gradle'
 
-    dependencies {
-        implementation project(':FtcRobotController')
+android {
+    namespace = 'org.firstinspires.ftc.teamcode'
 
-        // IMPORTANT
-        implementation 'org.psilynx.psikit:core:0.1.0'
-        implementation 'org.psilynx.psikit:ftc:0.1.0'
-        // IMPORTANT
+    packagingOptions {
+        jniLibs.useLegacyPackaging true
     }
+}
+repositories {
+
+    // IMPORTANT (thanks to dairy for hosting!)
+    maven { url 'https://repo.dairy.foundation/releases' }
+    // IMPORTANT (thanks to dairy for hosting!)
+
+}
+
+dependencies {
+    implementation project(':FtcRobotController')
+
+    // IMPORTANT
+    implementation 'org.psilynx.psikit:core:0.1.0'
+    implementation 'org.psilynx.psikit:ftc:0.1.0'
+    // IMPORTANT
+}
 ```
-### That's It! Everything's Installed, You Can Move On To The &nbsp;[Usage Guide](usage.md)
+### That's it!  Everything's installed, you can now move on to the [Usage Guide](usage.md)
