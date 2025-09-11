@@ -1,6 +1,7 @@
 # Installation process
 ![TeamCode build.gradle](_media/teamcode_build_gradle.png)
 1. This is the TeamCode `build.gradle` (**in blue above**), you need to add the two lines mentioned as `IMPORTANT`:
+
 ```groovy
 // TeamCode/build.gradle
 
@@ -45,4 +46,5 @@ dependencies {
     // IMPORTANT
 }
 ```
-### That's it!  Everything's installed, you can now move on to the [Usage Guide](usage.md)
+
+### That's it!  Everything's installed, you can now move on to the&nbsp;[Usage Guide](usage.md)

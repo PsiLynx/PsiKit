@@ -38,4 +38,4 @@ If you have questions, feel free to ping `@Avery | 3825 | PsiKit` in the [Unoffi
 ### PRs are Welcome and Accepted. 
 If there are any features you think should come sooner, please feel free to open a PR. 
 
-### Next, read the [Installation Guide](installing.md)
+### Next, read the&nbsp;[Installation Guide](installing.md)

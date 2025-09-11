@@ -44,7 +44,7 @@ ___
 
 **The [AdvantageScope Tab Reference](https://docs.advantagescope.org/category/tab-reference) is a very good resource; things that work the same in PsiKit as in the AdvantageKit examples will not be covered by these docs.**
 
-## Next, [Start Using Replay](/replay.md)
+## Next,&nbsp;[Start Using Replay](/replay.md)
 
 ### Example OpMode
 This example OpMode has everything necessary to run the PsiKit live data server, and log data for replay later.
@@ -125,4 +125,4 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
    }
 }
 ```
-## Next, [Install Advantage Scope](installAscope.md)
+## Next,&nbsp;[Install Advantage Scope](installAscope.md)
