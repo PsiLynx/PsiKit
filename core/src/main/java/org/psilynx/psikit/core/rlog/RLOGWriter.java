@@ -24,16 +24,10 @@ public class RLOGWriter implements LogDataReceiver {
   private FileOutputStream fileOutputStream = null;
   private double lastTimestamp = 0.0;
 
-  public RLOGWriter(){
+  public RLOGWriter(String fileName){
     this(
             "/sdcard/FIRST/",
-            "Log_" + Date.from(Instant.now())
-    );
-  }
-  public RLOGWriter(String folderName){
-    this(
-            folderName,
-            "Log_" + Date.from(Instant.now())
+            fileName
     );
   }
   public RLOGWriter(String folder, String fileName){
