@@ -9,4 +9,4 @@
 [Installation](installing.md)
 [Get Started](#PsiKit)
 
-![](_media/background.png)
+![](_media/background.jpg)
