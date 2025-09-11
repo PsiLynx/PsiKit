@@ -91,8 +91,13 @@ import org.psilynx.psikit.ftc.PsiKitOpMode;
 class ConceptPsiKitLogger extends PsiKitOpMode {
    @Override
    public void runOpMode() {
-      Logger.addDataReceiver(new RLOGServer());
-      Logger.addDataReceiver(new RLOGWriter("/sdcard/FIRST/log.rlog"));
+      psiKitSetup();
+      RLOGServer server = new RLOGServer();
+      RLOGWriter writer = new RLOGWriter("logs.rlog");
+      server.start();
+      writer.start();
+      Logger.addDataReceiver(server);
+      Logger.addDataReceiver(writer);
       Logger.recordMetadata("some metadata", "string value");
       Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
       Logger.periodicAfterUser(0, 0);
