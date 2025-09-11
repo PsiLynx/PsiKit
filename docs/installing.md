@@ -11,22 +11,8 @@ apply from: '../build.dependencies.gradle'
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
-
     packagingOptions {
         jniLibs.useLegacyPackaging true
-        
-        // IMPORTANT
-        implementation 'org.psilynx.psikit:core:0.1.0-beta1'
-        implementation 'org.psilynx.psikit:ftc:0.1.0-beta1'
-        
-        // these are for replay
-        testImplementation "org.robolectric:robolectric:4.12.1"
-        testImplementation 'junit:junit:4.12'
-        testImplementation "io.mockk:mockk:1.14.5"
-        testImplementation "io.mockk:mockk-android:1.14.5"
-        testImplementation "io.mockk:mockk-agent:1.14.5"
-
-        // IMPORTANT
     }
 }
 repositories {
@@ -41,8 +27,16 @@ dependencies {
     implementation project(':FtcRobotController')
 
     // IMPORTANT
-    implementation 'org.psilynx.psikit:core:0.1.0'
-    implementation 'org.psilynx.psikit:ftc:0.1.0'
+    implementation 'org.psilynx.psikit:core:0.1.0-beta1'
+    implementation 'org.psilynx.psikit:ftc:0.1.0-beta1'
+
+    // these are for replay
+    testImplementation "org.robolectric:robolectric:4.12.1"
+    testImplementation 'junit:junit:4.12'
+    testImplementation "io.mockk:mockk:1.14.5"
+    testImplementation "io.mockk:mockk-android:1.14.5"
+    testImplementation "io.mockk:mockk-agent:1.14.5"
+
     // IMPORTANT
 }
 ```
