@@ -1,5 +1,5 @@
 ![logo](_media/logo.png)
-> Psi Kit, the AdvantageKit port for FTC
+> PsiKit, the AdvantageKit port for FTC
 
 - Live, 3D view of the whole field
 - Robot mechanism figures
@@ -7,6 +7,6 @@
 
 [GitHub](https://github.com/psilynx/PsiKit/)
 [Installation](installing.md)
-[Get Started](#Psi-Kit)
+[Get Started](#PsiKit)
 
 ![](_media/background.png)

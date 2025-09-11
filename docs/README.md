@@ -1,6 +1,6 @@
-# Psi Kit
+# PsiKit
 
-[AdvantageKit](https://docs.advantagekit.org) is a logging and replay framework for FRC, as well as a server to provide [AdvantageScope](https://docs.advantagescope.com) with live data. Psi Kit removes the dependency on FRC tooling, allowing it to be used in FTC (or any other Java project).
+[AdvantageKit](https://docs.advantagekit.org) is a logging and replay framework for FRC, as well as a server to provide [AdvantageScope](https://docs.advantagescope.com) with live data. PsiKit removes the dependency on FRC tooling, allowing it to be used in FTC (or any other Java project).
 
 ### Current Features
 
@@ -24,7 +24,7 @@
 * Some features should work, but are untested. these are: 
   - Comparison to a video of the match
 
-> Note that most of the abilities that advantage kit offers in the non-live aspect are coming soon.
+> Note that most of the abilities that AdvantageKit offers in the non-live aspect are coming soon.
 
 ### Coming Soon
 * Live tuning of variables

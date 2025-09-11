@@ -1,6 +1,6 @@
 # Replay
 
-Replay is a very powerful feature in Psi Kit. It allows you to record all the inputs your code receives, and then replay the code from a log file. This allows you to replay the **exact internal state of the robot code**, as it was while the robot was running
+Replay is a very powerful feature in PsiKit. It allows you to record all the inputs your code receives, and then replay the code from a log file. This allows you to replay the **exact internal state of the robot code**, as it was while the robot was running
 
 ### Common Use Cases:
 * Replay logs from when a bug occurred, and:
