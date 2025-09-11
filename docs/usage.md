@@ -19,7 +19,7 @@ The class you will interact the most with is `Logger`. It acts as a manager for 
 6. During stop, call `Logger.end()` so it can clean things up.
 
 ## Other Methods
-In addition to the methods listed above, here are the most common ways you will interact with Psi Kit:
+In addition to the methods listed above, here are the most common ways you will interact with PsiKit:
 
 ### `Logger.recordOutput(String key, T value)`
 
@@ -39,15 +39,15 @@ Returns the current time in seconds since `Logger.start()` was called. Currently
 
 ### Classes such as `Pose2d` and `LoggedMechanism2d`
 
-Most classes referenced in the advantage scope docs are available in Psi Kit, ones that are part of WPI are in `psikit.wpi.*`.
+Most classes referenced in the advantage scope docs are available in PsiKit, ones that are part of WPI are in `psikit.wpi.*`.
 ___
 
-**The [AdvantageScope Tab Reference](https://docs.advantagescope.org/category/tab-reference) is a very good resource; things that work the same in Psi Kit as in the AdvantageKit examples will not be covered by these docs.**
+**The [AdvantageScope Tab Reference](https://docs.advantagescope.org/category/tab-reference) is a very good resource; things that work the same in PsiKit as in the AdvantageKit examples will not be covered by these docs.**
 
-## Next, [Start Using Replay](/replay.md)
+## Next,&nbsp;[Start Using Replay](/replay.md)
 
 ### Example OpMode
-This example OpMode has everything necessary to run the Psi Kit live data server, and log data for replay later.
+This example OpMode has everything necessary to run the PsiKit live data server, and log data for replay later.
 
 ```java
 package org.firstinspires.ftc.teamcode;
@@ -125,4 +125,4 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
    }
 }
 ```
-## Next, [Install Advantage Scope](installAscope.md)
+## Next,&nbsp;[Install Advantage Scope](installAscope.md)
