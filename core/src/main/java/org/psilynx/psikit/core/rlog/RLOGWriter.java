@@ -27,8 +27,8 @@ public class RLOGWriter implements LogDataReceiver {
 
   public RLOGWriter(String fileName){
     this(
-            "/sdcard/FIRST/PsiKit/",
-            fileName
+      "/sdcard/FIRST/PsiKit/",
+      fileName
     );
   }
   public RLOGWriter(String folder, String fileName){

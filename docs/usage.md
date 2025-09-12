@@ -1,7 +1,6 @@
 # Usage Guide
-### Minimum Configuration
-The class you will interact the most with is `Logger`.
-It acts as a manager for all the I/O going on.
+## Minimum Configuration
+The class you will interact the most with is `Logger`. It acts as a manager for all the I/O going on.
 
 1. During OpMode initialization, create an `RLOGServer` and call it's `start()` 
    method
@@ -19,50 +18,36 @@ It acts as a manager for all the I/O going on.
 > If, for some reason, you cannot subclass `PsiKitOpMode`, please look 
 > through it's code to see what additional methods you must call
 
-### Other Methods
-In addition to the methods listed above, here are the most common ways
-you will interact Psi Kit
-___
-> `Logger.recordOutput(String key, T value)`
+## Other Methods
+In addition to the methods listed above, here are the most common ways you will interact with Psi Kit:
 
-Where T is any primitive, String, Enum, `LoggedMechanism2D`, or a class that implements
-`WPISerializable` or `StructSerializable`, or a 1-2D array of
-those types. This is how you make data available to advantage scope.
-data structures like `Pose2d` implement `StructSerializable`, so you
-can automatically use them. This method must be called once per loop
-for the data to stay on advantageScope.
-The logger has a concept of tables and subtables, and `key` is split
-on `"/"` characters, and the pieces are used as subtables. for instance,
-if you log `a` to `Foo/Bar` and `b` to `Foo/Baz`, you will see
+### `Logger.recordOutput(String key, T value)`
+
+Where `T` is any primitive, `String`, `Enum`, `LoggedMechanism2D`, or a class that implements `WPISerializable` or `StructSerializable`, or a 1-2D array of those types. This is how you make data available to advantage scope.
+
+Data structures like `Pose2d` implement `StructSerializable`, so you can automatically use them. This method must be called once per loop for the data to stay on AdvantageScope. The logger has a concept of tables and subtables, and `key` is split on `/` characters, and the pieces are used as subtables. for instance, if you log `a` to `Foo/Bar` and `b` to `Foo/Baz`, you will see:
 ```
 Foo
 ├─ Bar   a
 └─ Baz   b
 ```
-It is recommended to log things in the same file in the same parent
-table, using the class name, for instance.
-___
-> `Logger.getTimestamp()`
+It is recommended to log things in the same file in the same parent table, using the class name, for instance.
 
-Returns the current time in seconds since `Logger.start()` was called.
-Currently just uses `System.nanoTime()`, but in the future, using that
-function as your time source will be very important in order to properly
-replay data.
-___
-> Classes such as `Pose2d` and `LoggedMechanism2d`
+### `Logger.getTimestamp()`
 
-Most classes referenced in the advantage scope docs are available in
-Psi Kit, ones that are part of WPI are in `psikit.wpi.*`.
+Returns the current time in seconds since `Logger.start()` was called. Currently just uses `System.nanoTime()`, but in the future, using that function as your time source will be very important in order to proper replay data. 
+
+### Classes such as `Pose2d` and `LoggedMechanism2d`
+
+Most classes referenced in the advantage scope docs are available in Psi Kit, ones that are part of WPI are in `psikit.wpi.*`.
 ___
 
-**The [AdvantageScope Tab Reference](https://docs.advantagescope.org/category/tab-reference)
-is a very good resource, things that work the same in Psi Kit as in the
-AdvantageKit examples will not be covered by these docs.**
+**The [AdvantageScope Tab Reference](https://docs.advantagescope.org/category/tab-reference) is a very good resource; things that work the same in Psi Kit as in the AdvantageKit examples will not be covered by these docs.**
 
-### Next, &nbsp;[Start Using Replay](/replay.md)
+## Next, [Start Using Replay](/replay.md)
 
-### Example Op Mode
-This example opMode has everything necessary to run the
+### Example OpMode
+This example OpMode has everything necessary to run the
 Psi Kit live data server, and log data for replay later.
 
 ```java
@@ -196,4 +181,4 @@ class ConceptPsiKitLogger extends PsiKitLinearOpMode {
     }
 }
 ```
-### Next, &nbsp;[Install Advantage Scope](installAscope.md)
+## Next, [Install Advantage Scope](installAscope.md)

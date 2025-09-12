@@ -1,8 +1,8 @@
 * [Home](/)
-* [Comparison to FTC Dash](compare.md)
+* [Comparison to FTC Dashboard](compare.md)
 * [Installing](installing.md)
 * [Usage](usage.md)
 * [Replay](replay.md)
-* [Supported Hardware)(supported.md)]
+* [Supported Hardware](supported.md)
 * [Install Advantage Scope](installAscope.md)
-* [changelog](changelog.md)
+* [Changelog](changelog.md)
