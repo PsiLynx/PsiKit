@@ -26,6 +26,10 @@ public class ReceiverThread extends Thread {
     dataReceivers.add(dataReceiver);
   }
 
+  List<LogDataReceiver> getReceivers(){
+    return dataReceivers;
+  }
+
   public void run() {
     // Start data receivers
     for (int i = 0; i < dataReceivers.size(); i++) {

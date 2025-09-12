@@ -188,6 +188,10 @@ public class Logger {
       if (replaySource != null) {
         replaySource.end();
       }
+      List<LogDataReceiver> receivers = receiverThread.getReceivers();
+      for( LogDataReceiver receiver : receivers ){
+        receiver.end();
+      }
       receiverThread.interrupt();
       try {
         receiverThread.join();
