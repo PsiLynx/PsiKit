@@ -2,12 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.psilynx.psikit.core.wpi;
+package org.psilynx.psikit.core.wpi.math;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.psilynx.psikit.core.wpi.MathUtil;
+import org.psilynx.psikit.core.wpi.StructSerializable;
 
 import java.util.Collections;
 import java.util.Comparator;

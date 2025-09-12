@@ -11,32 +11,28 @@ import org.psilynx.psikit.core.LogDataReceiver;
 import org.psilynx.psikit.core.LogTable;
 import org.psilynx.psikit.core.Logger;
 
-import java.io.*;
-import java.time.Instant;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 
 /** Sends log data over a socket connection using the RLOG format. */
 public class RLOGWriter implements LogDataReceiver {
   private RLOGEncoder encoder = new RLOGEncoder();
   private static final Object encoderLock = new Object();
   private final String filePath;
+  private final String folder;
   private FileOutputStream fileOutputStream = null;
   private double lastTimestamp = 0.0;
 
-  public RLOGWriter(){
+  public RLOGWriter(String fileName){
     this(
-            "/sdcard/FIRST/",
-            "Log_" + Date.from(Instant.now())
-    );
-  }
-  public RLOGWriter(String folderName){
-    this(
-            folderName,
-            "Log_" + Date.from(Instant.now())
+            "/sdcard/FIRST/PsiKit/",
+            fileName
     );
   }
   public RLOGWriter(String folder, String fileName){
+    this.folder = folder;
     if(!folder.endsWith("/")){
       folder = folder + "/";
     }
@@ -50,6 +46,7 @@ public class RLOGWriter implements LogDataReceiver {
   public void start() {
     Logger.logInfo("RLOG writer started");
     File file = new File(filePath);
+    file.mkdirs();
     file.delete();
     try {
       file.createNewFile();

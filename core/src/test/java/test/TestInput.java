@@ -2,9 +2,7 @@ package test;
 
 import org.psilynx.psikit.core.LogTable;
 import org.psilynx.psikit.core.LoggableInputs;
-import org.psilynx.psikit.core.wpi.Pose2d;
-
-import java.util.Map;
+import org.psilynx.psikit.core.wpi.math.Pose2d;
 
 class TestInput implements LoggableInputs {
     public int number;
