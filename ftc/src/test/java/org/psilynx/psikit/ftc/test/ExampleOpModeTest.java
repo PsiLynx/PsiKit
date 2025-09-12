@@ -4,9 +4,9 @@ package org.psilynx.psikit.ftc.test;
 import org.psilynx.psikit.core.Logger;
 import org.psilynx.psikit.core.rlog.RLOGServer;
 import org.psilynx.psikit.core.rlog.RLOGWriter;
-import org.psilynx.psikit.ftc.PsiKitOpMode;
+import org.psilynx.psikit.ftc.PsiKitLinearOpMode;
 
-class ConceptPsiKitLogger extends PsiKitOpMode {
+class ConceptPsiKitLogger extends PsiKitLinearOpMode {
     @Override
     public void runOpMode() {
         Logger.addDataReceiver(new RLOGServer());

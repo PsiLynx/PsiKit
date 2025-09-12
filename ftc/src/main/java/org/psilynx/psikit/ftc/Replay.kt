@@ -4,7 +4,7 @@ import org.psilynx.psikit.core.LogReplaySource
 import org.psilynx.psikit.core.Logger
 import org.psilynx.psikit.ftc.wrappers.GamepadWrapper
 
-class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
+class Replay(val opMode: PsiKitLinearOpMode, val replaySource: LogReplaySource) {
     fun run(){
         opMode.hardwareMap = null
         opMode.gamepad1 = GamepadWrapper(null)
@@ -12,6 +12,5 @@ class Replay(val opMode: PsiKitOpMode, val replaySource: LogReplaySource) {
         Logger.setReplay(true)
         Logger.setReplaySource(replaySource)
         opMode.runOpMode()
-
     }
 }
