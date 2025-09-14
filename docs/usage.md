@@ -23,7 +23,7 @@ In addition to the methods listed above, here are the most common ways you will 
 
 ### `Logger.recordOutput(String key, T value)`
 
-Where `T` is any primitive, `String`, `Enum`, `LoggedMechanism2D`, or a class that implements `WPISerializable` or `StructSerializable`, or a 1-2D array of those types. This is how you make data available to advantage scope.
+Where `T` is any primitive, `String`, `Enum`, `LoggedMechanism2D`, or a class that implements `WPISerializable` or `StructSerializable`, or a 1-2D array of those types. This is how you make data available to AdvantageScope.
 
 Data structures like `Pose2d` implement `StructSerializable`, so you can automatically use them. This method must be called once per loop for the data to stay on AdvantageScope. The logger has a concept of tables and subtables, and `key` is split on `/` characters, and the pieces are used as subtables. for instance, if you log `a` to `Foo/Bar` and `b` to `Foo/Baz`, you will see:
 ```
@@ -39,7 +39,7 @@ Returns the current time in seconds since `Logger.start()` was called. Currently
 
 ### Classes such as `Pose2d` and `LoggedMechanism2d`
 
-Most classes referenced in the advantage scope docs are available in PsiKit, ones that are part of WPI are in `psikit.wpi.*`.
+Most classes referenced in the AdvantageScope docs are available in PsiKit, ones that are part of WPI are in `psikit.wpi.*`.
 ___
 
 **The [AdvantageScope Tab Reference](https://docs.advantagescope.org/category/tab-reference) is a very good resource; things that work the same in PsiKit as in the AdvantageKit examples will not be covered by these docs.**
@@ -125,4 +125,4 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
    }
 }
 ```
-## Next,&nbsp;[Install Advantage Scope](installAscope.md)
+## Next,&nbsp;[Install AdvantageScope](installAscope.md)

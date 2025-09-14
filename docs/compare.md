@@ -1,13 +1,9 @@
 # Comparison to FTC Dashboard
 
-| Feature           | PsiKit                                                                                                                            | FTC Dashboard                                                                    |
-|-------------------|-----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| Logging           | ✅ Supports logging inputs and outputs, as well as replaying those log files                                                       | 🚫 No log support                                                                |
-| Preference saving | ✅ AdvantageScope automatically saves which values you were trying to display where, **even through computer power cycles**        | ⚠️ You must add values you want to graph back in every time you start the OpMode |
-| Telemetry         | ✅ Display any primitive data types and Strings, as well as poses, mechanisms, and custom data types                               | ⚠️ Display primitive data types and strings only                                 |
-| 2D field          | ✅ Logged poses and arrays of poses can be **automatically** drawn as robots, arrows, paths, or other visual representations       | ⚠️ Must draw all shapes yourself                                                 |
-| 3D field          | ✅ See robot and mechanism positions in 3D, on a 3D field model of the game. Import cad models of your robot and see it move in 3D | 🚫 No 3D support                                                                 |
-| Mechanisms        | ✅ See stick representations of mechanisms. Support for rotating joints and extending ligaments.                                   | 🚫 No mechanism view support                                                     |
-| Live value change | 🚫 No live value change support (FTC Dashboard-style tuning coming soon)                                                          | ✅ Changing values causes immediate updates on the robot                          |
-| Statistics        | ✅ Run statistical analysis of values                                                                                              | 🚫 No statistical analysis tools                                                 |
-| Console           | ✅ `System.out` is automatically logged and available for view on AdvantageScope                                                   | 🚫 No `System.out` logging                                                       |
+| Feature                      | PsiKit                                                                                              | FTC Dashboard                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Logging                      | ✅ Supports logging inputs and outputs, as well as replaying those log files                        | 🚫 No log support                                        |
+| Telemetry                    | ✅ Record any primitive data types and Strings, as well as poses, mechanisms, and custom data types | ⚠️ Display primitive data types and strings only         |
+| Live value change            | 🚫 No live value change support (FTC Dashboard-style tuning coming soon)                            | ✅ Changing values causes immediate updates on the robot |
+| Console                      | ✅ `System.out` is automatically logged                                                             | 🚫 No `System.out` logging                               |
+| AdvantageScope compatibility | ✅ Live streaming with RLOG                                                                         | ✅ Live streaming with FTC dashboard protocol            |
