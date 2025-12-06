@@ -4,6 +4,8 @@
 
 package org.psilynx.psikit.core.wpi.math;
 
+import org.psilynx.psikit.core.wpi.Struct;
+
 import java.nio.ByteBuffer;
 
 public class Twist3dStruct implements Struct<Twist3d> {

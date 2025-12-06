@@ -173,9 +173,9 @@ public class Transform3d implements StructSerializable {
    */
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof Transform3d other
-        && other.m_translation.equals(m_translation)
-        && other.m_rotation.equals(m_rotation);
+    return obj instanceof Transform3d
+        && ((Transform3d) obj).m_translation.equals(m_translation)
+        && ((Transform3d) obj).m_rotation.equals(m_rotation);
   }
 
   @Override

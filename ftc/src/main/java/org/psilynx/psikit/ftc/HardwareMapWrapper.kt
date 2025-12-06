@@ -65,7 +65,6 @@ class HardwareMapWrapper(
             DcMotor::class.java               to MotorWrapper(null),
             Servo::class.java                 to ServoWrapper(null),
         )
-    internal val devicesToProcess = mutableMapOf<String, LoggableInputs>()
     /*
     init {
         this.allDeviceMappings.forEach { mapping ->
@@ -275,4 +274,7 @@ class HardwareMapWrapper(
         )
     }
 
+    companion object {
+        internal val devicesToProcess = mutableMapOf<String, LoggableInputs>()
+    }
 }

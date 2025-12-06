@@ -61,35 +61,6 @@ public class Pose3d implements StructSerializable {
     m_rotation = rotation;
   }
 
-  /**
-   * Constructs a pose with x, y, and z translations instead of a separate Translation3d. The X, Y,
-   * and Z translations will be converted to and tracked as meters.
-   *
-   * @param x The x component of the translational component of the pose.
-   * @param y The y component of the translational component of the pose.
-   * @param z The z component of the translational component of the pose.
-   * @param rotation The rotational component of the pose.
-   */
-  public Pose3d(Distance x, Distance y, Distance z, Rotation3d rotation) {
-    this(x.in(Meters), y.in(Meters), z.in(Meters), rotation);
-  }
-
-  /**
-   * Constructs a pose with the specified affine transformation matrix.
-   *
-   * @param matrix The affine transformation matrix.
-   * @throws IllegalArgumentException if the affine transformation matrix is invalid.
-   */
-  public Pose3d(Matrix<N4, N4> matrix) {
-    m_translation = new Translation3d(matrix.get(0, 3), matrix.get(1, 3), matrix.get(2, 3));
-    m_rotation = new Rotation3d(matrix.block(3, 3, 0, 0));
-    if (matrix.get(3, 0) != 0.0
-        || matrix.get(3, 1) != 0.0
-        || matrix.get(3, 2) != 0.0
-        || matrix.get(3, 3) != 1.0) {
-      throw new IllegalArgumentException("Affine transformation matrix is invalid");
-    }
-  }
 
   /**
    * Constructs a 3D pose from a 2D pose in the X-Y plane.
@@ -164,32 +135,6 @@ public class Pose3d implements StructSerializable {
     return m_translation.getZ();
   }
 
-  /**
-   * Returns the X component of the pose's translation in a measure.
-   *
-   * @return The x component of the pose's translation in a measure.
-   */
-  public Distance getMeasureX() {
-    return m_translation.getMeasureX();
-  }
-
-  /**
-   * Returns the Y component of the pose's translation in a measure.
-   *
-   * @return The y component of the pose's translation in a measure.
-   */
-  public Distance getMeasureY() {
-    return m_translation.getMeasureY();
-  }
-
-  /**
-   * Returns the Z component of the pose's translation in a measure.
-   *
-   * @return The z component of the pose's translation in a measure.
-   */
-  public Distance getMeasureZ() {
-    return m_translation.getMeasureZ();
-  }
 
   /**
    * Returns the rotational component of the transformation.
@@ -274,111 +219,6 @@ public class Pose3d implements StructSerializable {
   }
 
   /**
-   * Obtain a new Pose3d from a (constant curvature) velocity.
-   *
-   * <p>The twist is a change in pose in the robot's coordinate frame since the previous pose
-   * update. When the user runs exp() on the previous known field-relative pose with the argument
-   * being the twist, the user will receive the new field-relative pose.
-   *
-   * <p>"Exp" represents the pose exponential, which is solving a differential equation moving the
-   * pose forward in time.
-   *
-   * @param twist The change in pose in the robot's coordinate frame since the previous pose update.
-   *     For example, if a non-holonomic robot moves forward 0.01 meters and changes angle by 0.5
-   *     degrees since the previous pose update, the twist would be Twist3d(0.01, 0.0, 0.0, new new
-   *     Rotation3d(0.0, 0.0, Units.degreesToRadians(0.5))).
-   * @return The new pose of the robot.
-   */
-  public Pose3d exp(Twist3d twist) {
-    var quaternion = this.getRotation().getQuaternion();
-    double[] resultArray =
-        Pose3dJNI.exp(
-            this.getX(),
-            this.getY(),
-            this.getZ(),
-            quaternion.getW(),
-            quaternion.getX(),
-            quaternion.getY(),
-            quaternion.getZ(),
-            twist.dx,
-            twist.dy,
-            twist.dz,
-            twist.rx,
-            twist.ry,
-            twist.rz);
-    return new Pose3d(
-        resultArray[0],
-        resultArray[1],
-        resultArray[2],
-        new Rotation3d(
-            new Quaternion(resultArray[3], resultArray[4], resultArray[5], resultArray[6])));
-  }
-
-  /**
-   * Returns a Twist3d that maps this pose to the end pose. If c is the output of {@code a.Log(b)},
-   * then {@code a.Exp(c)} would yield b.
-   *
-   * @param end The end pose for the transformation.
-   * @return The twist that maps this to end.
-   */
-  public Twist3d log(Pose3d end) {
-    var thisQuaternion = this.getRotation().getQuaternion();
-    var endQuaternion = end.getRotation().getQuaternion();
-    double[] resultArray =
-        Pose3dJNI.log(
-            this.getX(),
-            this.getY(),
-            this.getZ(),
-            thisQuaternion.getW(),
-            thisQuaternion.getX(),
-            thisQuaternion.getY(),
-            thisQuaternion.getZ(),
-            end.getX(),
-            end.getY(),
-            end.getZ(),
-            endQuaternion.getW(),
-            endQuaternion.getX(),
-            endQuaternion.getY(),
-            endQuaternion.getZ());
-    return new Twist3d(
-        resultArray[0],
-        resultArray[1],
-        resultArray[2],
-        resultArray[3],
-        resultArray[4],
-        resultArray[5]);
-  }
-
-  /**
-   * Returns an affine transformation matrix representation of this pose.
-   *
-   * @return An affine transformation matrix representation of this pose.
-   */
-  public Matrix<N4, N4> toMatrix() {
-    var vec = m_translation.toVector();
-    var mat = m_rotation.toMatrix();
-    return MatBuilder.fill(
-        Nat.N4(),
-        Nat.N4(),
-        mat.get(0, 0),
-        mat.get(0, 1),
-        mat.get(0, 2),
-        vec.get(0),
-        mat.get(1, 0),
-        mat.get(1, 1),
-        mat.get(1, 2),
-        vec.get(1),
-        mat.get(2, 0),
-        mat.get(2, 1),
-        mat.get(2, 2),
-        vec.get(2),
-        0.0,
-        0.0,
-        0.0,
-        1.0);
-  }
-
-  /**
    * Returns a Pose2d representing this Pose3d projected into the X-Y plane.
    *
    * @return A Pose2d representing this Pose3d projected into the X-Y plane.
@@ -416,33 +256,15 @@ public class Pose3d implements StructSerializable {
    */
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof Pose3d pose
-        && m_translation.equals(pose.m_translation)
-        && m_rotation.equals(pose.m_rotation);
+    return obj instanceof Pose3d
+        && m_translation.equals(((Pose3d) obj).m_translation)
+        && m_rotation.equals(((Pose3d) obj).m_rotation);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(m_translation, m_rotation);
   }
-
-  @Override
-  public Pose3d interpolate(Pose3d endValue, double t) {
-    if (t < 0) {
-      return this;
-    } else if (t >= 1) {
-      return endValue;
-    } else {
-      var twist = this.log(endValue);
-      var scaledTwist =
-          new Twist3d(
-              twist.dx * t, twist.dy * t, twist.dz * t, twist.rx * t, twist.ry * t, twist.rz * t);
-      return this.exp(scaledTwist);
-    }
-  }
-
-  /** Pose3d protobuf for serialization. */
-  public static final Pose3dProto proto = new Pose3dProto();
 
   /** Pose3d struct for serialization. */
   public static final Pose3dStruct struct = new Pose3dStruct();

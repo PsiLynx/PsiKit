@@ -31,7 +31,7 @@ abstract class PsiKitLinearOpMode: LinearOpMode() {
         OpModeControls.stopped = isStopRequested
         Logger.processInputs("OpModeControls", OpModeControls)
 
-        (this.hardwareMap as HardwareMapWrapper).devicesToProcess.forEach {
+        HardwareMapWrapper.devicesToProcess.forEach {
             val timeToLog = measureTime {
                 Logger.processInputs("HardwareMap/${it.key}", it.value)
             }

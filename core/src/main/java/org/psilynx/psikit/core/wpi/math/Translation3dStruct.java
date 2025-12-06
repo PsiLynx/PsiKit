@@ -4,8 +4,8 @@
 
 package org.psilynx.psikit.core.wpi.math;
 
-wpi.first.math.geometry.Translation3d;
-wpi.first.util.struct.Struct;
+import org.psilynx.psikit.core.wpi.Struct;
+
 import java.nio.ByteBuffer;
 
 public class Translation3dStruct implements Struct<Translation3d> {
