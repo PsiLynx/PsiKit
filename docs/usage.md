@@ -69,9 +69,6 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
         var server = new RLOGServer();
         var writer = new RLOGWriter();
 
-        server.start();
-        writer.start();
-
         Logger.addDataReceiver(new RLOGServer());
         Logger.addDataReceiver(new RLOGWriter("log.rlog"));
 
