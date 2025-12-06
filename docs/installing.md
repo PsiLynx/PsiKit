@@ -1,22 +1,15 @@
 # Installation process
 ![TeamCode build.gradle](_media/teamcode_build_gradle.png)
-1. This is the TeamCode `build.gradle` (**in blue above**), you need to add the two lines mentioned as `IMPORTANT`:
-```
-// TeamCode/build.gradle
-apply from: '../build.common.gradle'
-apply from: '../build.dependencies.gradle'
-android {
-    namespace = 'org.firstinspires.ftc.teamcode'
-    packagingOptions {
-        jniLibs.useLegacyPackaging true
-    }
-}
+1. This is the TeamCode `build.gradle` (**in blue above**), you need to add the three lines mentioned as `IMPORTANT`:
+```groovy
 repositories {
     // IMPORTANT
     maven { url 'https://repo.dairy.foundation/releases' }
     // IMPORTANT (thanks to dairy for hosting!)
 }
+```
 
+```groovy
 dependencies {
     implementation project(':FtcRobotController')
     // IMPORTANT
