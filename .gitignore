@@ -13,6 +13,9 @@ build/**
 core/build/**
 ftc/build/**
 
+# compiled outputs (should never be committed)
+core/bin/**
+
 logs/**
 core/logs/**
 !core/logs/testLog.rlog
