@@ -5,7 +5,7 @@ import org.junit.Test
 import org.psilynx.psikit.core.Logger
 import org.psilynx.psikit.core.rlog.RLOGReplay
 import org.psilynx.psikit.core.rlog.RLOGServer
-import org.psilynx.psikit.ftc.PsiKitOpMode
+import org.psilynx.psikit.ftc.PsiKitLinearOpMode
 import org.psilynx.psikit.ftc.Replay
 import org.psilynx.psikit.ftc.wrappers.GamepadWrapper
 import org.psilynx.psikit.ftc.test.fakehardware.FakeGamepad
@@ -15,7 +15,7 @@ class GamepadTest {
         println("starting....")
         val replaySource = RLOGReplay("testLog.rlog")
         Replay(
-            @TeleOp object : PsiKitOpMode() {
+            @TeleOp object : PsiKitLinearOpMode() {
                 override fun runOpMode() {
                     var i = 0
                     Logger.setTimeSource { i.toDouble() / 4 }

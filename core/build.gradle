@@ -9,13 +9,21 @@ group = 'org.psilynx.psikit'
 
 publishing {
     repositories {
-        maven {
-            name = "dairyRelease"
-            url = uri("https://repo.dairy.foundation/releases")
-            credentials(PasswordCredentials)
+        def dairyReleaseUsername = providers.gradleProperty("dairyReleaseUsername").orNull
+        def dairyReleasePassword = providers.gradleProperty("dairyReleasePassword").orNull
+        if (dairyReleaseUsername != null && dairyReleasePassword != null) {
+            maven {
+                name = "dairyRelease"
+                url = uri("https://repo.dairy.foundation/releases")
 
-            authentication {
-                basic(BasicAuthentication)
+                credentials {
+                    username = dairyReleaseUsername
+                    password = dairyReleasePassword
+                }
+
+                authentication {
+                    basic(BasicAuthentication)
+                }
             }
         }
     }
@@ -27,7 +35,7 @@ publishing {
 	    //artifact(dairyDoc.dokkaHtmlJar)
 	    //artifact(dairyDoc.dokkaJavadocJar)
 
-            version = '0.1.0-beta1'
+            version = '0.1.0-beta2'
             from components.java
         }
     }

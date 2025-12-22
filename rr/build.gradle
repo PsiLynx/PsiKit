@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'org.psilynx.psikit.ftc'
+    namespace 'org.psilynx.psikit.rr'
     compileSdk 35
 
     defaultConfig {
@@ -35,8 +35,8 @@ afterEvaluate {
         publications {
             maven(MavenPublication) {
                 groupId = "org.psilynx.psikit"
-                artifactId = "ftc"
-                version = "0.1.0-beta2"
+                artifactId = "rr"
+                version = "0.1.0-beta1"
 
                 from components.release
 
@@ -87,9 +87,11 @@ repositories {
         }
     }
     maven { url "https://repo.dairy.foundation/releases" }
+    maven { url "https://maven.brott.dev" }
 }
 
 dependencies {
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.25"
 
     api "org.firstinspires.ftc:RobotCore:10.3.0"
     api "org.firstinspires.ftc:Hardware:10.3.0"
@@ -98,6 +100,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "org.jetbrains.kotlin:kotlin-reflect:2.0.0"
+    implementation project(':core')
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation "org.robolectric:robolectric:4.12.1"

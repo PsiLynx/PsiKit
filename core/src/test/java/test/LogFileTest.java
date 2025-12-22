@@ -6,8 +6,8 @@ import org.psilynx.psikit.core.rlog.RLOGReplay;
 import org.psilynx.psikit.core.Logger;
 import org.psilynx.psikit.core.rlog.RLOGDecoder;
 import org.psilynx.psikit.core.rlog.RLOGWriter;
-import org.psilynx.psikit.core.wpi.Pose2d;
-import org.psilynx.psikit.core.wpi.Rotation2d;
+import org.psilynx.psikit.core.wpi.math.Pose2d;
+import org.psilynx.psikit.core.wpi.math.Rotation2d;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
