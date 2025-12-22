@@ -37,7 +37,7 @@ public class ReceiverThread extends Thread {
     }
 
     try {
-      while (true) {
+      while (!isInterrupted()) {
         LogTable entry = queue.take(); // Wait for data
 
         // Send data to receivers
@@ -45,8 +45,21 @@ public class ReceiverThread extends Thread {
           dataReceivers.get(i).putTable(entry);
         }
       }
-    } catch (InterruptedException exception) {
-      exception.printStackTrace();
+    } catch (InterruptedException ignored) {
+      // Normal shutdown path.
+    } finally {
+      // Drain any remaining queued entries before ending receivers.
+      LogTable entry;
+      while ((entry = queue.poll()) != null) {
+        for (int i = 0; i < dataReceivers.size(); i++) {
+          try {
+            dataReceivers.get(i).putTable(entry);
+          } catch (InterruptedException ignored) {
+            // Ignore; we're shutting down.
+          }
+        }
+      }
+
       // End all data receivers
       for (int i = 0; i < dataReceivers.size(); i++) {
         dataReceivers.get(i).end();

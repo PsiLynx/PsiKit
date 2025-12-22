@@ -188,10 +188,8 @@ public class Logger {
       if (replaySource != null) {
         replaySource.end();
       }
-      List<LogDataReceiver> receivers = receiverThread.getReceivers();
-      for( LogDataReceiver receiver : receivers ){
-        receiver.end();
-      }
+
+      // Stop the receiver thread and allow it to drain queued entries before ending receivers.
       receiverThread.interrupt();
       try {
         receiverThread.join();
@@ -223,10 +221,10 @@ public class Logger {
         if (!replaySource.updateTable(entry)) {
           Logger.logInfo(
             "logger received false from " +
-            "replay source, ending and exiting"
+            "replay source, ending"
           );
           end();
-          System.exit(0);
+          return;
         }
       }
 
@@ -961,6 +959,11 @@ public class Logger {
   }
   public static void setSimulation(boolean simulation) {
       Logger.simulation = simulation;
+  }
+
+  /** Returns whether the logging system has been started and is currently running. */
+  public static boolean isRunning() {
+    return running;
   }
 
   public static boolean isReplay() {
