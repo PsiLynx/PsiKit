@@ -44,13 +44,21 @@ afterEvaluate {
         }
 
         repositories {
-            maven {
-                name = "dairyRelease"
-                url = uri("https://repo.dairy.foundation/releases")
-                credentials(PasswordCredentials)
+            def dairyReleaseUsername = providers.gradleProperty("dairyReleaseUsername").orNull
+            def dairyReleasePassword = providers.gradleProperty("dairyReleasePassword").orNull
+            if (dairyReleaseUsername != null && dairyReleasePassword != null) {
+                maven {
+                    name = "dairyRelease"
+                    url = uri("https://repo.dairy.foundation/releases")
 
-                authentication {
-                    basic(BasicAuthentication)
+                    credentials {
+                        username = dairyReleaseUsername
+                        password = dairyReleasePassword
+                    }
+
+                    authentication {
+                        basic(BasicAuthentication)
+                    }
                 }
             }
         }
@@ -61,13 +69,21 @@ afterEvaluate {
 repositories {
     google()
     mavenCentral()
-    maven {
-        name = "dairyPrivate"
-        url = uri("https://repo.dairy.foundation/private")
-        credentials(PasswordCredentials)
+    def dairyPrivateUsername = providers.gradleProperty("dairyPrivateUsername").orNull
+    def dairyPrivatePassword = providers.gradleProperty("dairyPrivatePassword").orNull
+    if (dairyPrivateUsername != null && dairyPrivatePassword != null) {
+        maven {
+            name = "dairyPrivate"
+            url = uri("https://repo.dairy.foundation/private")
 
-        authentication {
-            basic(BasicAuthentication)
+            credentials {
+                username = dairyPrivateUsername
+                password = dairyPrivatePassword
+            }
+
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
     maven { url "https://repo.dairy.foundation/releases" }
