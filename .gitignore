@@ -13,7 +13,7 @@ build/**
 core/build/**
 ftc/build/**
 
-# compiled outputs (should never be committed)
+# compiled outputs
 core/bin/**
 
 logs/**
