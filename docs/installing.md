@@ -18,4 +18,5 @@ dependencies {
     // IMPORTANT
 }
 ```
-### That's it!  Everything's installed, you can now move on to the [Usage Guide](usage.md)
+
+### That's it!  Everything's installed, you can now move on to the&nbsp;[Usage Guide](usage.md)
