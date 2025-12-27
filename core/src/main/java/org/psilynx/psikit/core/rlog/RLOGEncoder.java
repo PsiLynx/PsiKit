@@ -23,6 +23,43 @@ import java.util.Map;
  * Converts log tables to the RLOG format. Based on RLOG R2 with support for custom type strings.
  */
 public class RLOGEncoder {
+  /**
+   * RLOG revision 2 on-disk format (as written by this class).
+   *
+   * <p>File begins with a single-byte log revision (only once, at the start of the stream):</p>
+   * <pre>
+   *   [revision]
+   * </pre>
+   *
+   * <p>The remainder of the stream is a sequence of <b>records</b>. Each record begins with a
+   * 1-byte record type:</p>
+   * <pre>
+   *   0x00: Timestamp record (begins a cycle)
+   *   0x01: Key definition
+   *   0x02: Field value update
+   * </pre>
+   *
+   * <p><b>Timestamp record</b> (cycle delimiter):</p>
+   * <pre>
+   *   [0x00][double timestamp]
+   * </pre>
+   * A cycle starts with a timestamp record. The next timestamp record indicates the start of the
+   * <i>next</i> cycle and terminates the current one.
+   *
+   * <p><b>Key definition</b>:</p>
+   * <pre>
+   *   [0x01][short keyId][short keyLen][key UTF-8 bytes][short typeLen][type UTF-8 bytes]
+   * </pre>
+   * Where keyLen/typeLen are the byte lengths of the corresponding UTF-8 strings.
+   *
+   * <p><b>Field update</b>:</p>
+   * <pre>
+   *   [0x02][short keyId][short payloadLen][payload bytes]
+   * </pre>
+   * The payload is encoded according to the key's WPILOG type string. For custom/raw types
+   * (including structs and struct schemas), the type string is written as-is and the payload is
+   * the raw byte array.
+   */
   public static final byte logRevision = (byte) 2;
 
   private ByteBuffer nextOutput;
