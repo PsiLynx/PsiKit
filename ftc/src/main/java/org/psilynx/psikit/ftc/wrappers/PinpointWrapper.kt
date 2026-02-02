@@ -1,273 +1,337 @@
 package org.psilynx.psikit.ftc.wrappers
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
-import org.firstinspires.ftc.robotcore.external.navigation.Quaternion
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.Logger
-import org.psilynx.psikit.ftc.GoBildaPinpointDriver
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.ftc.MockI2cDeviceSyncSimple
-import kotlin.math.PI
-import kotlin.properties.Delegates
+import org.psilynx.psikit.ftc.StructPoseInputs
 
-class PinpointWrapper(val device: GoBildaPinpointDriver?):
-    HardwareInput<GoBildaPinpointDriver>,
-    GoBildaPinpointDriver(
-        device?.deviceClient ?: MockI2cDeviceSyncSimple(), true
-    )
-{
-    var _deviceID = 0
-    var _deviceVersion = 0
-    var _yawScalar = 0f
-    var _deviceStatus = DeviceStatus.CALIBRATING
-    var _loopTime = 0
-    var _xEncoderValue = 0
-    var _yEncoderValue = 0
-    var _xPosition = 0.0
-    var _yPosition = 0.0
-    var _hOrientation = 0.0
-    var _xVelocity = 0.0
-    var _yVelocity = 0.0
-    var _hVelocity = 0.0
-    var _xOffset = 0f
-    var _yOffset = 0f
-    var _quaternionW = 0f
-    var _quaternionX = 0f
-    var _quaternionY = 0f
-    var _quaternionZ = 0f
-    var _pitch = 0.0
-    var _roll = 0.0
+/**
+ * Lightweight log adapter for the FTC SDK's goBILDA Pinpoint driver
+ * (com.qualcomm.hardware.gobilda.GoBildaPinpointDriver).
+ *
+ * Design goal: follow the same model as other hardware wrappers:
+ * - Pinpoint is only logged if user code accesses it via hardwareMap.get(...)
+ * - PsiKit does not "own" update(); it only reads/logs state
+ */
+class PinpointWrapper(
+    private val device: GoBildaPinpointDriver?,
+) : GoBildaPinpointDriver(
+    // In replay there is no real I2C device; supply a safe mock.
+    // All public methods are overridden to use logged values when replaying.
+    MockI2cDeviceSyncSimple(),
+    true
+), HardwareInput<GoBildaPinpointDriver> {
 
-    private var cachedDeviceID by Delegates.notNull<Int>()
-    private var cachedDeviceVersion by Delegates.notNull<Int>()
-    private var cachedYawScalar by Delegates.notNull<Float>()
-    private var cachedDeviceStatus by Delegates.notNull<DeviceStatus>()
-    private var cachedXOffset by Delegates.notNull<Float>()
-    private var cachedYOffset by Delegates.notNull<Float>()
+    /** Set by [org.psilynx.psikit.ftc.HardwareMapWrapper] so we can also emit /Odometry/<name>. */
+    var psikitName: String? = null
+
+    private val poses = StructPoseInputs("Pose2d", "Pose3d")
+
     private var cacheFilled = false
+    private var cachedDeviceId: Int = 0
+    private var cachedDeviceVersion: Int = 0
+    private var cachedYawScalar: Float = 0f
+    private var cachedXOffsetMm: Float = 0f
+    private var cachedYOffsetMm: Float = 0f
 
-    override fun new(wrapped: GoBildaPinpointDriver?) = PinpointWrapper(wrapped)
+    private var cachedDeviceStatus: DeviceStatus = DeviceStatus.CALIBRATING
+    private var cachedLoopTime: Int = 0
+    private var cachedXEncoderValue: Int = 0
+    private var cachedYEncoderValue: Int = 0
+    private var cachedXPositionMm: Double = 0.0
+    private var cachedYPositionMm: Double = 0.0
+    private var cachedHOrientationRad: Double = 0.0
+    private var cachedXVelocityMm: Double = 0.0
+    private var cachedYVelocityMm: Double = 0.0
+    private var cachedHVelocityRad: Double = 0.0
+
+    override fun new(wrapped: GoBildaPinpointDriver?): HardwareInput<GoBildaPinpointDriver> = PinpointWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
-       if(!cacheFilled) {
-            cachedDeviceID = deviceID
-            cachedDeviceVersion = deviceVersion
-            cachedYawScalar = yawScalar
-            cachedDeviceStatus = deviceStatus
-            cachedXOffset = getXOffset(DistanceUnit.MM)
-            cachedYOffset = getYOffset(DistanceUnit.MM)
+        val target = device ?: return
+
+        // NOTE: PsiKit does not call update() here; consumer code owns updates.
+        val pose: Pose2D? = try {
+            target.position
+        } catch (_: Throwable) {
+            null
         }
-        cacheFilled = true
 
-        device!!
+        // These getters do their own I2C reads in the SDK driver; cache them once.
+        if (!cacheFilled) {
+            cachedDeviceId = target.deviceID
+            cachedDeviceVersion = target.deviceVersion
+            cachedYawScalar = target.yawScalar
+            cachedXOffsetMm = target.getXOffset(DistanceUnit.MM)
+            cachedYOffsetMm = target.getYOffset(DistanceUnit.MM)
+            cacheFilled = true
+        }
 
+        // Dynamic fields.
+        cachedXEncoderValue = target.encoderX
+        cachedYEncoderValue = target.encoderY
+        cachedLoopTime = target.loopTime
+        cachedDeviceStatus = try {
+            target.deviceStatus
+        } catch (_: Throwable) {
+            cachedDeviceStatus
+        }
 
+        cachedXPositionMm = target.getPosX(DistanceUnit.MM)
+        cachedYPositionMm = target.getPosY(DistanceUnit.MM)
+        cachedHOrientationRad = target.getHeading(UnnormalizedAngleUnit.RADIANS)
 
-        table.put("deviceId", cachedDeviceID)
+        cachedXVelocityMm = target.getVelX(DistanceUnit.MM)
+        cachedYVelocityMm = target.getVelY(DistanceUnit.MM)
+        cachedHVelocityRad = target.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS)
+
+        // Common raw fields (match legacy naming).
+        table.put("deviceId", cachedDeviceId)
         table.put("deviceVersion", cachedDeviceVersion)
         table.put("yawScalar", cachedYawScalar)
-        table.put("xOffset", cachedXOffset)
-        table.put("yOffset", cachedYOffset)
-        table.put("xEncoderValue", encoderX)
-        table.put("yEncoderValue", encoderY)
-        table.put("loopTime", loopTime)
-        table.put("deviceStatus", deviceStatus)
-        table.put("xPosition", device.getPosX(DistanceUnit.MM))
-        table.put("yPosition", device.getPosY(DistanceUnit.MM))
-        table.put("hOrientation", device.getHeading(UnnormalizedAngleUnit.RADIANS))
-        table.put("xVelocity", device.getVelX(DistanceUnit.MM))
-        table.put("yVelocity", device.getVelY(DistanceUnit.MM))
-        table.put("hVelocity", device.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS))
-        if(deviceVersion > 1){
-            table.put("quaternionW", device.quaternion.w)
-            table.put("quaternionX", device.quaternion.x)
-            table.put("quaternionY", device.quaternion.y)
-            table.put("quaternionZ", device.quaternion.z)
-            table.put("pitch", device.getPitch(AngleUnit.RADIANS))
-            table.put("roll", device.getRoll(AngleUnit.RADIANS))
+        table.put("xOffset", cachedXOffsetMm)
+        table.put("yOffset", cachedYOffsetMm)
+
+        table.put("xEncoderValue", cachedXEncoderValue)
+        table.put("yEncoderValue", cachedYEncoderValue)
+        table.put("loopTime", cachedLoopTime)
+        table.put("deviceStatus", cachedDeviceStatus.name)
+
+        table.put("xPosition", cachedXPositionMm)
+        table.put("yPosition", cachedYPositionMm)
+        table.put("hOrientation", cachedHOrientationRad)
+
+        table.put("xVelocity", cachedXVelocityMm)
+        table.put("yVelocity", cachedYVelocityMm)
+        table.put("hVelocity", cachedHVelocityRad)
+
+        if (pose == null) {
+            // Still emit /Odometry only when we have a pose.
+            return
+        }
+
+        val xMeters = pose.getX(DistanceUnit.METER)
+        val yMeters = pose.getY(DistanceUnit.METER)
+        val headingRad = pose.getHeading(AngleUnit.RADIANS)
+
+        // Convenient pose view (these keys are new; raw keys above match legacy naming).
+        table.put("xMeters", xMeters)
+        table.put("yMeters", yMeters)
+        table.put("headingRad", headingRad)
+
+        // Provide a convenient Odometry schema for AdvantageScope field widgets.
+        val name = psikitName
+        if (FtcLogTuning.pinpointWrapperPublishesOdometry) {
+            if (!name.isNullOrBlank()) {
+                poses.set(xMeters, yMeters, headingRad)
+                Logger.processInputs("/Odometry/$name", poses)
+            }
         }
     }
 
     override fun fromLog(table: LogTable) {
-        _deviceID      = table.get("deviceId", 0)
-        _deviceVersion = table.get("deviceVersion", 0)
-        _yawScalar     = table.get("yawScalar", 0f)
-        _deviceStatus  = table.get(
-            "deviceStatus",
-            DeviceStatus.CALIBRATING
-        )
-        _loopTime      = table.get("loopTime", 0)
-        _xEncoderValue = table.get("xEncoderValue", 0)
-        _yEncoderValue = table.get("yEncoderValue", 0)
-        _xPosition     = table.get("xPosition", 0.0)
-        _yPosition     = table.get("yPosition", 0.0)
-        _hOrientation  = table.get("hOrientation", 0.0)
-        _xVelocity     = table.get("xVelocity", 0.0)
-        _yVelocity     = table.get("yVelocity", 0.0)
-        _hVelocity     = table.get("hVelocity", 0.0)
-        _xOffset       = table.get("xOffset", 0f)
-        _yOffset       = table.get("yOffset", 0f)
-        if(deviceVersion > 1){
-            _quaternionW = table.get("quaternionW", 0f)
-            _quaternionX = table.get("quaternionX", 0f)
-            _quaternionY = table.get("quaternionY", 0f)
-            _quaternionZ = table.get("quaternionZ", 0f)
-            _pitch = table.get("pitch", 0.0)
-            _roll = table.get("roll", 0.0)
+        // Populate cached values for replay. These are then surfaced via overridden getters.
+        cachedDeviceId = table.get("deviceId", cachedDeviceId)
+        cachedDeviceVersion = table.get("deviceVersion", cachedDeviceVersion)
+        cachedYawScalar = table.get("yawScalar", cachedYawScalar)
+        cachedXOffsetMm = table.get("xOffset", cachedXOffsetMm)
+        cachedYOffsetMm = table.get("yOffset", cachedYOffsetMm)
 
+        cachedXEncoderValue = table.get("xEncoderValue", cachedXEncoderValue)
+        cachedYEncoderValue = table.get("yEncoderValue", cachedYEncoderValue)
+        cachedLoopTime = table.get("loopTime", cachedLoopTime)
+
+        val statusName = table.get("deviceStatus", cachedDeviceStatus.name)
+        cachedDeviceStatus = try {
+            DeviceStatus.valueOf(statusName)
+        } catch (_: Throwable) {
+            cachedDeviceStatus
         }
+
+        cachedXPositionMm = table.get("xPosition", cachedXPositionMm)
+        cachedYPositionMm = table.get("yPosition", cachedYPositionMm)
+        cachedHOrientationRad = table.get("hOrientation", cachedHOrientationRad)
+
+        cachedXVelocityMm = table.get("xVelocity", cachedXVelocityMm)
+        cachedYVelocityMm = table.get("yVelocity", cachedYVelocityMm)
+        cachedHVelocityRad = table.get("hVelocity", cachedHVelocityRad)
+
+        cacheFilled = true
     }
 
-    override fun update(){ device?.update() }
+    // ---- Replay-safe overrides (delegate to real device when present) ----
 
-    override fun readRegister(register: Register){
-        device?.readRegister (register)
-    }
-
-    override fun setBulkReadScope(vararg registers: Register){
-        device?.setBulkReadScope(*registers)
+    override fun update() {
+        if (Logger.isReplay() || device == null) return
+        device.update()
     }
 
-    override fun setErrorDetectionType(e: ErrorDetectionType){
-        device?.setErrorDetectionType(e)
+    override fun update(data: ReadData?) {
+        if (Logger.isReplay() || device == null) return
+        if (data == null) device.update() else device.update(data)
     }
 
-    override fun getDeviceID(): Int {
-        return if (Logger.isReplay()) _deviceID
-        else {
-            val value = device!!.deviceID
-            cachedDeviceID = value
-            value
-        }
+    override fun setOffsets(xOffset: Double, yOffset: Double, distanceUnit: DistanceUnit?) {
+        if (Logger.isReplay() || device == null) return
+        device.setOffsets(xOffset, yOffset, distanceUnit ?: DistanceUnit.MM)
     }
-    override fun getDeviceVersion(): Int {
-        return if (Logger.isReplay()) _deviceVersion
-        else {
-            val value = device!!.deviceVersion
-            cachedDeviceVersion = value
-            value
-        }
+
+    override fun recalibrateIMU() {
+        if (Logger.isReplay() || device == null) return
+        device.recalibrateIMU()
     }
-    override fun getYawScalar(): Float {
-        return if (Logger.isReplay()) _yawScalar
-        else {
-            val value = device!!.yawScalar
-            cachedYawScalar = value
-            value
-        }
+
+    override fun resetPosAndIMU() {
+        if (Logger.isReplay() || device == null) return
+        device.resetPosAndIMU()
     }
-    override fun getDeviceStatus(): DeviceStatus {
-        return if (Logger.isReplay()) _deviceStatus
-        else {
-            val value = device!!.deviceStatus
-            cachedDeviceStatus = value
-            value
-        }
+
+    override fun setEncoderDirections(xEncoder: EncoderDirection?, yEncoder: EncoderDirection?) {
+        if (Logger.isReplay() || device == null) return
+        device.setEncoderDirections(xEncoder, yEncoder)
     }
-    override fun getLoopTime(): Int {
-        return if (Logger.isReplay())_loopTime
-        else device!!.loopTime
+
+    override fun setEncoderResolution(pods: GoBildaOdometryPods?) {
+        if (Logger.isReplay() || device == null) return
+        device.setEncoderResolution(pods)
     }
+
+    override fun setEncoderResolution(ticksPerUnit: Double, distanceUnit: DistanceUnit?) {
+        if (Logger.isReplay() || device == null) return
+        device.setEncoderResolution(ticksPerUnit, distanceUnit)
+    }
+
+    override fun setYawScalar(yawScalar: Double) {
+        if (Logger.isReplay() || device == null) return
+        device.setYawScalar(yawScalar)
+    }
+
+    override fun setPosition(pos: Pose2D?) {
+        if (Logger.isReplay() || device == null) return
+        device.setPosition(pos)
+    }
+
+    override fun setPosX(posX: Double, distanceUnit: DistanceUnit?) {
+        if (Logger.isReplay() || device == null) return
+        device.setPosX(posX, distanceUnit)
+    }
+
+    override fun setPosY(posY: Double, distanceUnit: DistanceUnit?) {
+        if (Logger.isReplay() || device == null) return
+        device.setPosY(posY, distanceUnit)
+    }
+
+    override fun setHeading(heading: Double, angleUnit: AngleUnit?) {
+        if (Logger.isReplay() || device == null) return
+        device.setHeading(heading, angleUnit)
+    }
+
+    override fun getDeviceID(): Int = if (Logger.isReplay() || device == null) cachedDeviceId else device.deviceID
+
+    override fun getDeviceVersion(): Int = if (Logger.isReplay() || device == null) cachedDeviceVersion else device.deviceVersion
+
+    override fun getYawScalar(): Float = if (Logger.isReplay() || device == null) cachedYawScalar else device.yawScalar
+
+    override fun getDeviceStatus(): DeviceStatus = if (Logger.isReplay() || device == null) cachedDeviceStatus else device.deviceStatus
+
+    override fun getLoopTime(): Int = if (Logger.isReplay() || device == null) cachedLoopTime else device.loopTime
+
     override fun getFrequency(): Double {
-        return if (_loopTime != 0) {
-            1000000.0 / _loopTime;
-        } else {
-            0.0;
+        if (!Logger.isReplay() && device != null) return device.frequency
+        val lt = cachedLoopTime
+        return if (lt > 0) 1000.0 / lt.toDouble() else 0.0
+    }
+
+    override fun getEncoderX(): Int = if (Logger.isReplay() || device == null) cachedXEncoderValue else device.encoderX
+
+    override fun getEncoderY(): Int = if (Logger.isReplay() || device == null) cachedYEncoderValue else device.encoderY
+
+    override fun getPosX(distanceUnit: DistanceUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getPosX(distanceUnit)
+        val du = distanceUnit ?: DistanceUnit.MM
+        return du.fromMm(cachedXPositionMm)
+    }
+
+    override fun getPosY(distanceUnit: DistanceUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getPosY(distanceUnit)
+        val du = distanceUnit ?: DistanceUnit.MM
+        return du.fromMm(cachedYPositionMm)
+    }
+
+    override fun getHeading(angleUnit: AngleUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getHeading(angleUnit)
+        val au = angleUnit ?: AngleUnit.RADIANS
+        return au.fromRadians(cachedHOrientationRad)
+    }
+
+    override fun getHeading(unnormalizedAngleUnit: UnnormalizedAngleUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getHeading(unnormalizedAngleUnit)
+        val au = unnormalizedAngleUnit ?: UnnormalizedAngleUnit.RADIANS
+        return au.fromRadians(cachedHOrientationRad)
+    }
+
+    override fun getVelX(distanceUnit: DistanceUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getVelX(distanceUnit)
+        val du = distanceUnit ?: DistanceUnit.MM
+        return du.fromMm(cachedXVelocityMm)
+    }
+
+    override fun getVelY(distanceUnit: DistanceUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getVelY(distanceUnit)
+        val du = distanceUnit ?: DistanceUnit.MM
+        return du.fromMm(cachedYVelocityMm)
+    }
+
+    override fun getHeadingVelocity(unnormalizedAngleUnit: UnnormalizedAngleUnit?): Double {
+        if (!Logger.isReplay() && device != null) return device.getHeadingVelocity(unnormalizedAngleUnit)
+        val au = unnormalizedAngleUnit ?: UnnormalizedAngleUnit.RADIANS
+        return au.fromRadians(cachedHVelocityRad)
+    }
+
+    override fun getXOffset(distanceUnit: DistanceUnit?): Float {
+        if (!Logger.isReplay() && device != null) {
+            val du = distanceUnit ?: DistanceUnit.MM
+            val v = device.getXOffset(du)
+            if (du == DistanceUnit.MM) {
+                cachedXOffsetMm = v
+                cacheFilled = true
+            }
+            cacheFilled = true
+            return v
         }
+        val du = distanceUnit ?: DistanceUnit.MM
+        return du.fromMm(cachedXOffsetMm.toDouble()).toFloat()
     }
-    override fun getEncoderX(): Int {
-        return if (Logger.isReplay()) _xEncoderValue
-        else device!!.encoderX
+
+    override fun getYOffset(distanceUnit: DistanceUnit?): Float {
+        if (!Logger.isReplay() && device != null) {
+            val du = distanceUnit ?: DistanceUnit.MM
+            val v = device.getYOffset(du)
+            if (du == DistanceUnit.MM) {
+                cachedYOffsetMm = v
+                cacheFilled = true
+            }
+            cacheFilled = true
+            return v
+        }
+        val du = distanceUnit ?: DistanceUnit.MM
+        return du.fromMm(cachedYOffsetMm.toDouble()).toFloat()
     }
-    override fun getEncoderY(): Int {
-        return if (Logger.isReplay()) _yEncoderValue
-        else device!!.encoderY
-    }
-    override fun getPosX(distanceUnit: DistanceUnit): Double {
-        return if (Logger.isReplay()) distanceUnit.fromMm(_xPosition)
-        else device!!.getPosX(distanceUnit)
-    }
-    override fun getPosY(distanceUnit: DistanceUnit): Double {
-        return if (Logger.isReplay()) distanceUnit.fromMm(_yPosition)
-        else device!!.getPosY(distanceUnit)
-    }
-    override fun getHeading(angleUnit: AngleUnit): Double {
-        return if (Logger.isReplay()) angleUnit.fromRadians(
-            ( _hOrientation + PI) % ( 2 * PI) - PI
+
+    override fun getPosition(): Pose2D {
+        if (!Logger.isReplay() && device != null) return device.position
+        return Pose2D(
+            DistanceUnit.MM,
+            getPosX(DistanceUnit.MM),
+            getPosY(DistanceUnit.MM),
+            AngleUnit.RADIANS,
+            getHeading(AngleUnit.RADIANS),
         )
-        else device!!.getHeading(angleUnit)
     }
-    override fun getHeading(unnormalizedAngleUnit: UnnormalizedAngleUnit): Double {
-        return if (Logger.isReplay())
-            unnormalizedAngleUnit.fromRadians(_hOrientation)
-        else device!!.getHeading(unnormalizedAngleUnit)
-    }
-    override fun getVelX(distanceUnit: DistanceUnit): Double {
-        return if (Logger.isReplay()) distanceUnit.fromMm(_xVelocity)
-        else device!!.getVelX(distanceUnit)
-    }
-    override fun getVelY(distanceUnit: DistanceUnit): Double {
-        return if (Logger.isReplay()) distanceUnit.fromMm(_yVelocity)
-        else device!!.getVelY(distanceUnit)
-    }
-    override fun getHeadingVelocity(
-        unnormalizedAngleUnit: UnnormalizedAngleUnit
-    ): Double {
-        return if (Logger.isReplay())
-            unnormalizedAngleUnit.fromRadians(_hOrientation)
-        else device!!.getHeadingVelocity(unnormalizedAngleUnit)
-    }
-    override fun getXOffset(distanceUnit: DistanceUnit): Float {
-        return if (Logger.isReplay())
-            distanceUnit.fromMm(_xOffset.toDouble()).toFloat()
-        else {
-            val value = device!!.getXOffset(distanceUnit)
-            cachedXOffset = value
-            value
-        }
-    }
-    override fun getYOffset(distanceUnit: DistanceUnit): Float {
-        return if (Logger.isReplay())
-            distanceUnit.fromMm(_yOffset.toDouble()).toFloat()
-        else {
-            val value = device!!.getYOffset(distanceUnit)
-            cachedYOffset = value
-            value
-        }
-    }
-    override fun getPosition() = Pose2D(
-        DistanceUnit.MM, getPosX(DistanceUnit.MM), getPosY(DistanceUnit.MM),
-        AngleUnit.RADIANS, getHeading(AngleUnit.RADIANS),
-    )
-
-    override fun getQuaternion(): Quaternion{
-        if(deviceVersion < 2) throw RuntimeException(
-            "Quaternion output is not supported on this device firmware"
-        );
-        return device?.quaternion ?: Quaternion(
-            _quaternionW,
-            _quaternionX,
-            _quaternionY,
-            _quaternionZ,
-            0,
-        )
-    }
-    override fun getPitch(angleUnit: AngleUnit): Double{
-        if(deviceVersion < 2) throw RuntimeException(
-            "IMU Pitch output is not supported on this device firmware"
-        );
-        return if (Logger.isReplay()) angleUnit.fromRadians(_pitch)
-               else device!!.getPitch(angleUnit)
-    }
-
-    override fun getRoll(angleUnit: AngleUnit): Double{
-        if(deviceVersion < 2) throw RuntimeException(
-            "IMU Roll output is not supported on this device firmware"
-        );
-        return if (Logger.isReplay()) angleUnit.fromRadians(_roll)
-               else device!!.getRoll(angleUnit)
-    }
-
 }
