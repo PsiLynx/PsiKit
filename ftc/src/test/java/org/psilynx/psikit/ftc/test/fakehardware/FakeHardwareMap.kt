@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
-import org.psilynx.psikit.ftc.GoBildaPinpointDriver
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 
 object FakeHardwareMap : JVMHardwareMap() {
     override var deviceTypes:

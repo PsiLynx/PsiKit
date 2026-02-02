@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ServoController
 import com.qualcomm.robotcore.hardware.ServoControllerEx
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.core.LogTable
 
 class ServoWrapper(private val device: ServoImplEx?):
@@ -38,6 +39,19 @@ class ServoWrapper(private val device: ServoImplEx?):
     private var _pwmRange = PwmControl.PwmRange(500.0, 2500.0)
     private var _pwmEnabled = false;
 
+    private var lastSampleNs: Long = Long.MIN_VALUE
+
+    private fun secondsSince(ns: Long): Double {
+        if (ns == Long.MIN_VALUE) return Double.POSITIVE_INFINITY
+        return (System.nanoTime() - ns) / 1_000_000_000.0
+    }
+
+    private fun shouldSampleNow(): Boolean {
+        val period = FtcLogTuning.nonBulkReadPeriodSec
+        if (period <= 0.0) return true
+        return secondsSince(lastSampleNs) >= period
+    }
+
     override fun getDirection(): Servo.Direction = _direction
     override fun setDirection(direction: Servo.Direction) {
         device?.direction = direction
@@ -64,6 +78,13 @@ class ServoWrapper(private val device: ServoImplEx?):
 
     override fun toLog(table: LogTable) {
         device!!
+
+        if (!shouldSampleNow()) {
+            // Skip reads/writes this loop; LogTable retains the last values.
+            return
+        }
+        lastSampleNs = System.nanoTime()
+
         _direction = device.direction
         _position = device.position
         _pwmRange = device.pwmRange

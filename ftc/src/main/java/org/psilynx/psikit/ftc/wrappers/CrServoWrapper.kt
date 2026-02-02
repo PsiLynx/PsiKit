@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.PwmControl
 import com.qualcomm.robotcore.hardware.ServoController
 import com.qualcomm.robotcore.hardware.ServoControllerEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.core.LogTable
 
 class CrServoWrapper(private val device: CRServoImplEx?):
@@ -46,10 +47,29 @@ class CrServoWrapper(private val device: CRServoImplEx?):
     private var _connectionInfo = ""
     private var _manufacturer   = HardwareDevice.Manufacturer.Other
 
+    private var lastSampleNs: Long = Long.MIN_VALUE
+
+    private fun secondsSince(ns: Long): Double {
+        if (ns == Long.MIN_VALUE) return Double.POSITIVE_INFINITY
+        return (System.nanoTime() - ns) / 1_000_000_000.0
+    }
+
+    private fun shouldSampleNow(): Boolean {
+        val period = FtcLogTuning.nonBulkReadPeriodSec
+        if (period <= 0.0) return true
+        return secondsSince(lastSampleNs) >= period
+    }
+
     override fun new(wrapped: CRServoImplEx?) = CrServoWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
         device!!
+
+        if (!shouldSampleNow()) {
+            // Skip reads/writes this loop; LogTable retains the last values.
+            return
+        }
+        lastSampleNs = System.nanoTime()
 
         _direction      = device.direction
         _power          = device.power
