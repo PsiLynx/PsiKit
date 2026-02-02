@@ -18,6 +18,7 @@ import org.psilynx.psikit.core.wpi.Struct;
 import org.psilynx.psikit.core.wpi.StructSerializable;
 import org.psilynx.psikit.core.wpi.WPISerializable;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,6 +57,18 @@ public class Logger {
   private Logger() {}
 
   public static void reset(){
+    // Attempt to fully stop any previous run (including stale receiver threads) so that
+    // subsequent Logger.start() calls are safe within the same JVM (e.g., unit test suites).
+    end();
+    if (receiverThread != null && receiverThread.isAlive()) {
+      receiverThread.interrupt();
+      try {
+        receiverThread.join();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    }
+
     startTime = 0.0;
     running = false;
     cycleCount = 0;
@@ -68,8 +81,7 @@ public class Logger {
     receiverQueue.clear();
     receiverThread = new ReceiverThread(receiverQueue);
     receiverQueueFault = false;
-    DoubleSupplier timeSource =
-            () -> System.nanoTime() / 1000000000.0 - startTime;
+        Logger.timeSource = () -> System.nanoTime() / 1000000000.0 - startTime;
     simulation = false;
     replay = false;
     enableConsole = true;
@@ -200,6 +212,14 @@ public class Logger {
           + Arrays.toString(e.getStackTrace())
         );
       }
+
+      // ReceiverThread instances cannot be restarted once stopped.
+      // Recreate it so a subsequent Logger.start() in the same JVM is safe.
+      List<LogDataReceiver> existingReceivers = receiverThread.getReceivers();
+      receiverThread = new ReceiverThread(receiverQueue);
+      for (LogDataReceiver receiver : existingReceivers) {
+        receiverThread.addDataReceiver(receiver);
+      }
       //TODO: supposed to tell the robot to use the normal time source
       //RobotController.setTimeSource(RobotController::getFPGATime);
     }
@@ -247,9 +267,9 @@ public class Logger {
   public static void periodicAfterUser(double userCodeLength, double periodicBeforeLength) {
     if (running) {
       // Update automatic outputs from user code
-      double autoLogStart = getTimestamp();
+      double autoLogStart = getRealTimestamp();
       AutoLogOutputManager.periodic();
-      double autoLogEnd = getTimestamp();
+      double autoLogEnd = getRealTimestamp();
       // Record timing data
       recordOutput("Logger/AutoLogMS", (autoLogEnd - autoLogStart) * 1000.0);
       recordOutput("LoggedRobot/UserCodeMS", userCodeLength * 1000.0);
@@ -260,14 +280,17 @@ public class Logger {
           (periodicBeforeLength + userCodeLength) * 1000.0);
       recordOutput("Logger/QueuedCycles", receiverQueue.size());
 
-      double consoleCaptureStart = getTimestamp();
+      double consoleCaptureStart = getRealTimestamp();
       if (enableConsole) {
         String consoleData = console.getNewData();
         if (!consoleData.isEmpty()) {
-          recordOutput("Console", consoleData.trim());
+          // Normalize line endings to avoid double-spaced output in viewers that
+          // treat both '\r' and '\n' as line breaks.
+          String normalizedConsoleData = consoleData.replace("\r\n", "\n").replace("\r", "\n");
+          recordOutput("Console", normalizedConsoleData.trim());
         }
       }
-      double consoleCaptureEnd = getTimestamp();
+      double consoleCaptureEnd = getRealTimestamp();
 
       try {
         // Send a copy of the data to the receivers. The original object will be
@@ -316,7 +339,52 @@ public class Logger {
    * replayed.
    */
   public static double getRealTimestamp() {
-    return getTimestamp();
+    return timeSource.getAsDouble();
+  }
+
+  /**
+   * Helper for profiling blocks of code using try-with-resources.
+   *
+   * <p>Example:
+   * <pre>
+   * try (Logger.TimedBlock t = Logger.timeMs("LoggedRobot/UserSectionMS/MyBlock")) {
+   *   doWork();
+   * }
+   * </pre>
+   */
+  public static final class TimedBlock implements Closeable {
+    private final String key;
+    private final long startNs;
+    private final double scale;
+
+    private TimedBlock(String key, long startNs, double scale) {
+      this.key = key;
+      this.startNs = startNs;
+      this.scale = scale;
+    }
+
+    @Override
+    public void close() {
+      if (key == null) return;
+      long dtNs = System.nanoTime() - startNs;
+      Logger.recordOutput(key, dtNs * scale);
+    }
+  }
+
+  /** Times a block and records the duration in milliseconds. */
+  public static TimedBlock timeMs(String key) {
+    if (!Logger.isRunning()) {
+      return new TimedBlock(null, 0L, 0.0);
+    }
+    return new TimedBlock(key, System.nanoTime(), 1e-6);
+  }
+
+  /** Times a block and records the duration in microseconds. */
+  public static TimedBlock timeUs(String key) {
+    if (!Logger.isRunning()) {
+      return new TimedBlock(null, 0L, 0.0);
+    }
+    return new TimedBlock(key, System.nanoTime(), 1e-3);
   }
 
   /**
