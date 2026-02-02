@@ -3,11 +3,10 @@ package org.psilynx.psikit.ftc
 /**
  * Legacy PsiKit OpMode API kept for compatibility.
  *
- * Prefer subclassing [PsiKitIterativeOpMode] (iterative) or using
- * com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode (linear).
+ * Prefer subclassing [PsiKitIterativeOpMode].
  */
 @Deprecated(
-    message = "Use PsiKitIterativeOpMode or com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode",
+    message = "Use PsiKitIterativeOpMode",
     replaceWith = ReplaceWith("PsiKitIterativeOpMode")
 )
 abstract class PsiKitOpMode : PsiKitIterativeOpMode() {
