@@ -2,12 +2,12 @@ package org.psilynx.psikit.ftc.test
 
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.psilynx.psikit.ftc.GoBildaPinpointDriver
 import org.psilynx.psikit.ftc.HardwareMapWrapper
 import org.psilynx.psikit.ftc.test.fakehardware.FakeHardwareMap
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 
 @Config(shadows = [ShadowAppUtil::class])
 @RunWith(RobolectricTestRunner::class)
