@@ -23,7 +23,7 @@ public class RLOGWriter implements LogDataReceiver {
   private final String filePath;
   private final String folder;
   private FileOutputStream fileOutputStream = null;
-  private double lastTimestamp = 0.0;
+  private double lastTimestamp = Double.NEGATIVE_INFINITY;
 
   public RLOGWriter(String fileName){
     this(
@@ -60,14 +60,35 @@ public class RLOGWriter implements LogDataReceiver {
   }
 
   public void putTable(LogTable table) {
-    if(table.getTimestamp() - lastTimestamp > 0.0001) {
-      lastTimestamp = table.getTimestamp();
+    // Only write when timestamps advance.
+    // Use an epsilon and initialize lastTimestamp to -Infinity so the first table is always written
+    // (even if its timestamp is 0.0 in replay).
+    final double timestamp = table.getTimestamp();
+    if (timestamp > lastTimestamp + 1e-12) {
+      lastTimestamp = timestamp;
       byte[] data;
       synchronized (encoderLock) {
         encoder.encodeTable(table, true);
         data = encoder.getOutput().array();
       }
       appendData(data);
+    }
+  }
+
+  @Override
+  public void end() {
+    if (fileOutputStream != null) {
+      try {
+        fileOutputStream.flush();
+        fileOutputStream.close();
+      } catch (IOException e) {
+        Logger.logError(
+          "IO exception while trying to close writer output file\n"
+            + Arrays.toString(e.getStackTrace())
+        );
+      } finally {
+        fileOutputStream = null;
+      }
     }
   }
 
