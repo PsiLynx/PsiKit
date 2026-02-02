@@ -4,6 +4,9 @@ plugins {
     id 'maven-publish'
 }
 
+group = "org.psilynx.psikit"
+version = "0.1.0-beta2"
+
 android {
     namespace 'org.psilynx.psikit.ftc'
     compileSdk 35
@@ -91,8 +94,9 @@ repositories {
 
 dependencies {
 
-    api "org.firstinspires.ftc:RobotCore:10.3.0"
-    api "org.firstinspires.ftc:Hardware:10.3.0"
+    api "org.firstinspires.ftc:RobotCore:11.1.0"
+    api "org.firstinspires.ftc:Hardware:11.1.0"
+    api "org.firstinspires.ftc:FtcCommon:11.1.0"
 
     implementation project(":core")
 
