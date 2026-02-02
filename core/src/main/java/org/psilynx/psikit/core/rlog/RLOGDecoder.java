@@ -23,8 +23,6 @@ public class RLOGDecoder {
    */
   public static final String STRUCT_PREFIX = "struct:";
   public static final List<Byte> supportedLogRevisions = List.of((byte) 2);
-  private int total = 0;
-
   private Byte logRevision = null;
   private LogTable table = new LogTable(0);
   private Map<Short, Pair<String, String>> keyIDs = new HashMap<>();
@@ -37,7 +35,6 @@ public class RLOGDecoder {
         return null;
       }
       if (logRevision == null) {
-        this.total = input.available();
         logRevision = input.readByte();
         if (!supportedLogRevisions.contains(logRevision)) {
           Logger.logCritical(
@@ -77,8 +74,6 @@ public class RLOGDecoder {
           return null;
         }
       }
-
-      Logger.logDebug("read bytes: " + (this.total - input.available()));
       table = new LogTable(timestamp, table);
 
       while (true) {
@@ -90,8 +85,6 @@ public class RLOGDecoder {
           eofReached = true;
           return new LogTable(table.getTimestamp(), table);
         }
-
-        Logger.logDebug("type: " + type);
         switch (type) {
           case 0: {
             // Start of next cycle.
@@ -158,7 +151,6 @@ public class RLOGDecoder {
     String key = keyID.getFirst();
     String typeString = keyID.getSecond();
     LoggableType type = LoggableType.fromWPILOGType(typeString);
-
     final ByteBuffer buffer = ByteBuffer.wrap(payload);
 
     switch (type) {
@@ -256,7 +248,22 @@ public class RLOGDecoder {
         }
         break;
       default:
-        // Raw / custom types (struct, structschema, etc) should be preserved.
+        if (typeString.equals("structschema")) {
+          // Preserve schema records so downstream struct decoding can work.
+          table.put(key, new LogTable.LogValue(payload, typeString));
+          break;
+        }
+        if (typeString.startsWith(STRUCT_PREFIX)) {
+          String schemaType = typeString.substring(STRUCT_PREFIX.length());
+          if (schemaType.endsWith("[]")) {
+            String actualType = schemaType.substring(0, schemaType.length() - 2);
+            table.put(key, new LogTable.LogValue(payload, actualType));
+          } else {
+            table.put(key, new LogTable.LogValue(payload, typeString));
+          }
+          break;
+        }
+        // Raw / custom types should be preserved.
         table.put(key, new LogTable.LogValue(payload, typeString));
         break;
     }
