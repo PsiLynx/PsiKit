@@ -5,6 +5,8 @@ plugins {
     //id 'dev.frozenmilk.doc' version '0.0.4'
 }
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 group = 'org.psilynx.psikit'
 
 publishing {
@@ -53,5 +55,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 kotlin {
-    jvmToolchain(11)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
 }

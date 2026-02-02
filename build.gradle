@@ -17,6 +17,8 @@ plugins {
     //id 'org.jetbrains.kotlin.android' version '2.2.0' apply false
 }
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 group = 'org.psilynx'
 version = '0.0.4'
 
@@ -69,5 +71,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 kotlin {
-    jvmToolchain(11)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
 }
