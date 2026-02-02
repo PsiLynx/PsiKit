@@ -258,7 +258,7 @@ object PsiKitAutoLogger : OpModeManagerNotifier.Notifications {
             RobotLog.ww(
                 TAG,
                 "Auto-logging LinearOpMode '${opMode.javaClass.name}' is limited (no per-loop wrapper). " +
-                    "For full PsiKit loop timing + bulk-cache management, extend com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode."
+                    "For full PsiKit loop timing + bulk-cache management, prefer PsiKitIterativeOpMode (iterative) or call FtcLoggingSession.logOncePerLoop() from your LinearOpMode loop."
             )
         } catch (t: Throwable) {
             try {
