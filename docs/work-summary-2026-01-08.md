@@ -5,10 +5,10 @@ This document summarizes the changes made across **PsiKit** and **TeraBridges/20
 ## Goals
 
 - Fix a couple of logging correctness issues (profiling timestamps and console capture restore).
-- Improve the FTC integration so there’s a **true LinearOpMode drop-in** that adds automatic PsiKit logging **without** forcing a hook/template API.
+- Improve the FTC integration so LinearOpMode users can get automatic session management (via wrapper) and optional explicit per-loop ticking.
 - Keep two minimal linear examples:
   - One using `LinearOpMode + FtcLoggingSession` (manual per-loop wiring)
-  - One using the new drop-in base (`PsiKitLinearOpMode`) (automatic wiring)
+  - One using `@PsiKitAutoLog` with explicit per-loop ticking helpers (recommended)
 
 ## PsiKit: Core fixes
 
@@ -21,12 +21,10 @@ This document summarizes the changes made across **PsiKit** and **TeraBridges/20
 
 ## PsiKit: FTC integration improvements
 
-### New: drop-in LinearOpMode replacement (Java)
+### LinearOpMode notes
 
-- Added `ftc/src/main/java/com/qualcomm/robotcore/eventloop/opmode/PsiKitLinearOpMode.java`
-  - Implements the same internal lifecycle hooks the SDK uses (`internalRunOpMode`, `internalOnEventLoopIteration`, etc.) so it behaves like a normal `LinearOpMode`.
-  - Automatically starts `FtcLoggingSession` before user `runOpMode()` executes (so `hardwareMap` is wrapped).
-  - Automatically ticks logging once per SDK event-loop iteration.
+- A `com.qualcomm...` SDK-package LinearOpMode replacement was explored for automatic per-event-loop ticking, but upstream prefers avoiding SDK-package extensions.
+- Instead, use the AutoLog wrapper for automatic start/end, and add explicit per-loop ticking calls when you need per-loop timing/bulk-cache behavior.
 
 Important behavior note:
 - For automatic ticking, user code should prefer `opModeInInit()` / `opModeIsActive()` / `waitForStart()` loops.
@@ -51,7 +49,7 @@ Important behavior note:
 - Updated `ftc/src/main/java/org/psilynx/psikit/ftc/PsiKitOpMode.kt`
   - Kept as a deprecated compatibility layer; guidance text updated to prefer:
     - `PsiKitIterativeOpMode` (iterative)
-    - `com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode` (linear)
+    - For linear OpModes, use the AutoLog wrapper and (optionally) explicit per-loop ticking helpers.
 
 ### Removed unused linear bases
 
@@ -64,7 +62,7 @@ After confirming no internal references:
 - Updated `docs/usage.md`
   - Now documents two supported linear patterns:
     1) Manual session (`LinearOpMode + FtcLoggingSession`)
-    2) Automatic session (drop-in `com.qualcomm...PsiKitLinearOpMode`)
+    2) Automatic session (AutoLog wrapper)
   - Explicitly calls out the `opModeIsActive()` / `opModeInInit()` requirement for automatic ticking.
 
 ## 2025_Decode: minimal examples
@@ -75,7 +73,7 @@ In `TeraBridges/2025_Decode/TeamCode/src/main/java/org/firstinspires/ftc/teamcod
   - Kept as the **manual** example: `LinearOpMode + FtcLoggingSession` with explicit per-loop calls.
 
 - `PsiKitLinearOpModeMinimal.java`
-  - Added/kept as the **automatic** example: extends `com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode` and uses normal `runOpMode()` style.
+  - Replace with the AutoLog examples + explicit per-loop ticking for linear-style code.
 
 ## Build/validation notes
 

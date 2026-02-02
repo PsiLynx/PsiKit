@@ -149,30 +149,9 @@ public class MyOpMode extends LinearOpMode {
 }
 ```
 
-2) **Automatic session (drop-in replacement for `LinearOpMode`)**
+2) **Automatic session (AutoLog wrapper)**
 
-```java
-import com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode;
+PsiKit can automatically start/end a session using an OpMode wrapper. See [README-autolog.md](README-autolog.md) for examples.
 
-import org.psilynx.psikit.core.Logger;
-
-public class MyOpMode extends PsiKitLinearOpMode {
-    @Override
-    public int getRlogPort() {
-        return 5800;
-    }
-
-    @Override
-    public void runOpMode() throws InterruptedException {
-        waitForStart();
-        while (opModeIsActive()) {
-            Logger.recordOutput("Example/Value", 1.0);
-            // loop logic
-        }
-    }
-}
-```
-
-Important: `PsiKitLinearOpMode` ticks logging once per SDK event-loop iteration.
-To ensure logging runs, prefer `opModeInInit()` / `opModeIsActive()` (and `waitForStart()`) rather than writing loops like `while (!isStopRequested())`.
+For `LinearOpMode`, you can optionally add explicit per-loop ticking via `PsiKitAutoLogger.linearPeriodicBeforeUser(...)` and `PsiKitAutoLogger.linearPeriodicAfterUser(...)` (see `ftc-autolog-examples.md`).
 ## Next, [Install Advantage Scope](installAscope.md)

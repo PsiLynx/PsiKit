@@ -282,39 +282,9 @@ public class LinearSessionOnly extends LinearOpMode {
 }
 ```
 
-### 3b) Linear OpMode with PsiKit logging each loop (full)
+### 3b) Annotated LinearOpMode, with explicit per-loop ticking (recommended)
 
-For full per-loop PsiKit behavior in linear style, extend PsiKit’s linear base class:
-
-```java
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-// NOTE: this class is provided by PsiKit.
-import com.qualcomm.robotcore.eventloop.opmode.PsiKitLinearOpMode;
-
-@TeleOp(name = "Linear (full PsiKit)")
-public class LinearFullPsiKit extends PsiKitLinearOpMode {
-    @Override
-    public void runOpMode() throws InterruptedException {
-        waitForStart();
-
-        while (opModeIsActive()) {
-            // your normal linear code
-            telemetry.addLine("Running");
-            telemetry.update();
-            idle();
-        }
-    }
-}
-```
-
-Notes:
-- This is the recommended path if you specifically need **per-loop timing + bulk-cache management** for linear-style code.
-- PsiKit marks its own base classes with `@PsiKitNoAutoLog` to avoid double-logging when global auto-log is enabled.
-
-### 3c) Annotated LinearOpMode, with explicit per-loop ticking
-
-If you annotate a plain `LinearOpMode`, PsiKit will start/end the session automatically — but you can optionally add per-loop calls to get the same bulk-cache + input logging behavior as the iterative wrapper.
+If you annotate a plain `LinearOpMode`, PsiKit will start/end the session automatically — but you can also add per-loop calls to get bulk-cache + input logging behavior similar to the iterative wrapper.
 
 What these calls do:
 - `PsiKitAutoLogger.linearPeriodicBeforeUser(this)` runs `Logger.periodicBeforeUser()` and (if the auto-log session is active) `FtcLoggingSession.logOncePerLoop(...)`.
