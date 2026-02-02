@@ -105,77 +105,53 @@ class ConceptPsiKitLogger extends PsiKitOpMode {
     }
 }
 ```
-### If you want to, you can also use linear opModes
+### If you want to, you can also use linear OpModes
+
+There are two supported patterns:
+
+1) **Manual session (most explicit / works with any loop style)**
 
 ```java
-package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.psilynx.psikit.core.rlog.RLOGServer;
-import org.psilynx.psikit.core.rlog.RLOGWriter;
 import org.psilynx.psikit.core.Logger;
+import org.psilynx.psikit.ftc.FtcLoggingSession;
 
-import org.psilynx.psikit.ftc.PsiKitLinearOpMode;
+public class MyOpMode extends LinearOpMode {
+    private final FtcLoggingSession psiKit = new FtcLoggingSession();
 
-@TeleOp(name="ConceptPsiKitLogger")
-class ConceptPsiKitLogger extends PsiKitLinearOpMode {
     @Override
     public void runOpMode() {
-        Logger.addDataReceiver(new RLOGServer());
-        Logger.addDataReceiver(new RLOGWriter("/sdcard/FIRST/log.rlog"));
-        Logger.recordMetadata("some metadata", "string value");
-        Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-        Logger.periodicAfterUser(0, 0);
+        try {
+            psiKit.start(this, 5800);
 
-        while(!getPsiKitIsStarted()){
-            Logger.periodicBeforeUser();
+            while (opModeInInit()) {
+                Logger.periodicBeforeUser();
+                psiKit.logOncePerLoop(this);
+                // init logic
+                Logger.periodicAfterUser(0.0, 0.0);
+                idle();
+            }
 
-            processHardwareInputs();
-            // this MUST come before any logic
-            
-         /*
-            
-          Init logic goes here
-            
-         */
+            waitForStart();
 
-            Logger.periodicAfterUser(0.0, 0.0);
-            // logging these timestamps is completely optional
+            while (opModeIsActive()) {
+                Logger.periodicBeforeUser();
+                psiKit.logOncePerLoop(this);
+                // loop logic
+                Logger.periodicAfterUser(0.0, 0.0);
+                idle();
+            }
+        } finally {
+            psiKit.end();
         }
-
-        // alternately the waitForStart() function works as expected.
-
-        while(!getPsiKitIsStopRequested()) {
-
-            double beforeUserStart = Logger.getTimestamp();
-            Logger.periodicBeforeUser();
-            double beforeUserEnd = Logger.getTimestamp();
-
-            processHardwareInputs();
-            // this MUST come before any logic
-
-         /*
-            
-          OpMode logic goes here
-             
-         */
-
-            Logger.recordOutput("OpMode/example", 2.0);
-            // example
-
-
-            double afterUserStart = Logger.getTimestamp();
-            Logger.periodicAfterUser(
-                    afterUserStart - beforeUserEnd,
-                    beforeUserEnd - beforeUserStart
-            );
-            // alternetly, keep track of how long some things are taking. up to 
-            // you on what you want to do
-        }
-        Logger.end();
     }
 }
 ```
+
+2) **Automatic session (AutoLog wrapper)**
+
+PsiKit can automatically start/end a session using an OpMode wrapper. See [README-autolog.md](README-autolog.md) for examples.
+
+For `LinearOpMode`, you can optionally add explicit per-loop ticking via `PsiKitAutoLogger.linearPeriodicBeforeUser(...)` and `PsiKitAutoLogger.linearPeriodicAfterUser(...)` (see `ftc-autolog-examples.md`).
 ## Next, [Install Advantage Scope](installAscope.md)
