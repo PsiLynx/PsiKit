@@ -1,16 +1,17 @@
 package org.psilynx.psikit.ftc.test
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.psilynx.psikit.core.Logger
 import org.psilynx.psikit.core.rlog.RLOGReplay
 import org.psilynx.psikit.core.rlog.RLOGServer
-import org.psilynx.psikit.ftc.GoBildaPinpointDriver
-import org.psilynx.psikit.ftc.PsiKitLinearOpMode
-import org.psilynx.psikit.ftc.Replay
+import org.psilynx.psikit.ftc.FtcLoggingSession
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.psilynx.psikit.ftc.wrappers.GamepadWrapper
 
 @Config(shadows = [ShadowAppUtil::class])
 @RunWith(RobolectricTestRunner::class)
@@ -18,36 +19,47 @@ class PsiKitTest {
 
     @Test fun replayFromFile(){
         println("starting....")
+
+        // Allow replay to install a mock/wrapped HardwareMap for hardwareMap.get(...).
+        System.setProperty("psikitReplayMockHardwareMap", "true")
+
         val replaySource = RLOGReplay("testLog.rlog")
-        Replay(
-            @TeleOp object : PsiKitLinearOpMode() {
-                override fun runOpMode() {
-                    psiKitSetup()
-                    println("setup!")
 
-                    val server = RLOGServer()
-                    Logger.addDataReceiver(server)
+        val opMode = @TeleOp object : OpMode() {
+            override fun init() {}
+            override fun loop() {}
+        }
 
-                    Logger.start() // Start logging! No more data receivers, replay sources, or metadata values may be added.
-                    Logger.periodicAfterUser(0.0, 0.0)
+        // Ensure DriverStationLogger and other session components see non-null gamepads.
+        opMode.gamepad1 = GamepadWrapper(null)
+        opMode.gamepad2 = GamepadWrapper(null)
 
-                    waitForStart()
-                    val device = this.hardwareMap.get(
-                        GoBildaPinpointDriver::class.java,
-                        "i1"
-                    )
+        val session = FtcLoggingSession()
+        session.start(
+            opMode = opMode,
+            rlogPort = 0,
+            filename = "",
+            replaySource = replaySource,
+            configure = {
+                Logger.addDataReceiver(RLOGServer())
+            }
+        )
 
-                    while(Logger.getTimestamp() < 295) {
-                        Logger.periodicBeforeUser()
-                        processHardwareInputs()
+        Logger.periodicAfterUser(0.0, 0.0)
 
-                        println(device.position)
+        val device = opMode.hardwareMap.get(GoBildaPinpointDriver::class.java, "i1")
 
-                        Logger.periodicAfterUser(0.0, 0.0)
-                    }
-                }
-            },
-            replaySource
-        ).run()
+        try {
+            while (Logger.getTimestamp() < 295) {
+                Logger.periodicBeforeUser()
+                session.logOncePerLoop(opMode)
+
+                println(device.position)
+
+                Logger.periodicAfterUser(0.0, 0.0)
+            }
+        } finally {
+            session.end()
+        }
     }
 }
