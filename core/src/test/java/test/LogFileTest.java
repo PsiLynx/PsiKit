@@ -22,7 +22,7 @@ import static java.lang.Thread.sleep;
 public class LogFileTest {
 
     @Test
-    @Ignore("Integration test requires a specific replay log file with Pose2d data")
+    @Ignore("Fixture timestamps don't match this test's expected step; skipping until fixture/test are aligned")
     public void testReadFile() throws InterruptedException {
         Logger.reset();
         RLOGReplay replaySource = new RLOGReplay(

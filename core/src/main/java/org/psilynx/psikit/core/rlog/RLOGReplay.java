@@ -56,25 +56,18 @@ public class RLOGReplay implements LogReplaySource {
 
   @Override
   public boolean updateTable(LogTable table) {
-    try {
-      LogTable newTable = getEntry();
-      table.setTimestamp(newTable.getTimestamp());
-      for (Map.Entry<String, LogTable.LogValue> entry :
-              newTable.getAll(false).entrySet()
-      ) {
-        table.remove(entry.getKey());
-        table.put(entry.getKey(), entry.getValue());
-      }
-      return true;
+    LogTable newTable = getEntry();
+    if (newTable == null) {
+      return false;
     }
-    catch (NullPointerException e){
-      Logger.logWarning(
-          "NullPointerException while updating table. this is usually "
-          + "normal, and happens at the end of replay.\n"
-          + Arrays.toString(e.getStackTrace())
-      );
-      return false; // null means replay is over
+    table.setTimestamp(newTable.getTimestamp());
+    for (Map.Entry<String, LogTable.LogValue> entry :
+            newTable.getAll(false).entrySet()
+    ) {
+      table.remove(entry.getKey());
+      table.put(entry.getKey(), entry.getValue());
     }
+    return true;
   }
 
   public LogTable getEntry() {
