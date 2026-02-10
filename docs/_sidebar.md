@@ -2,6 +2,7 @@
 * [Comparison to FTC Dashboard](compare.md)
 * [Installing](installing.md)
 * [Usage](usage.md)
+* [FTC Auto-Logging](ftc-autolog-examples.md)
 * [Replay](replay.md)
 * [Supported Hardware](supported.md)
 * [Install Advantage Scope](installAscope.md)
