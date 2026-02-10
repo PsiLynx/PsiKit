@@ -12,7 +12,14 @@ object OpModeControls: LoggableInputs {
     }
 
     override fun fromLog(table: LogTable) {
-        started = table.get("started", false)
-        stopped = table.get("stopped", false)
+        // Only overwrite when these keys exist in the replay log.
+        // This avoids getting stuck in init when replaying older logs that never recorded
+        // OpModeControls (LogTable.get(key, default) would otherwise return the default).
+        if (table.get("started") != null) {
+            started = table.get("started", started)
+        }
+        if (table.get("stopped") != null) {
+            stopped = table.get("stopped", stopped)
+        }
     }
 }
