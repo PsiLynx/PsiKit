@@ -4,6 +4,9 @@ PsiKit can automatically install logging around your OpModes without requiring y
 - extend a PsiKit base class, or
 - call `super` in lifecycle methods.
 
+For all runtime tuning knobs and defaults (`FtcLogTuning` + AutoLog settings), see
+[FTC Logging & Tuning Reference](ftc-logging-tuning-reference.md).
+
 This works by registering an FTC event-loop hook (`@OnCreateEventLoop`), then (for iterative OpModes) swapping the active OpMode to a wrapper that runs PsiKit logging hooks around your callbacks.
 
 ## Imports
@@ -18,11 +21,11 @@ You’ll typically use these:
 
 ## 1) Enable global logging, opt out specific OpModes
 
-### Global enable (default)
+### Global enable (explicit)
 
-By default, PsiKit’s auto-logger is **enabled globally** (it instruments all iterative OpModes automatically).
+By default, PsiKit’s auto-logger is **disabled**.
 
-If you want to make that explicit (or override it), you can set it at runtime.
+If you want global behavior (instrument iterative OpModes automatically), enable it at runtime.
 
 #### Kotlin (recommended: configure at event-loop creation)
 <!-- tabs:start -->
@@ -171,9 +174,9 @@ public class NoLoggingTeleOp extends OpMode {
 
 ## 2) Opt in a single OpMode, and change the RLOG port
 
-If you prefer **opt-in only**, disable global logging and annotate the OpModes you want.
+For **opt-in only** behavior (the default), keep global logging disabled and annotate the OpModes you want.
 
-### Disable global, then opt in
+### Keep global disabled, then opt in
 <!-- tabs:start -->
 
 #### **Kotlin**

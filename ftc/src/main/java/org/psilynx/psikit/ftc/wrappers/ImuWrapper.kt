@@ -47,6 +47,8 @@ class ImuWrapper(
     private var _version = 1
     private var _connectionInfo = ""
     private var _manufacturer = HardwareDevice.Manufacturer.Other
+    private var _orientationSampledThisLoop = false
+    private var _ratesSampledThisLoop = false
 
     private var lastSampleNs: Long = Long.MIN_VALUE
 
@@ -61,51 +63,25 @@ class ImuWrapper(
         return secondsSince(lastSampleNs) >= period
     }
 
-    override fun new(wrapped: IMU?) = ImuWrapper(wrapped)
-
-    override fun toLog(table: LogTable) {
-        if (!FtcLogTuning.logImu) {
-            return
-        }
-
-        val d = device ?: return
-
-        if (!shouldSampleNow()) {
-            // Skip reads/writes this loop; LogTable retains the last values.
-            return
-        }
-        lastSampleNs = System.nanoTime()
-
-        val orientation = d.getRobotYawPitchRollAngles()
+    private fun updateAnglesAndDerivedRates(orientation: YawPitchRollAngles, nowSec: Double = Logger.getTimestamp()) {
         _yawRad = orientation.getYaw(AngleUnit.RADIANS)
         _pitchRad = orientation.getPitch(AngleUnit.RADIANS)
         _rollRad = orientation.getRoll(AngleUnit.RADIANS)
 
-        // Compute yaw rate from consecutive yaw samples so we only need one IMU read per loop.
-        // (Calling getRobotAngularVelocity can be relatively expensive on some hubs.)
-        val nowSec = Logger.getTimestamp()
         val lastYaw = _lastYawRad
         val lastPitch = _lastPitchRad
         val lastRoll = _lastRollRad
         val lastTime = _lastTimestampSec
-        if (logGyroRates) {
-            // Real gyro rates (rad/s). Map robot yaw/pitch/roll rates to IMU x/y/z rotation rates.
-            val angularVelocity = d.getRobotAngularVelocity(AngleUnit.RADIANS)
-            _pitchRateRadPerSec = angularVelocity.xRotationRate.toDouble()
-            _rollRateRadPerSec = angularVelocity.yRotationRate.toDouble()
-            _yawRateRadPerSec = angularVelocity.zRotationRate.toDouble()
-        } else {
-            // Diff-based rates computed from consecutive angle samples (rad/s).
-            if (lastYaw != null && lastPitch != null && lastRoll != null && lastTime != null) {
-                val dt = nowSec - lastTime
-                if (dt > 1e-6) {
-                    val dyaw = angleDiffRad(_yawRad, lastYaw)
-                    val dpitch = angleDiffRad(_pitchRad, lastPitch)
-                    val droll = angleDiffRad(_rollRad, lastRoll)
-                    _yawRateRadPerSec = dyaw / dt
-                    _pitchRateRadPerSec = dpitch / dt
-                    _rollRateRadPerSec = droll / dt
-                }
+        if (!logGyroRates && lastYaw != null && lastPitch != null && lastRoll != null && lastTime != null) {
+            val dt = nowSec - lastTime
+            if (dt > 1e-6) {
+                val dyaw = angleDiffRad(_yawRad, lastYaw)
+                val dpitch = angleDiffRad(_pitchRad, lastPitch)
+                val droll = angleDiffRad(_rollRad, lastRoll)
+                _yawRateRadPerSec = dyaw / dt
+                _pitchRateRadPerSec = dpitch / dt
+                _rollRateRadPerSec = droll / dt
+                _ratesSampledThisLoop = true
             }
         }
 
@@ -113,24 +89,80 @@ class ImuWrapper(
         _lastPitchRad = _pitchRad
         _lastRollRad = _rollRad
         _lastTimestampSec = nowSec
+        _orientationSampledThisLoop = true
+    }
+
+    private fun updateRatesFromAngularVelocity(angularVelocity: AngularVelocity, angleUnit: AngleUnit) {
+        val toRad = if (angleUnit == AngleUnit.DEGREES) Math.PI / 180.0 else 1.0
+        _pitchRateRadPerSec = angularVelocity.xRotationRate.toDouble() * toRad
+        _rollRateRadPerSec = angularVelocity.yRotationRate.toDouble() * toRad
+        _yawRateRadPerSec = angularVelocity.zRotationRate.toDouble() * toRad
+        _ratesSampledThisLoop = true
+    }
+
+    private fun writeCachedIfSampled(table: LogTable) {
+        if (_orientationSampledThisLoop) {
+            table.put("yawRad", _yawRad)
+            table.put("pitchRad", _pitchRad)
+            table.put("rollRad", _rollRad)
+        }
+        if (_ratesSampledThisLoop) {
+            table.put("yawRateRadPerSec", _yawRateRadPerSec)
+            table.put("pitchRateRadPerSec", _pitchRateRadPerSec)
+            table.put("rollRateRadPerSec", _rollRateRadPerSec)
+        }
+        table.put("sampledOrientation", _orientationSampledThisLoop)
+        table.put("sampledRates", _ratesSampledThisLoop)
+    }
+
+    override fun new(wrapped: IMU?) = ImuWrapper(wrapped)
+
+    override fun toLog(table: LogTable) {
+        if (FtcLogTuning.bulkOnlyLogging) {
+            writeCachedIfSampled(table)
+            _orientationSampledThisLoop = false
+            _ratesSampledThisLoop = false
+            return
+        }
+
+        if (!FtcLogTuning.logImu) {
+            return
+        }
+
+        val d = device ?: return
+
+        if (!shouldSampleNow()) {
+            writeCachedIfSampled(table)
+            _orientationSampledThisLoop = false
+            _ratesSampledThisLoop = false
+            return
+        }
+        lastSampleNs = System.nanoTime()
+
+        val orientation = d.getRobotYawPitchRollAngles()
+        val nowSec = Logger.getTimestamp()
+        updateAnglesAndDerivedRates(orientation, nowSec)
+
+        if (logGyroRates) {
+            // Real gyro rates (rad/s). Map robot yaw/pitch/roll rates to IMU x/y/z rotation rates.
+            val angularVelocity = d.getRobotAngularVelocity(AngleUnit.RADIANS)
+            updateRatesFromAngularVelocity(angularVelocity, AngleUnit.RADIANS)
+        }
 
         _deviceName = d.deviceName
         _version = d.version
         _connectionInfo = d.connectionInfo
         _manufacturer = d.manufacturer
 
-        table.put("yawRad", _yawRad)
-        table.put("pitchRad", _pitchRad)
-        table.put("rollRad", _rollRad)
-        table.put("yawRateRadPerSec", _yawRateRadPerSec)
-        table.put("pitchRateRadPerSec", _pitchRateRadPerSec)
-        table.put("rollRateRadPerSec", _rollRateRadPerSec)
+        writeCachedIfSampled(table)
         table.put("logGyroRates", logGyroRates)
 
         table.put("deviceName", _deviceName)
         table.put("version", _version)
         table.put("connectionInfo", _connectionInfo)
         table.put("manufacturer", _manufacturer)
+        _orientationSampledThisLoop = false
+        _ratesSampledThisLoop = false
     }
 
     override fun fromLog(table: LogTable) {
@@ -141,6 +173,8 @@ class ImuWrapper(
         _yawRateRadPerSec = table.get("yawRateRadPerSec", 0.0)
         _pitchRateRadPerSec = table.get("pitchRateRadPerSec", 0.0)
         _rollRateRadPerSec = table.get("rollRateRadPerSec", 0.0)
+        _orientationSampledThisLoop = table.get("sampledOrientation", false)
+        _ratesSampledThisLoop = table.get("sampledRates", false)
 
         _deviceName = table.get("deviceName", "MockIMU")
         _version = table.get("version", 1)
@@ -160,7 +194,9 @@ class ImuWrapper(
         if (Logger.isReplay() || device == null) {
             return YawPitchRollAngles(AngleUnit.RADIANS, _yawRad, _pitchRad, _rollRad, 0)
         }
-        return device.getRobotYawPitchRollAngles()
+        val orientation = device.getRobotYawPitchRollAngles()
+        updateAnglesAndDerivedRates(orientation)
+        return orientation
     }
 
     override fun getRobotOrientation(
@@ -206,7 +242,9 @@ class ImuWrapper(
 
     override fun getRobotAngularVelocity(angleUnit: AngleUnit): AngularVelocity {
         if (!Logger.isReplay() && device != null) {
-            return device.getRobotAngularVelocity(angleUnit)
+            val angularVelocity = device.getRobotAngularVelocity(angleUnit)
+            updateRatesFromAngularVelocity(angularVelocity, angleUnit)
+            return angularVelocity
         }
 
         // In replay, return the logged rates. Map yaw/pitch/roll rates to IMU x/y/z rotation rates.

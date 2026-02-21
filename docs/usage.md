@@ -37,6 +37,38 @@ It is recommended to log things in the same file in the same parent table, using
 
 Returns the current time in seconds since `Logger.start()` was called. Currently just uses `System.nanoTime()`, but in the future, using that function as your time source will be very important in order to proper replay data. 
 
+### Sampling semantics (important for performance modes)
+
+Some FTC wrappers support a low-overhead mode where background sampling is reduced or disabled (for example when using `FtcLogTuning.nonBulkReadPeriodSec`, `FtcLogTuning.processColorDistanceSensorsInBackground = false`, or `FtcLogTuning.bulkOnlyLogging = true`).
+
+PsiKit follows this convention:
+
+- Measurement values are only written when freshly sampled.
+- Per-loop sampled flags are written so logs show freshness explicitly.
+- Stale values are not repeatedly re-logged as if they were fresh.
+
+Examples of sampled flags:
+
+- `color/sampled`, `distance/sampled`
+- `sampledOrientation`, `sampledRates`
+- `voltage/sampled`
+
+### Bulk prefetch timing attribution
+
+For FTC REV hubs, PsiKit uses manual bulk caching and (by default) prefetches once per loop
+(`FtcLogTuning.prefetchBulkDataEachLoop = true`).
+
+This gives cleaner timing attribution:
+
+- Bulk transaction time is reported in:
+    - `PsiKit/sessionTimes (us)/BulkPrefetchTotal`
+    - `PsiKit/logTimes (us)/BulkPrefetch/<hub>`
+- Per-device log times no longer "blame" the first bulk-backed device read in the loop.
+
+If your loop intentionally performs no bulk-backed reads, you can disable prefetch:
+
+- `FtcLogTuning.prefetchBulkDataEachLoop = false`
+
 ### Classes such as `Pose2d` and `LoggedMechanism2d`
 
 Most classes referenced in the advantage scope docs are available in Psi Kit, ones that are part of WPI are in `psikit.wpi.*`.
