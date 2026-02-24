@@ -54,25 +54,30 @@ class ServoWrapper(private val device: ServoImplEx?):
 
     override fun getDirection(): Servo.Direction = _direction
     override fun setDirection(direction: Servo.Direction) {
+        _direction = direction
         device?.direction = direction
     }
 
     override fun getPosition(): Double = _position
     override fun setPosition(position: Double) {
+        _position = position
         device?.position = position
     }
 
     override fun getPwmRange(): PwmControl.PwmRange = _pwmRange
     override fun setPwmRange(range: PwmControl.PwmRange) {
+        _pwmRange = range
         device?.pwmRange = range
     }
 
     override fun isPwmEnabled(): Boolean = _pwmEnabled
     override fun setPwmEnable() {
+        _pwmEnabled = true
         device?.setPwmEnable()
     }
 
     override fun setPwmDisable() {
+        _pwmEnabled = false
         device?.setPwmDisable()
     }
 
@@ -90,11 +95,11 @@ class ServoWrapper(private val device: ServoImplEx?):
         _pwmRange = device.pwmRange
         _pwmEnabled = device.isPwmEnabled
 
-        table.put("Direction", direction.ordinal)
-        table.put("Position", position)
-        table.put("PwmLower", pwmRange.usPulseLower)
-        table.put("PwmUpper", pwmRange.usPulseUpper)
-        table.put("PwmEnabled", isPwmEnabled)
+        table.put("Direction", _direction.ordinal)
+        table.put("Position", _position)
+        table.put("PwmLower", _pwmRange.usPulseLower)
+        table.put("PwmUpper", _pwmRange.usPulseUpper)
+        table.put("PwmEnabled", _pwmEnabled)
     }
 
     override fun fromLog(table: LogTable) {
