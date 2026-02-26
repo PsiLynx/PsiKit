@@ -85,7 +85,7 @@ class FtcLoggingSession {
         // Reset the per-session list of hardware devices to log.
         // HardwareMapWrapper.devicesToProcess is a static map and would otherwise retain
         // devices from prior OpModes (which can lead to unexpected logging and extra I/O).
-        HardwareMapWrapper.devicesToProcess.clear()
+        // HardwareMapWrapper.devicesToProcess.clear()
 
         // Optional: configure replay before Logger.start().
         // - Explicit replaySource wins

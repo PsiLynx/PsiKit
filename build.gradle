@@ -19,44 +19,6 @@ plugins {
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-group = 'org.psilynx'
-version = '0.0.4'
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            // Optional: set artifactId if different from project name
-            // artifactId = 'my-lib'
-        }
-    }
-}
-//publishing {
- //   repositories {
-  //      maven {
-   //         name = "dairyReleases"
-    //        url = uri("https://repo.dairy.foundation/releases")
-     //       credentials(PasswordCredentials)
-//
- //           authentication {
-  //              basic(BasicAuthentication)
-   //         }
-    //    }
-    //}
-//    publications {
- //       maven(MavenPublication) {
-  //          groupId = "org.psilynx"
-   //         artifactId = "psikit"
-//	    
-//	    //artifact(dairyDoc.dokkaHtmlJar)
-//	    //artifact(dairyDoc.dokkaJavadocJar)
-//
- //           version = "0.0.4"
-  //          from components.java
-   //     }
-    //}
-//}
 java {
     sourceCompatibility JavaVersion.VERSION_11
     targetCompatibility JavaVersion.VERSION_11
