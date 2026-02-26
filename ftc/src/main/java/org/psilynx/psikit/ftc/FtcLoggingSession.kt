@@ -43,6 +43,15 @@ class FtcLoggingSession {
         private const val REPLAY_WRITE_OUTPUT_ENV = "PSIKIT_REPLAY_WRITE_OUTPUT"
         private const val REPLAY_OUTPUT_DIR_ENV = "PSIKIT_REPLAY_OUTPUT_DIR"
         private const val REPLAY_MOCK_HARDWAREMAP_ENV = "PSIKIT_REPLAY_MOCK_HARDWAREMAP"
+
+        /**
+         * Global default for [clearDeviceRegistryOnStart] applied to newly-created sessions.
+         *
+         * Set once (for example at robot/app init) to change behavior across all future
+         * [FtcLoggingSession] instances.
+         */
+        @JvmField
+        var defaultClearDeviceRegistryOnStart: Boolean = true
     }
 
     /**
@@ -56,6 +65,17 @@ class FtcLoggingSession {
      */
     @JvmField
     var enablePinpointOdometryLogging: Boolean = true
+
+    /**
+     * If true (default), clears [HardwareMapWrapper.devicesToProcess] at each [start].
+     *
+     * Set to false for teams that intentionally keep wrapped hardware references in static
+     * singletons across OpMode transitions. In that pattern, wrappers are often mapped once and
+     * reused; clearing the registry would otherwise stop those devices from being logged until
+     * hardware is mapped again.
+     */
+    @JvmField
+    var clearDeviceRegistryOnStart: Boolean = defaultClearDeviceRegistryOnStart
 
     private val driverStationLogger = DriverStationLogger()
     private val pinpointOdometryLogger = PinpointOdometryLogger()
@@ -85,7 +105,13 @@ class FtcLoggingSession {
         // Reset the per-session list of hardware devices to log.
         // HardwareMapWrapper.devicesToProcess is a static map and would otherwise retain
         // devices from prior OpModes (which can lead to unexpected logging and extra I/O).
-        // HardwareMapWrapper.devicesToProcess.clear()
+        //
+        // Some teams intentionally keep wrapped hardware in static singletons and do not remap
+        // on each OpMode start. For that pattern, preserving the registry avoids losing logging
+        // after transitions.
+        if (clearDeviceRegistryOnStart) {
+            HardwareMapWrapper.devicesToProcess.clear()
+        }
 
         // Optional: configure replay before Logger.start().
         // - Explicit replaySource wins
