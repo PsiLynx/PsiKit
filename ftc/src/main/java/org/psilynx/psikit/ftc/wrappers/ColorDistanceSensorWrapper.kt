@@ -30,6 +30,7 @@ class ColorDistanceSensorWrapper(
     private var _gain: Float = 0.0f
     private var _distanceMeters: Double = 0.0
     private var _colorSampledThisLoop: Boolean = false
+    private var _distanceSampledThisLoop: Boolean = false
 
     private var lastSampleNs: Long = Long.MIN_VALUE
 
@@ -55,9 +56,44 @@ class ColorDistanceSensorWrapper(
     override fun new(wrapped: HardwareDevice?) = ColorDistanceSensorWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
+        if (FtcLogTuning.bulkOnlyLogging) {
+            return
+        }
+
         if (!FtcLogTuning.processColorDistanceSensorsInBackground) {
             // When disabled, avoid background I2C reads entirely.
-            // User code can still read on-demand via passthrough methods.
+            // User code can still read on-demand via passthrough methods, which update the cached
+            // values below. We still write cached values to the log table so explicit reads can
+            // appear in logs.
+            val d = device
+            if (d != null) {
+                _connectionInfo = d.connectionInfo
+                _manufacturer = d.manufacturer
+                _deviceName = d.deviceName
+                _version = d.version
+            }
+
+            table.put("connectionInfo", _connectionInfo)
+            table.put("manufacturer", _manufacturer)
+            table.put("deviceName", _deviceName)
+            table.put("version", _version)
+
+            if (_colorSampledThisLoop) {
+                table.put("color/red", _normalized.red.toDouble())
+                table.put("color/green", _normalized.green.toDouble())
+                table.put("color/blue", _normalized.blue.toDouble())
+                table.put("color/alpha", _normalized.alpha.toDouble())
+                table.put("color/gain", _gain.toDouble())
+            }
+            table.put("color/sampled", _colorSampledThisLoop)
+            table.put("color/distanceThresholdMeters", colorReadDistanceMetersThreshold ?: -1.0)
+            table.put("distance/sampled", _distanceSampledThisLoop)
+
+            if (_distanceSampledThisLoop) {
+                table.put("distance/meters", _distanceMeters)
+            }
+            _colorSampledThisLoop = false
+            _distanceSampledThisLoop = false
             return
         }
 
@@ -79,10 +115,15 @@ class ColorDistanceSensorWrapper(
         val distDevice = d as? DistanceSensor
         if (distDevice != null) {
             _distanceMeters = try {
-                distDevice.getDistance(DistanceUnit.METER)
+                distDevice.getDistance(DistanceUnit.METER).also {
+                    _distanceSampledThisLoop = true
+                }
             } catch (_: Throwable) {
+                _distanceSampledThisLoop = false
                 0.0
             }
+        } else {
+            _distanceSampledThisLoop = false
         }
 
         val threshold = colorReadDistanceMetersThreshold
@@ -120,6 +161,10 @@ class ColorDistanceSensorWrapper(
         table.put("color/distanceThresholdMeters", threshold ?: -1.0)
 
         table.put("distance/meters", _distanceMeters)
+        table.put("distance/sampled", _distanceSampledThisLoop)
+
+        _colorSampledThisLoop = false
+        _distanceSampledThisLoop = false
     }
 
     override fun fromLog(table: LogTable) {
@@ -137,6 +182,7 @@ class ColorDistanceSensorWrapper(
         _gain = table.get("color/gain", 0.0).toFloat()
         _colorSampledThisLoop = table.get("color/sampled", false)
         _distanceMeters = table.get("distance/meters", 0.0)
+        _distanceSampledThisLoop = table.get("distance/sampled", false)
     }
 
     override fun getNormalizedColors(): NormalizedRGBA {
@@ -144,7 +190,15 @@ class ColorDistanceSensorWrapper(
             val d = device as? NormalizedColorSensor
             if (d != null) {
                 return try {
-                    d.normalizedColors
+                    d.normalizedColors.also {
+                        _normalized = it
+                        _gain = try {
+                            d.gain
+                        } catch (_: Throwable) {
+                            _gain
+                        }
+                        _colorSampledThisLoop = true
+                    }
                 } catch (_: Throwable) {
                     NormalizedRGBA()
                 }
@@ -154,10 +208,33 @@ class ColorDistanceSensorWrapper(
     }
 
     // ColorSensor compatibility: scale normalized [0..1] into [0..255] like typical SDK sensors.
-    override fun red(): Int = (_normalized.red * 255.0f).toInt().coerceIn(0, 255)
-    override fun green(): Int = (_normalized.green * 255.0f).toInt().coerceIn(0, 255)
-    override fun blue(): Int = (_normalized.blue * 255.0f).toInt().coerceIn(0, 255)
-    override fun alpha(): Int = (_normalized.alpha * 255.0f).toInt().coerceIn(0, 255)
+    override fun red(): Int {
+        if (!Logger.isReplay() && !FtcLogTuning.processColorDistanceSensorsInBackground) {
+            getNormalizedColors()
+        }
+        return (_normalized.red * 255.0f).toInt().coerceIn(0, 255)
+    }
+
+    override fun green(): Int {
+        if (!Logger.isReplay() && !FtcLogTuning.processColorDistanceSensorsInBackground) {
+            getNormalizedColors()
+        }
+        return (_normalized.green * 255.0f).toInt().coerceIn(0, 255)
+    }
+
+    override fun blue(): Int {
+        if (!Logger.isReplay() && !FtcLogTuning.processColorDistanceSensorsInBackground) {
+            getNormalizedColors()
+        }
+        return (_normalized.blue * 255.0f).toInt().coerceIn(0, 255)
+    }
+
+    override fun alpha(): Int {
+        if (!Logger.isReplay() && !FtcLogTuning.processColorDistanceSensorsInBackground) {
+            getNormalizedColors()
+        }
+        return (_normalized.alpha * 255.0f).toInt().coerceIn(0, 255)
+    }
 
     override fun argb(): Int {
         val a = alpha()
@@ -182,7 +259,19 @@ class ColorDistanceSensorWrapper(
         return color?.i2cAddress ?: I2cAddr(0)
     }
 
-    override fun getGain(): Float = _gain
+    override fun getGain(): Float {
+        if (!Logger.isReplay() && !FtcLogTuning.processColorDistanceSensorsInBackground) {
+            val d = device as? NormalizedColorSensor
+            if (d != null) {
+                _gain = try {
+                    d.gain
+                } catch (_: Throwable) {
+                    _gain
+                }
+            }
+        }
+        return _gain
+    }
 
     override fun setGain(gain: Float) {
         _gain = gain
@@ -198,7 +287,14 @@ class ColorDistanceSensorWrapper(
             val d = device as? DistanceSensor
             if (d != null) {
                 return try {
-                    d.getDistance(unit)
+                    d.getDistance(unit).also {
+                        _distanceMeters = try {
+                            DistanceUnit.METER.fromUnit(unit, it)
+                        } catch (_: Throwable) {
+                            _distanceMeters
+                        }
+                        _distanceSampledThisLoop = true
+                    }
                 } catch (_: Throwable) {
                     0.0
                 }

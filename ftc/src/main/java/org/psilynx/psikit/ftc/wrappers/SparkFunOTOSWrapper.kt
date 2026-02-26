@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.Logger
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.ftc.MockI2cDeviceSyncSimple
 
 class SparkFunOTOSWrapper(
@@ -40,6 +41,10 @@ class SparkFunOTOSWrapper(
     private var _signalProcessConfigByte: Byte = 0
 
     override fun toLog(table: LogTable) {
+        if (FtcLogTuning.bulkOnlyLogging) {
+            return
+        }
+
         if (device != null) {
             _deviceName     = device.deviceName
             _version        = device.version

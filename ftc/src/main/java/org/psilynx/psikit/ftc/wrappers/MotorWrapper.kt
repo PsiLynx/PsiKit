@@ -264,7 +264,7 @@ class MotorWrapper(
     override fun toLog(table: LogTable) {
         device!!
 
-        val profile = logProfile
+        val profile = if (FtcLogTuning.bulkOnlyLogging) LOG_PROFILE_BULK_ONLY else logProfile
 
         if (profile != LOG_PROFILE_FULL) {
             // In FAST/BULK_ONLY, avoid readback-based drift in the first log sample.

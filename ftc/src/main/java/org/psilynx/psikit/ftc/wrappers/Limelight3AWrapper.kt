@@ -9,6 +9,7 @@ import com.qualcomm.hardware.limelightvision.PsiKitLimelightJsonFactory
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import org.firstinspires.ftc.robotcore.internal.usb.EthernetOverUsbSerialNumber
 import org.json.JSONObject
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.core.LogTable
 import org.psilynx.psikit.core.Logger
 import org.psilynx.psikit.core.wpi.math.Pose2d
@@ -99,6 +100,10 @@ class Limelight3AWrapper(
     }
 
     override fun toLog(table: LogTable) {
+        if (FtcLogTuning.bulkOnlyLogging) {
+            return
+        }
+
         // Avoid extra network calls here. The overrides for getLatestResult/getStatus will
         // opportunistically refresh caches when user code calls them.
         if (device != null) {
