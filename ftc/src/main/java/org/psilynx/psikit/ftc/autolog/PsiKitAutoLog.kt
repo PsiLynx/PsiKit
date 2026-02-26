@@ -28,12 +28,15 @@ annotation class PsiKitAutoLog(
     val rlogFolder: String = "/sdcard/FIRST/PsiKit/",
     /** Optional filename override; blank means "use default". */
     val rlogFilename: String = "",
+    /** If false, disables file writing while still allowing the RLOG server. */
+    val writeRlogFile: Boolean = true,
 )
 
 /**
  * Explicit opt-out for PsiKit's auto-logging wrapper.
  *
- * This is useful when [PsiKitAutoLogSettings.enabledByDefault] is true.
+ * This is useful when global auto-logging is enabled via [PsiKitAutoLogSettings.enabledByDefault]
+ * or [PsiKitAutoLogSettings.PROPERTY_ENABLED].
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
@@ -43,13 +46,14 @@ data class PsiKitAutoLogOptions(
     val rlogPort: Int = 5800,
     val rlogFolder: String = "/sdcard/FIRST/PsiKit/",
     val rlogFilename: String = "",
+    val writeRlogFile: Boolean = true,
 )
 
 /**
  * Runtime configuration for PsiKit's event-loop auto logger.
  *
- * Defaults are intentionally aggressive ("instrument everything") to satisfy the
- * "drop-in" goal; use [PsiKitNoAutoLog] to exclude specific OpModes.
+ * Defaults are conservative (opt-in): annotate OpModes with [PsiKitAutoLog], or enable
+ * globally via [enabledByDefault] / [PROPERTY_ENABLED].
  */
 object PsiKitAutoLogSettings {
     const val PROPERTY_ENABLED = "psikit.autolog.enabled"
@@ -59,7 +63,7 @@ object PsiKitAutoLogSettings {
     const val PROPERTY_RLOG_FILENAME = "psikit.autolog.rlogFilename"
 
     @JvmField
-    var enabledByDefault: Boolean = true
+    var enabledByDefault: Boolean = false
 
     /** Linear OpModes can only be instrumented with session start/end (no per-loop wrapper). */
     @JvmField
@@ -74,6 +78,7 @@ object PsiKitAutoLogSettings {
         rlogFolder = System.getProperty(PROPERTY_RLOG_FOLDER)?.takeIf { it.isNotBlank() }
             ?: "/sdcard/FIRST/PsiKit/",
         rlogFilename = System.getProperty(PROPERTY_RLOG_FILENAME) ?: "",
+        writeRlogFile = true,
     )
 
     private fun readBoolProperty(name: String): Boolean? {
@@ -292,6 +297,7 @@ object PsiKitAutoLogger : OpModeManagerNotifier.Notifications {
                 rlogPort = annotation.rlogPort,
                 rlogFolder = annotation.rlogFolder,
                 rlogFilename = annotation.rlogFilename,
+                writeRlogFile = annotation.writeRlogFile,
             )
         }
         return PsiKitAutoLogSettings.defaultOptions()
@@ -400,6 +406,7 @@ class PsiKitWrappedIterativeOpMode(
             rlogPort = options.rlogPort,
             folder = options.rlogFolder,
             filename = options.rlogFilename,
+            writeFile = options.writeRlogFile,
             // Record metadata from the user's real OpMode class (annotations, name, etc)
             metadataOpMode = delegate,
         )

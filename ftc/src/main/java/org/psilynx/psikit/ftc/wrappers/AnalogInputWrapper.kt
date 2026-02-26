@@ -2,6 +2,7 @@ package org.psilynx.psikit.ftc.wrappers
 
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.HardwareDevice
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.core.LogTable
 
 class AnalogInputWrapper(
@@ -19,18 +20,23 @@ class AnalogInputWrapper(
 
     override fun toLog(table: LogTable) {
         device!!
+        _voltage        = device.voltage
+        table.put("voltage", voltage)
+
+        if (FtcLogTuning.bulkOnlyLogging) {
+            return
+        }
+
         _connectionInfo = device.connectionInfo
         _manufacturer   = device.manufacturer
         _deviceName     = device.deviceName
         _maxVoltage     = device.maxVoltage
-        _voltage        = device.voltage
         _version        = device.version
 
         table.put("connectionInfo", connectionInfo)
         table.put("manufacturer", manufacturer)
         table.put("maxVoltage", maxVoltage)
         table.put("deviceName", deviceName)
-        table.put("voltage", voltage)
         table.put("version", version)
 
     }

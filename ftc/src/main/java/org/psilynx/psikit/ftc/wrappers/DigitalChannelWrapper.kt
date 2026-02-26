@@ -3,6 +3,7 @@ package org.psilynx.psikit.ftc.wrappers
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.DigitalChannelController
 import com.qualcomm.robotcore.hardware.HardwareDevice
+import org.psilynx.psikit.ftc.FtcLogTuning
 import org.psilynx.psikit.core.LogTable
 
 class DigitalChannelWrapper(
@@ -20,8 +21,14 @@ class DigitalChannelWrapper(
 
     override fun toLog(table: LogTable) {
         device!!
-        _mode          = device.mode
         _state         = device.state
+
+        if (FtcLogTuning.bulkOnlyLogging) {
+            table.put("state", state)
+            return
+        }
+
+        _mode          = device.mode
         _deviceName    = device.deviceName
         _version       = device.version
         _connectionInfo = device.connectionInfo

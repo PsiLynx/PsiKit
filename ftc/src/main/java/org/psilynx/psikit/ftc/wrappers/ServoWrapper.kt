@@ -79,6 +79,10 @@ class ServoWrapper(private val device: ServoImplEx?):
     override fun toLog(table: LogTable) {
         device!!
 
+        if (FtcLogTuning.bulkOnlyLogging) {
+            return
+        }
+
         if (!shouldSampleNow()) {
             // Skip reads/writes this loop; LogTable retains the last values.
             return

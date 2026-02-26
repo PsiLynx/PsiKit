@@ -54,6 +54,10 @@ class PinpointWrapper(
     override fun new(wrapped: GoBildaPinpointDriver?): HardwareInput<GoBildaPinpointDriver> = PinpointWrapper(wrapped)
 
     override fun toLog(table: LogTable) {
+        if (FtcLogTuning.bulkOnlyLogging) {
+            return
+        }
+
         val target = device ?: return
 
         // NOTE: PsiKit does not call update() here; consumer code owns updates.

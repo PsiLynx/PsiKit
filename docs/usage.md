@@ -33,6 +33,19 @@ public class LoggedTeleOp extends OpMode {
 
 Want to change ports/folder/filename, opt in only, or configure LinearOpModes? See [FTC Auto-Logging](ftc-autolog-examples.md).
 
+### FTC logging/tuning quick defaults
+
+Current important defaults:
+
+- AutoLog global enable: `false` (opt-in by `@PsiKitAutoLog`)
+- `FtcLogTuning.bulkOnlyLogging`: `true`
+- `FtcLogTuning.prefetchBulkDataEachLoop`: `true`
+- `FtcLogTuning.processColorDistanceSensorsInBackground`: `true`
+- `FtcLogTuning.logImu`: `false`
+
+For the full knob list (autolog settings + all `FtcLogTuning` options), see
+[FTC Logging & Tuning Reference](ftc-logging-tuning-reference.md).
+
 ---
 
 ## Logging your own data
@@ -63,6 +76,38 @@ Returns the **current log/replay timestamp** in seconds.
 If you need a timestamp for logic that should behave the same in live runs and replay, prefer `Logger.getTimestamp()` (this is what makes replay deterministic).
 
 If you want a “real time since start” clock for profiling/performance analysis (where determinism doesn’t matter), use `Logger.getRealTimestamp()` instead.
+
+### Sampling semantics (important for performance modes)
+
+Some FTC wrappers support a low-overhead mode where background sampling is reduced or disabled (for example when using `FtcLogTuning.nonBulkReadPeriodSec`, `FtcLogTuning.processColorDistanceSensorsInBackground = false`, or `FtcLogTuning.bulkOnlyLogging = true`).
+
+PsiKit follows this convention:
+
+- Measurement values are only written when freshly sampled.
+- Per-loop sampled flags are written so logs show freshness explicitly.
+- Stale values are not repeatedly re-logged as if they were fresh.
+
+Examples of sampled flags:
+
+- `color/sampled`, `distance/sampled`
+- `sampledOrientation`, `sampledRates`
+- `voltage/sampled`
+
+### Bulk prefetch timing attribution
+
+For FTC REV hubs, PsiKit uses manual bulk caching and (by default) prefetches once per loop
+(`FtcLogTuning.prefetchBulkDataEachLoop = true`).
+
+This gives cleaner timing attribution:
+
+- Bulk transaction time is reported in:
+    - `PsiKit/sessionTimes (us)/BulkPrefetchTotal`
+    - `PsiKit/logTimes (us)/BulkPrefetch/<hub>`
+- Per-device log times no longer "blame" the first bulk-backed device read in the loop.
+
+If your loop intentionally performs no bulk-backed reads, you can disable prefetch:
+
+- `FtcLogTuning.prefetchBulkDataEachLoop = false`
 
 ### Classes such as `Pose2d` and `LoggedMechanism2d`
 
