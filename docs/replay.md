@@ -12,7 +12,7 @@ Replay is a very powerful feature in Psi Kit. It allows you to record all the in
 ### Usage:
 1. Use `Logger.addDataReceiver(new RLOGWriter(String fileName))` to record data to a log file 
 2. Check the [supported device list](supported.md) to make sure that all of the hardware on your robot has supported wrappers
-3. Set up your OpMode loop to make sure that hardware gets processed, following the example OpMode on the [usage](/usage.md) page
+3. Set up your OpMode loop to make sure that hardware gets processed, following the example OpMode on the [usage](usage.md) page
 
 ## FTC replay in practice
 
@@ -25,7 +25,7 @@ In FTC, the most common workflow is:
 
 For copying logs from a Control Hub / RC, see:
 
-- `docs/ftc-adb-and-rlog-runbook.md`
+- [FTC: ADB and RLOG runbook](ftc-adb-and-rlog-runbook.md)
 
 PsiKit contains the low-level replay reader (`RLOGReplay`) which updates a `LogTable` over time. Many teams build a small “replay runner” in their robot project (often using Robolectric) so they can instantiate an OpMode and re-run their code against recorded inputs.
 
