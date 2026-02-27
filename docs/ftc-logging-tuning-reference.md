@@ -8,6 +8,35 @@ Two places control behavior:
 
 - **AutoLog configuration** (`PsiKitAutoLogSettings`, `@PsiKitAutoLog`) controls if/how sessions are auto-started.
 - **Runtime tuning** (`FtcLogTuning`) controls per-loop logging cost/coverage.
+- **Session behavior** (`FtcLoggingSession`) controls per-session startup details like device registry reset.
+
+---
+
+## FtcLoggingSession lifecycle knobs
+
+Source: `FtcLoggingSession.kt`
+
+- `FtcLoggingSession.defaultClearDeviceRegistryOnStart = true` (global default)
+  - Applies to newly-created `FtcLoggingSession` instances.
+  - Set this once at app/robot init to change the default for all future sessions.
+
+- `clearDeviceRegistryOnStart = true` (default)
+  - On `start(...)`, clears `HardwareMapWrapper.devicesToProcess` so stale wrapper entries from prior OpModes are removed.
+  - This is still an **instance field** and can override the global default per session.
+
+### Singleton/static subsystem pattern
+
+If your robot code keeps wrapped hardware references in static/singleton subsystems and does not remap hardware each OpMode, set:
+
+- `FtcLoggingSession.defaultClearDeviceRegistryOnStart = false` (set once globally), or
+- `loggingSession.clearDeviceRegistryOnStart = false` (set per session)
+
+Otherwise, the startup clear can remove entries and those devices will not be logged until a new `hardwareMap.get(...)` path re-registers wrappers.
+
+Practical guidance:
+
+- If each OpMode creates its own `FtcLoggingSession`, set the flag in each OpMode (or in a shared base class constructor/init path).
+- If OpModes share one `FtcLoggingSession` instance, setting it once on that shared instance is enough.
 
 ---
 
