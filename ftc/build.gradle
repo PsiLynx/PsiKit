@@ -5,14 +5,14 @@ plugins {
 }
 
 group = "org.psilynx.psikit"
-version = "0.2.0-beta2"
+version = "0.2.0"
 
 android {
     namespace 'org.psilynx.psikit.ftc'
-    compileSdk 35
+    compileSdk 30
 
     defaultConfig {
-        minSdk 24
+        // minSdk 24
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -25,11 +25,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '1.8'
     }
 }
 
@@ -39,7 +39,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId = "org.psilynx.psikit"
                 artifactId = "ftc"
-                version = "0.2.0-beta2"
+                version = "0.2.0"
 
                 from components.release
 
@@ -94,13 +94,18 @@ repositories {
 
 dependencies {
 
-    api "org.firstinspires.ftc:RobotCore:11.1.0"
-    api "org.firstinspires.ftc:Hardware:11.1.0"
-    api "org.firstinspires.ftc:FtcCommon:11.1.0"
+    compileOnly "org.firstinspires.ftc:RobotCore:11.1.0"
+    compileOnly "org.firstinspires.ftc:Hardware:11.1.0"
+    compileOnly "org.firstinspires.ftc:FtcCommon:11.1.0"
+    compileOnly 'androidx.appcompat:appcompat:1.2.0'
+
+    testImplementation "org.firstinspires.ftc:RobotCore:11.1.0"
+    testImplementation "org.firstinspires.ftc:Hardware:11.1.0"
+    testImplementation "org.firstinspires.ftc:FtcCommon:11.1.0"
+    testImplementation 'androidx.appcompat:appcompat:1.2.0'
 
     implementation project(":core")
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "org.jetbrains.kotlin:kotlin-reflect:2.0.0"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

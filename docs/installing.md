@@ -13,8 +13,8 @@ repositories {
 dependencies {
     implementation project(':FtcRobotController')
     // IMPORTANT
-    implementation 'org.psilynx.psikit:core:0.2.0-beta2'
-    implementation 'org.psilynx.psikit:ftc:0.2.0-beta2'
+    implementation 'org.psilynx.psikit:core:0.2.0'
+    implementation 'org.psilynx.psikit:ftc:0.2.0'
     // IMPORTANT
 }
 ```

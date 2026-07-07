@@ -184,15 +184,15 @@ public class Rotation3d implements StructSerializable {
    * @return The counterclockwise rotation angle around the X axis (roll) in radians.
    */
   public double getX() {
-    final var w = m_q.getW();
-    final var x = m_q.getX();
-    final var y = m_q.getY();
-    final var z = m_q.getZ();
+    final double w = m_q.getW();
+    final double x = m_q.getX();
+    final double y = m_q.getY();
+    final double z = m_q.getZ();
 
     // wpimath/algorithms.md
-    final var cxcy = 1.0 - 2.0 * (x * x + y * y);
-    final var sxcy = 2.0 * (w * x + y * z);
-    final var cy_sq = cxcy * cxcy + sxcy * sxcy;
+    final double cxcy = 1.0 - 2.0 * (x * x + y * y);
+    final double sxcy = 2.0 * (w * x + y * z);
+    final double cy_sq = cxcy * cxcy + sxcy * sxcy;
     if (cy_sq > 1e-20) {
       return Math.atan2(sxcy, cxcy);
     } else {
@@ -206,10 +206,10 @@ public class Rotation3d implements StructSerializable {
    * @return The counterclockwise rotation angle around the Y axis (pitch) in radians.
    */
   public double getY() {
-    final var w = m_q.getW();
-    final var x = m_q.getX();
-    final var y = m_q.getY();
-    final var z = m_q.getZ();
+    final double w = m_q.getW();
+    final double x = m_q.getX();
+    final double y = m_q.getY();
+    final double z = m_q.getZ();
 
     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_(in_3-2-1_sequence)_conversion
     double ratio = 2.0 * (w * y - z * x);
@@ -226,15 +226,15 @@ public class Rotation3d implements StructSerializable {
    * @return The counterclockwise rotation angle around the Z axis (yaw) in radians.
    */
   public double getZ() {
-    final var w = m_q.getW();
-    final var x = m_q.getX();
-    final var y = m_q.getY();
-    final var z = m_q.getZ();
+    final double w = m_q.getW();
+    final double x = m_q.getX();
+    final double y = m_q.getY();
+    final double z = m_q.getZ();
 
     // wpimath/algorithms.md
-    final var cycz = 1.0 - 2.0 * (y * y + z * z);
-    final var cysz = 2.0 * (w * z + x * y);
-    final var cy_sq = cycz * cycz + cysz * cysz;
+    final double cycz = 1.0 - 2.0 * (y * y + z * z);
+    final double cysz = 2.0 * (w * z + x * y);
+    final double cy_sq = cycz * cycz + cysz * cysz;
     if (cy_sq > 1e-20) {
       return Math.atan2(cysz, cycz);
     } else {

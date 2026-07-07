@@ -103,8 +103,8 @@ public class Quaternion implements StructSerializable {
    */
   public Quaternion times(Quaternion other) {
     // https://en.wikipedia.org/wiki/Quaternion#Scalar_and_vector_parts
-    final var r1 = m_w;
-    final var r2 = other.m_w;
+    final double r1 = m_w;
+    final double r2 = other.m_w;
 
     // v₁ ⋅ v₂
     double dot = m_x * other.m_x + m_y * other.m_y + m_z * other.m_z;
@@ -174,7 +174,7 @@ public class Quaternion implements StructSerializable {
    * @return The inverse quaternion.
    */
   public Quaternion inverse() {
-    var norm = norm();
+    double norm = norm();
     return conjugate().divide(norm * norm);
   }
 
@@ -230,17 +230,19 @@ public class Quaternion implements StructSerializable {
    * @return The Matrix exponential of this quaternion.
    */
   public Quaternion exp() {
-    var scalar = Math.exp(getW());
+    double scalar = Math.exp(getW());
 
-    var axial_magnitude = Math.sqrt(getX() * getX() + getY() * getY() + getZ() * getZ());
-    var cosine = Math.cos(axial_magnitude);
+    double axial_magnitude = Math.sqrt(
+      getX() * getX() + getY() * getY() + getZ() * getZ()
+    );
+    double cosine = Math.cos(axial_magnitude);
 
     double axial_scalar;
 
     if (axial_magnitude < 1e-9) {
       // Taylor series of sin(θ) / θ near θ = 0: 1 − θ²/6 + θ⁴/120 + O(n⁶)
-      var axial_magnitude_sq = axial_magnitude * axial_magnitude;
-      var axial_magnitude_sq_sq = axial_magnitude_sq * axial_magnitude_sq;
+      double axial_magnitude_sq = axial_magnitude * axial_magnitude;
+      double axial_magnitude_sq_sq = axial_magnitude_sq * axial_magnitude_sq;
       axial_scalar = 1.0 - axial_magnitude_sq / 6.0 + axial_magnitude_sq_sq / 120.0;
     } else {
       axial_scalar = Math.sin(axial_magnitude) / axial_magnitude;
@@ -271,12 +273,14 @@ public class Quaternion implements StructSerializable {
    * @return The logarithm of this quaternion.
    */
   public Quaternion log() {
-    var norm = norm();
-    var scalar = Math.log(norm);
+    double norm = norm();
+    double scalar = Math.log(norm);
 
-    var v_norm = Math.sqrt(getX() * getX() + getY() * getY() + getZ() * getZ());
+    double v_norm = Math.sqrt(
+      getX() * getX() + getY() * getY() + getZ() * getZ()
+    );
 
-    var s_norm = getW() / norm;
+    double s_norm = getW() / norm;
 
     if (Math.abs(s_norm + 1) < 1e-9) {
       return new Quaternion(scalar, -Math.PI, 0, 0);

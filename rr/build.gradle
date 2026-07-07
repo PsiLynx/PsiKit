@@ -6,11 +6,9 @@ plugins {
 
 android {
     namespace 'org.psilynx.psikit.rr'
-    compileSdk 35
+    compileSdk 30
 
     defaultConfig {
-        minSdk 24
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -22,11 +20,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '1.8'
     }
 }
 
@@ -91,14 +89,15 @@ repositories {
 }
 
 dependencies {
-    implementation "com.acmerobotics.roadrunner:ftc:0.1.25"
+    compileOnly "com.acmerobotics.roadrunner:ftc:0.1.25"
 
-    api "org.firstinspires.ftc:RobotCore:10.3.0"
-    api "org.firstinspires.ftc:Hardware:10.3.0"
+    compileOnly "org.firstinspires.ftc:RobotCore:10.3.0"
+    compileOnly "org.firstinspires.ftc:Hardware:10.3.0"
+
+    compileOnly 'androidx.appcompat:appcompat:1.6.1'
 
     implementation project(":core")
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "org.jetbrains.kotlin:kotlin-reflect:2.0.0"
     implementation project(':core')
 

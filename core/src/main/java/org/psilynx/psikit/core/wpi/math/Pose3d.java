@@ -94,7 +94,7 @@ public class Pose3d implements StructSerializable {
    * @return The transform that maps the other pose to the current pose.
    */
   public Transform3d minus(Pose3d other) {
-    final var pose = this.relativeTo(other);
+    final Pose3d pose = this.relativeTo(other);
     return new Transform3d(pose.getTranslation(), pose.getRotation());
   }
 
@@ -203,7 +203,7 @@ public class Pose3d implements StructSerializable {
    * @return The current pose relative to the new origin pose.
    */
   public Pose3d relativeTo(Pose3d other) {
-    var transform = new Transform3d(other, this);
+    Transform3d transform = new Transform3d(other, this);
     return new Pose3d(transform.getTranslation(), transform.getRotation());
   }
 

@@ -19,7 +19,7 @@
   * Enable globally only when desired via `PsiKitAutoLogSettings.enabledByDefault = true`
     (or system property `psikit.autolog.enabled=true`), or opt in per OpMode with `@PsiKitAutoLog`.
 
-* 0.1.0-beta3 (unreleased):
+* 0.1.0:
   * Added `FtcLogTuning.bulkOnlyLogging` to globally restrict FTC logging to bulk-backed paths.
   * `FtcLogTuning.prefetchBulkDataEachLoop` now defaults to `true` to isolate hub bulk transaction
     cost into `PsiKit/sessionTimes (us)/BulkPrefetchTotal` and per-hub
@@ -29,3 +29,4 @@
     (color/distance, IMU, voltage): values are written when freshly sampled and sampled flags are
     emitted for freshness.
   * Docs: added a dedicated FTC logging/tuning reference page and linked quick defaults from usage docs.
+  * fixed gradle buildscript issues (compileOnly on sdk deps, compileSdk 30)
